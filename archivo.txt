@@ -1,2 +1,4 @@
 jose pinedo
 Diego Vazquez
+jesus huerta
+>>>>>>> 6b7f708feaadcf015e09756d15bb39a4f5c32372
