@@ -48,8 +48,17 @@ class main:
         self.contenido = ctk.CTkFrame(self.principal, fg_color="transparent")
         self.contenido.pack(fill="both", expand=True)
 
-        ruta_absoluta = os.path.join(os.getcwd(), "images", "just-b-cozumel-hotel-boutique.jpg")
-        self.img_original_raw = Image.open(ruta_absoluta)
+        base_path = os.path.dirname(os.path.abspath(__file__))
+
+        # 2. Join it with the subfolder and image name
+        ruta_absoluta = os.path.join(base_path, "images", "just-b-cozumel-hotel-boutique.jpg")
+
+        print(f"Buscando en: {ruta_absoluta}")
+
+        try:
+            self.img_original_raw = Image.open(ruta_absoluta)
+        except FileNotFoundError:
+            print("Error: No se encontró la imagen. Verifica que la carpeta 'images' esté junto a main.py")
 
         self.img_fondo_tk = ctk.CTkImage(
             light_image=self.img_original_raw,
