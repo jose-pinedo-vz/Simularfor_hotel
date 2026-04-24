@@ -24,7 +24,7 @@ class main:
         color_fondo = "#5D4037"
         color_hover = "#3E2723"
         color_texto = "#FFFFFF"
-        # grisesito = #8C8680
+        color_Extra = "#8C8680"
 
         self.recepcion = ctk.CTkButton(self.menu, text="Recepcion", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.recepcion.pack(padx=10, pady=10)
