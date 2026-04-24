@@ -292,12 +292,11 @@ class cocina:
         try: self.ventana.state("zoomed")
         except: self.ventana.attributes("-zoomed", True)
 
-        self.frame_scroll = ctk.CTkScrollableFrame(self.ventana, label_text="Datos historicos")
+        self.frame_scroll = ctk.CTkScrollableFrame(self.ventana)
         self.frame_scroll.pack(fill="both", expand=True, padx=20, pady=20)
 
         self.datosFijos = ctk.CTkFrame(
             self.frame_scroll, 
-            label_text="Datos fijos",
             width=384, 
             height=150, 
             fg_color="#404040" 

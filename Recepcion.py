@@ -82,7 +82,7 @@ class Recepcion:
         
         for _ in range(tam):
             #para poder hacer esto se podria hacer algo mas simple multiplicar n por la cantidad de recepcionistas y si llega a n ya se acabaron los numeros del primer recepcionista 
-            
+
             num_ale = random.random()
             
             if num_ale > 0 and num_ale < 0.49:
