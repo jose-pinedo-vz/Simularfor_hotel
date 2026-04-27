@@ -161,8 +161,8 @@ class main:
             text_color="#FFFFFF",  
             border_color="#8C8680",
             border_width=2,
-            font=("Consolas", 18, "bold")
-        )
+            font=("Consolas", 18, "bold"),
+            command=lambda: self.ExtrearFechas())
         self.boton.grid(row=6, column=0, pady=10)
 
         self.boton2 = ctk.CTkButton(
@@ -180,6 +180,7 @@ class main:
         self.boton2.grid(row=7, column=0, pady=10)
 
     def redimensionar_fondo(self, event):
+            # funciona para la foto, si le mueven abisen
             ancho = event.width
             alto  = event.height
             if ancho > 0 and alto > 0:
@@ -187,8 +188,44 @@ class main:
                 self.lbl_fondo.configure(image=self.img_fondo_tk)
 
     def llamaCosina(self):
+        # yamea al modelo de la cosina
         from restaurante import cocina
         obj = cocina()
+
+    def ExtrearFechas(self):
+        """
+            Tomando los valores que se encuetran en un entri de arriba se encargara de separar
+            anios, meses y dias, de esta forma noc quedamos unciamente con dias fijos
+        """
+        try:
+            textoCurudo = self.Dias.get("0.0", "end").split()
+            anios = int(textoCurudo[1])
+            meses = int(textoCurudo[3])
+            dias = int(textoCurudo[5])
+            diasTotales = (anios * 365) + (meses * 30) + dias
+
+            print(f"dias a simular: {diasTotales}")
+            self.simulador(dias)
+        except:
+            self.Dias.delete("0.0", "end") 
+            self.Dias.insert("end", f"A: 00 M: 00 D: 00")
+
+
+
+    def simulador(self, dias):
+        """
+            esta funcion sera la encrfada de llamar a todas la funciones  de los 
+            modelso que se an programando, 
+
+            resive el parametro dias que se le pasara a cada funcin con el objetivo de 
+            que esos sean los dias as imular
+        """
+        
+        pass
+
+
+
+
 
 if __name__ == "__main__":
     app = main()

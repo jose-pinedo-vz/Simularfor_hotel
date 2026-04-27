@@ -62,7 +62,6 @@ def validar(lista) -> bool:
 def transformarListas(lista) -> list:
     for i in range(len(lista)):
         lista[i] = lista[i] / 100
-    print(lista)
     return lista
 
 def rangos(lista) -> list:
@@ -94,8 +93,6 @@ def validaciones() -> None:
             print(f"Error: Una de las listas de probabilidad no suma 100%")
             return False
         
-
-    # validar que los datos sean consistentes o si dan las provavilidades con las consecuencais
     if len(flojo_diario) != len(flujo_siario_prob):
         print("Error en los datos")
         return
@@ -171,6 +168,9 @@ def validaciones() -> None:
     estado_encarga = 0
     lleganAlimentos = 0
 
+    diasDeENcarga = []
+    platillosDeEncarga = []
+
 
 
 
@@ -179,21 +179,18 @@ def validaciones() -> None:
         personas = provavilidar(flojo_diario,  flujo_siario_prob)
         print("canditad de personas en el dia: ", personas)
 
-        
-
-        
         grupo_Porcent = provavilidar(grupo, grupo_prob)
-        print(f"promedio de personas por grupo: {grupo_Porcent}")
-        print(f"mesas totales por hora: {cantidad_de_mesas} ")
+        # print(f"promedio de personas por grupo: {grupo_Porcent}")
+        # print(f"mesas totales por hora: {cantidad_de_mesas} ")
         mesas_ocupadas = personas / grupo_Porcent / horas_habiles
-        print(f"mesas ocupadas por hora {mesas_ocupadas}")
+        # print(f"mesas ocupadas por hora {mesas_ocupadas}")
 
         criticas = provavilidar(hora_critica, hora_critica_prob)
         if criticas == 1:
             print("ubo una hora critica")
             porcentaje_de_persnas = provavilidar(porcen_ora_critica, porcen_ora_critica_prob)
             print(f"llego el {porcentaje_de_persnas} de personas en el dia")
-            print(f"la cantidad de personas fueron de {personas * (porcentaje_de_persnas / 100)}")
+            print(f"la cantidad de personas fueron de {personas * (porcentaje_de_persnas / 100)} en una sola hora")
 
             if mesas_ocupadas > cantidad_de_mesas:
                 print("saturaciones de mesas, perdida de clietes")
@@ -216,22 +213,30 @@ def validaciones() -> None:
         print(f"tiempo promedio de preparacion de los platillos: {temp_cosina_promedio}")
 
         horas_cosina_totales = temp_cosina_promedio * total_de_platillos
-        print(f"Total de minutos cosinando: {horas_cosina_totales}")
+        # print(f"Total de minutos cosinando: {horas_cosina_totales}")
         
         minutos_por_cosinero = horas_cosina_totales / cantidad_de_cosineros
-        print(f"cada mesero devera de trabajar {minutos_por_cosinero} minutos al dia")
+        # print(f"cada mesero devera de trabajar {minutos_por_cosinero} minutos al dia")
 
         distribucion_platillos = provavilidar(categorai_platillos, categorai_platillos_prob)
-        print(f"distribucion de los platillos {distribucion_platillos}")
+        # print(f"distribucion de los platillos {distribucion_platillos}")
 
         for i in range(len(distribucion_platillos)):
             print(f"de la categoria {i + 1} son {total_de_platillos * (distribucion_platillos[i]/100)}")
 
+
+        platillosRechasados = 0
         for i in range(len(distribucion_platillos)):
-            print(f"restantes de platillos {i + 1} son {platillos_lista[i] - (total_de_platillos * (distribucion_platillos[i]/100))}")
-            platillos_lista[i] = platillos_lista[i] - (total_de_platillos * (distribucion_platillos[i]/100)) 
+            # print(f"restantes de platillos {i + 1} son {platillos_lista[i] - (total_de_platillos * (distribucion_platillos[i]/100))}")
+            if platillos_lista[i] - (total_de_platillos * (distribucion_platillos[i]/100)) < 0:
+                print("platillos rechasados")
+                platillosRechasados += abs(platillos_lista[i] - (total_de_platillos * (distribucion_platillos[i]/100)))
+                platillos_lista[i] = 0
+            else:
+                platillos_lista[i] = int(platillos_lista[i] - (total_de_platillos * (distribucion_platillos[i]/100)))
 
         print("platillos restandes del dia: ", platillos_lista)
+        print(f"Platillos rechasados {platillosRechasados}")
 
 
         ganancias = 0
@@ -240,6 +245,8 @@ def validaciones() -> None:
             ganancias += ganancias_por_platillo[i] * total_de_platillos * (distribucion_platillos[i]/100)
         
         print("ganancais totales: ", ganancias)
+
+        gastos = ganancias
         
 
         ganancias = 0
@@ -248,15 +255,15 @@ def validaciones() -> None:
             ganancias += ganancias_netas[i] * total_de_platillos * (distribucion_platillos[i]/100)
         
         print("ganancais netas: ", ganancias)
+
+        ganancias = ganancias
+        gastos = gastos - ganancias
         
 
         # evento aleatiorio
-
         eventoProb = provavilidar(Evento_Ale, Evento_Ale_prob)
         print("Evento catastrofico del dia? ", eventoProb)
-
         # event rh
-
         eventoRH = provavilidar(even_rh, even_rh_prob)
         print("Eventos con el personal: ", eventoRH)
 
@@ -265,29 +272,43 @@ def validaciones() -> None:
                 tiempo_de_llegada = provavilidar(suministro, suministro_prob)
                 print("se encargan alimentos y se tardan en llegar: ", tiempo_de_llegada, " dias")
                 lleganAlimentos = _ + tiempo_de_llegada
-                for i in range(len(distribucion_platillos)):
-                    platillos_encargados.append(cantidadDelStockmaxiom[i] - platillos_lista[i])
+                for j in range(len(distribucion_platillos)):
+                    platillos_encargados.append(cantidadDelStockmaxiom[j] - platillos_lista[i])
 
             
                 print(f"se encargo mercancia y llega en {lleganAlimentos} dias")
+                diasDeENcarga.append(lleganAlimentos)
                 print(f"cantidad de alimentos encargados {platillos_encargados}")
+                platillosDeEncarga.append(platillos_encargados)
+                platillos_encargados = []
                 estado_encarga = 1
-            else:
-                print("ya se encargaron ingredientes o esta bien los que ya se teienen")
-
         
-        if _ == lleganAlimentos:
-            for i in range(len(platillos_encargados)):
-                platillos_lista[i] += platillos_encargados[i]
+        if _ in diasDeENcarga:
+            for idx, dia_pedido in enumerate(diasDeENcarga):
+                if _ == dia_pedido:
+                    pedido = platillosDeEncarga[idx]
+                    for cat in range(len(platillos_lista)):
+                        platillos_lista[cat] += pedido[cat]
+                    print("Cocina abastecid")
 
-            platillos_encargados = []
-            print("Cosina abastesida")
             estado_encarga = 0
 
         print("platillos restandes del dia: ", platillos_lista)
 
+
+        print("Final dia ", _ + 1)
+        print(f"ganancias {ganancias}")
+
+        costo_cocineros = (sueldo_cosineros / 30) * cantidad_de_cosineros
+        costo_personal = (sueldo_personal / 30) * personal 
+        costo_servicios = pago_servicios / 30
         
-# validaciones()
+        total_fijos = costo_cocineros + costo_personal + costo_servicios
+        print(f"gastos: {total_fijos}")
+
+
+        
+validaciones()
 
 
 import customtkinter as ctk
@@ -564,14 +585,15 @@ class cocina:
         self.Botonsitos.pack(pady=20, padx=20)
 
         self.cargar = ctk.CTkButton(self.Botonsitos, text="Cargar elementos", width=ancho_fijo, height=alto_fijo, fg_color=color_texto, text_color=textaso,
-                                    command=lambda: self.cargarElementosEninterface())
+                                    command=lambda: self.extraervalores())
         self.cargar.grid(row=0, column=0, padx=40, pady=40)
 
         self.Baciar = ctk.CTkButton(self.Botonsitos, text="Baciar", width=ancho_fijo, height=alto_fijo, fg_color=color_texto, text_color=textaso,
                                     command=lambda: self.Bacias())
         self.Baciar.grid(row=0, column=1, padx=40, pady=40)
 
-        self.bj = ctk.CTkButton(self.Botonsitos, text="balores bajos", width=ancho_fijo, height=alto_fijo, fg_color=color_texto, text_color=textaso)
+        self.bj = ctk.CTkButton(self.Botonsitos, text="balores bajos", width=ancho_fijo, height=alto_fijo, fg_color=color_texto, text_color=textaso,
+                                command=lambda: self.piloto())
         self.bj.grid(row=0, column=2, padx=40, pady=40)
 
         self.at = ctk.CTkButton(self.Botonsitos, text="balores altos", width=ancho_fijo, height=alto_fijo, fg_color=color_texto, text_color=textaso)
@@ -614,12 +636,14 @@ class cocina:
         for platillo in platillos_disponibles:
             self.nombreplatillos.insert("end", str(platillo) + "\n")
 
-        self.Text_categorai_platillos.delete("1.0", "end") 
+
+        self.Text_categorai_platillos.delete("1.0", "end")
         for lista in categorai_platillos:
             for elemento in lista:
                 self.Text_categorai_platillos.insert("end", str(elemento) + " ")
-            self.Text_categorai_platillos.insert("end", "\n")
-            
+            self.Text_categorai_platillos.insert("end", "\n") 
+
+                
         self.Text_categorai_platillos_prob.delete("1.0", "end") 
         for elemento in categorai_platillos_prob:
             self.Text_categorai_platillos_prob.insert("end", str(elemento) + "\n")
@@ -706,7 +730,10 @@ class cocina:
         for elemento in porcen_ora_critica_prob:
             self.textHorasCriticasprob.insert("end", str(elemento) + "\n")
 
+
     def extraervalores(self):
+        print("Si llega")
+
         global flojo_diario, flujo_siario_prob, grupo, grupo_prob, tem_preparacion, tem_preparacion_prob, consumo, condumo_prob, suministro, \
             suministro_prob, even_rh, even_rh_prob, Evento_Ale_prob, Evento_Ale, hora_critica, hora_critica_prob, porcen_ora_critica, \
             porcen_ora_critica_prob, categorai_platillos, categorai_platillos_prob, platillos_disponibles, cantidadMinimaDeStock, cantidadDelStockmaxiom
@@ -729,43 +756,93 @@ class cocina:
         tem_preparacion = [int(x) for x in texto_crudo.split()]
 
 
-        # pendientes
+        #pulir
         texto_crudo = self.tex_preapracion_platillo_prob.get("1.0", "end")
         tem_preparacion_prob = [int(x) for x in texto_crudo.split()]
 
-        consumo = [1, 2, 3]
-        condumo_prob = [20, 60, 20]
+        texto_crudo = self.text_consumoPorPersona.get("1.0", "end")
+        consumo = [int(x) for x in texto_crudo.split()]
 
-        suministro = [1, 2, 4, 5]
-        suministro_prob = [60, 25, 10, 5]
+        texto_crudo = self.text_comsumoPorPersona_prob.get("1.0", "end")
+        condumo_prob = [int(x) for x in texto_crudo.split()]
 
-        even_rh = ["nada", "renuncia", "despedido", "renunacia multiple"]
-        even_rh_prob = [92, 3, 4, 1]
 
-        Evento_Ale_prob = [80, 10, 5, 5]
-        Evento_Ale = ["Nada", "Merma o accidente menor", "Falla en equipo", "Devolucion de platillo"]
+        texto_crudo = self.text_suministro.get("1.0", "end")
+        suministro = [int(x) for x in texto_crudo.split()]
+        
+        texto_crudo = self.text_suministroProb.get("1.0", "end")
+        suministro_prob = [int(x) for x in texto_crudo.split()]
 
-        hora_critica = [0, 1]
-        hora_critica_prob = [90, 10]
 
-        porcen_ora_critica = [30, 40, 50]
-        porcen_ora_critica_prob = [40, 30, 30]
+        texto_crudo = self.text_eventoRh.get("1.0", "end")
+        even_rh = [x for x in texto_crudo.split()]
+        
+        texto_crudo = self.text_eventoRh_prob.get("1.0", "end")
+        even_rh_prob = [int(x) for x in texto_crudo.split()]
 
-        categorai_platillos = [[70, 20, 10], [60, 25, 15], [50, 30, 20]]
-        categorai_platillos_prob = [60, 30, 10]
 
-        platillos_disponibles = ["normal", "caro", "exotico"]
-        platilllosEmpesamos = [400, 200, 40]
 
-        cantidadMinimaDeStock = [200, 70, 10]
-        cantidadDelStockmaxiom = [400, 200, 50]
+        texto_crudo = self.text_eventoAle_prob.get("1.0", "end")
+        Evento_Ale_prob = [int(x) for x in texto_crudo.split()]
+        
+        texto_crudo = self.text_eventoAle.get("1.0", "end")
+        Evento_Ale = [x for x in texto_crudo.split()]
+
+
+# =====
+        texto_crudo = self.textHorasCriticas.get("1.0", "end")
+        hora_critica = [int(x) for x in texto_crudo.split()]
+        
+        texto_crudo = self.textHorasCriticasprob.get("1.0", "end")
+        hora_critica_prob = [int(x) for x in texto_crudo.split()]
+
+
+        # texto_crudo = self..get("1.0", "end")
+        # porcen_ora_critica = [int(x) for x in texto_crudo.split()]
+        
+        # texto_crudo = self.tex_preapracion_platillo_prob.get("1.0", "end")
+        # porcen_ora_critica_prob = [int(x) for x in texto_crudo.split()]
+
+
+        texto_crudo = self.Text_categorai_platillos.get("1.0", "end").strip()
+
+        categorai_platillos = []
+
+        for linea in texto_crudo.split('\n'):
+            if linea.strip(): 
+                fila = [int(x) for x in linea.split()]
+                categorai_platillos.append(fila)
+
+        
+        texto_crudo = self.Text_categorai_platillos_prob.get("1.0", "end")
+        categorai_platillos_prob = [int(x) for x in texto_crudo.split()]
+
+
+        texto_crudo = self.txt_cantidadStock.get("1.0", "end")
+        platillos_disponibles = [x for x in texto_crudo.split()]
+        
+        texto_crudo = self.txt_cantidadStock.get("1.0", "end")
+        platilllosEmpesamos = [int(x) for x in texto_crudo.split()]
+
+
+        texto_crudo = self.txt_cantidadStock_min.get("1.0", "end")
+        cantidadMinimaDeStock = [int(x) for x in texto_crudo.split()]
+        
+        texto_crudo = self.txt_cantidadStock.get("1.0", "end")
+        cantidadDelStockmaxiom = [int(x) for x in texto_crudo.split()]
 
         global cantidad_de_mesas, cantidad_de_cosineros, sueldo_cosineros, horas_habiles, personal, sueldo_personal, pago_servicios, platillos_lista, \
             ganancias_por_platillo, ganancias_netas
         
         platillos_lista = platilllosEmpesamos[:]
-        ganancias_por_platillo = [50, 150, 300]
-        ganancias_netas = [20, 50, 100]
+
+
+        texto_crudo = self.texr_gananciaDelPlatillo.get("1.0", "end")
+        ganancias_por_platillo = [float(x) for x in texto_crudo.split()]
+        
+        texto_crudo = self.texr_gananciaDelPlatillo.get("1.0", "end")
+        ganancias_netas = [float(x) for x in texto_crudo.split()]
+
 
         cantidad_de_mesas = int(self.cantidadDeMesas.get())
         cantidad_de_cosineros = int(self.CantidadDeCosineros.get())
@@ -776,7 +853,12 @@ class cocina:
 
         pago_servicios = float(self.pagoServicios.get())
 
+        print("Todo salio bien")
+
         self.cargarElementosEninterface()
+
+
+
 
 
     def Bacias(self):
@@ -891,7 +973,13 @@ class cocina:
 
         pago_servicios = 2000
 
+        print("Si carga")
+
         self.cargarElementosEninterface()
+
+
+    def piloto(self):
+        validaciones()
 
 
 
