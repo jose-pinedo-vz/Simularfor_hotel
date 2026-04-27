@@ -3,6 +3,10 @@ from PIL import Image, ImageOps
 import os
 
 
+
+from AtencionMedica import Area_Atencion_Medica
+from Entretenimiento import Area_Entretenimiento
+
 class main:
     def __init__(self):
         self.principal = ctk.CTk() 
@@ -27,40 +31,43 @@ class main:
         color_Extra = "#8C8680"
 
         self.recepcion = ctk.CTkButton(self.menu, text="Recepcion", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
-        self.recepcion.pack(padx=10, pady=10)
+        self.recepcion.pack(padx=5, pady=5)
 
         self.estacionamiento = ctk.CTkButton(self.menu, text="Estacionamiento", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
-        self.estacionamiento.pack(padx=10, pady=10)
+        self.estacionamiento.pack(padx=5, pady=5)
 
         self.restaurante = ctk.CTkButton(self.menu, text="Restaurante", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto, command=lambda: self.llamaCosina())
-        self.restaurante.pack(padx=10, pady=10)
+        self.restaurante.pack(padx=5, pady=5)
 
         self.Artencionmedica = ctk.CTkButton(self.menu, text="Atencion medica", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
-        self.Artencionmedica.pack(padx=10, pady=10)
+        self.Artencionmedica.pack(padx=5, pady=5)
 
         self.Lavanderia = ctk.CTkButton(self.menu, text="Lavanderia", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
-        self.Lavanderia.pack(padx=10, pady=10)
+        self.Lavanderia.pack(padx=5, pady=5)
 
         self.bar = ctk.CTkButton(self.menu, text="Bar", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
-        self.bar.pack(padx=10, pady=10)
+        self.bar.pack(padx=5, pady=5)
 
         self.mantenimiento = ctk.CTkButton(self.menu, text="Mantenimiento", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
-        self.mantenimiento.pack(padx=10, pady=10)
+        self.mantenimiento.pack(padx=5, pady=5)
 
         self.ResercasOnline = ctk.CTkButton(self.menu, text="Reservas online", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
-        self.ResercasOnline.pack(padx=10, pady=10)
+        self.ResercasOnline.pack(padx=5, pady=5)
 
         self.marketing = ctk.CTkButton(self.menu, text="marketing", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
-        self.marketing.pack(padx=10, pady=10)
+        self.marketing.pack(padx=5, pady=5)
 
         self.Bodega = ctk.CTkButton(self.menu, text="Bodega central", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
-        self.Bodega.pack(padx=10, pady=10)
+        self.Bodega.pack(padx=5, pady=5)
+
+        self.Enetretenimiento = ctk.CTkButton(self.menu, text="Entretenimiento", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
+        self.Enetretenimiento.pack(padx=5, pady=5)
 
 
         self.contenido = ctk.CTkFrame(self.principal, fg_color="transparent")
         self.contenido.pack(fill="both", expand=True)
 
-        # --- Imagen de fondo ---
+    
         base_path = os.path.dirname(os.path.abspath(__file__))
         ruta_absoluta = os.path.join(base_path, "images", "just-b-cozumel-hotel-boutique.jpg")
         print(f"Buscando en: {ruta_absoluta}")
@@ -191,6 +198,15 @@ class main:
         # yamea al modelo de la cosina
         from restaurante import cocina
         obj = cocina()
+    
+    def LlamaArea_Medica(self):
+        obj=Area_Atencion_Medica()
+        obj.Iniciar(self.Dias_simulacion)
+
+    def LlamaArea_Entretenimiento(self):
+        obj=Area_Entretenimiento()
+        obj.Iniciar(self.Dias_simulacion)
+        pass
 
     def ExtrearFechas(self):
         """
