@@ -329,288 +329,309 @@ class cocina:
         try: self.ventana.state("zoomed")
         except: self.ventana.attributes("-zoomed", True)
 
-        self.frame_scroll = ctk.CTkScrollableFrame(self.ventana)
-        self.frame_scroll.pack(fill="both", expand=True, padx=20, pady=10)
-
-
+        # ── Colores del proyecto ──────────────────────────────────────
+        color_fondo         = "#5D4037"
+        color_hover         = "#3E2723"
+        color_texto         = "#FFFFFF"
+        color_Extra         = "#8C8680"
         color_contorno_azul = "#4281FF"
 
+        self.ventana.configure(fg_color=color_hover)
+
+        self.frame_scroll = ctk.CTkScrollableFrame(
+            self.ventana,
+            fg_color=color_hover
+        )
+        self.frame_scroll.pack(fill="both", expand=True, padx=10, pady=8)
+
+        # ── Tamaños ───────────────────────────────────────────────────
+        ancho_entry = 148
+        alto_entry  = 36
+        ancho_txt   = 138
+        alto_txt    = 180
+        pad_col     = 6
+        pad_row     = 4
+
+        # ═══════════════════════════════════════════════════════════════
+        #  SECCIÓN 1 – Datos fijos
+        # ═══════════════════════════════════════════════════════════════
         self.datosFijos = ctk.CTkFrame(
             self.frame_scroll,
-            width=384,
-            height=150,
-            # fg_color="#4281FF"
+            fg_color=color_fondo,
             border_width=2,
             border_color=color_contorno_azul
         )
-        self.datosFijos.pack(pady=20, padx=20)
+        self.datosFijos.pack(pady=10, padx=10, fill="x")
 
-        ancho_fijo = 300
-        alto_fijo = 60
-        color_texto = "#FFFFff"
+        label1 = ctk.CTkLabel(self.datosFijos, text="Cantidad de cocineros:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_entry)
+        label1.grid(row=0, column=0, padx=pad_col, pady=(10, 2), sticky="ew")
 
+        self.CantidadDeCosineros = ctk.CTkEntry(self.datosFijos, font=("Arial", 13), width=ancho_entry, height=alto_entry)
+        self.CantidadDeCosineros.grid(row=1, column=0, padx=pad_col, pady=(2, 10))
 
-        # primeras 2 fials y colupnas
-        label1 = ctk.CTkLabel(self.datosFijos, text="Cantidad de cocineros:", font=("Arial", 16), text_color=color_texto)
-        label1.grid(row=0, column=0, padx=10, pady=5)
+        label2 = ctk.CTkLabel(self.datosFijos, text="Mesas disponibles:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_entry)
+        label2.grid(row=0, column=1, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        self.CantidadDeCosineros = ctk.CTkEntry(self.datosFijos, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.CantidadDeCosineros.grid(row=1, column=0, padx=10, pady=10)
+        self.cantidadDeMesas = ctk.CTkEntry(self.datosFijos, font=("Arial", 13), width=ancho_entry, height=alto_entry)
+        self.cantidadDeMesas.grid(row=1, column=1, padx=pad_col, pady=(2, 10))
 
-        label2 = ctk.CTkLabel(self.datosFijos, text="Mesas disponibles:", font=("Arial", 16), width=ancho_fijo, height=alto_fijo, text_color=color_texto)
-        label2.grid(row=0, column=1, padx=10, pady=5)
+        label3 = ctk.CTkLabel(self.datosFijos, text="Horas laborales:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_entry)
+        label3.grid(row=0, column=2, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        self.cantidadDeMesas = ctk.CTkEntry(self.datosFijos, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.cantidadDeMesas.grid(row=1, column=1, padx=10, pady=10)
+        self.Horaslaborales = ctk.CTkEntry(self.datosFijos, font=("Arial", 13), width=ancho_entry, height=alto_entry)
+        self.Horaslaborales.grid(row=1, column=2, padx=pad_col, pady=(2, 10))
 
-        label3 = ctk.CTkLabel(self.datosFijos, text="Horas laborales:", font=("Arial", 16), width=ancho_fijo, height=alto_fijo, text_color=color_texto)
-        label3.grid(row=0, column=2, padx=10, pady=5)
+        label4 = ctk.CTkLabel(self.datosFijos, text="Cantidad de personal extra:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_entry)
+        label4.grid(row=0, column=3, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        self.Horaslaborales = ctk.CTkEntry(self.datosFijos, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.Horaslaborales.grid(row=1, column=2, padx=10, pady=10)
+        self.personal = ctk.CTkEntry(self.datosFijos, font=("Arial", 13), width=ancho_entry, height=alto_entry)
+        self.personal.grid(row=1, column=3, padx=pad_col, pady=(2, 10))
 
-        label4 = ctk.CTkLabel(self.datosFijos, text="Cantidad de personal extra:", font=("Arial", 16), text_color=color_texto)
-        label4.grid(row=0, column=3, padx=10, pady=5)
+        label5 = ctk.CTkLabel(self.datosFijos, text="Sueldo cocineros / mes:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_entry)
+        label5.grid(row=0, column=4, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        self.personal = ctk.CTkEntry(self.datosFijos, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.personal.grid(row=1, column=3, padx=10, pady=10)
+        self.SueldoCosinero = ctk.CTkEntry(self.datosFijos, font=("Arial", 13), width=ancho_entry, height=alto_entry)
+        self.SueldoCosinero.grid(row=1, column=4, padx=pad_col, pady=(2, 10))
 
-        label5 = ctk.CTkLabel(self.datosFijos, text="sueldo de los cocineros por mes:", font=("Arial", 16), text_color=color_texto)
-        label5.grid(row=0, column=4, padx=10, pady=5)
+        label6 = ctk.CTkLabel(self.datosFijos, text="Sueldo resto del personal:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_entry)
+        label6.grid(row=0, column=5, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        self.SueldoCosinero = ctk.CTkEntry(self.datosFijos, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.SueldoCosinero.grid(row=1, column=4, padx=10, pady=10)
+        self.sueldoPersonal = ctk.CTkEntry(self.datosFijos, font=("Arial", 13), width=ancho_entry, height=alto_entry)
+        self.sueldoPersonal.grid(row=1, column=5, padx=pad_col, pady=(2, 10))
 
-        label6 = ctk.CTkLabel(self.datosFijos, text="sueldo del resto del personal:", font=("Arial", 16), text_color=color_texto)
-        label6.grid(row=0, column=5, padx=10, pady=5)
+        label7 = ctk.CTkLabel(self.datosFijos, text="Pago total servicios mensuales:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_entry)
+        label7.grid(row=0, column=6, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        self.sueldoPersonal = ctk.CTkEntry(self.datosFijos, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.sueldoPersonal.grid(row=1, column=5, padx=10, pady=10)
+        self.pagoServicios = ctk.CTkEntry(self.datosFijos, font=("Arial", 13), width=ancho_entry, height=alto_entry)
+        self.pagoServicios.grid(row=1, column=6, padx=pad_col, pady=(2, 10))
 
-        label7 = ctk.CTkLabel(self.datosFijos, text="pago total de servicios mensuales:", font=("Arial", 16), text_color=color_texto)
-        label7.grid(row=0, column=6, padx=10, pady=5)
-
-        self.pagoServicios = ctk.CTkEntry(self.datosFijos, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.pagoServicios.grid(row=1, column=6, padx=10, pady=10)
-
-        for i in range(6):
-            ctk.CTkLabel(self.datosFijos, text="").grid(row=2, column=i)
-        self.frame_scroll.grid_columnconfigure(0, weight=0)
-
-
+        # ═══════════════════════════════════════════════════════════════
+        #  SECCIÓN 2 – Datos de platillos
+        # ═══════════════════════════════════════════════════════════════
         self.datosPlatillos = ctk.CTkFrame(
             self.frame_scroll,
-            width=384,
-            height=150,
-            # fg_color="#4281FF"
+            fg_color=color_fondo,
             border_width=2,
             border_color=color_contorno_azul
-
         )
-        self.datosPlatillos.pack(pady=20, padx=20)
+        self.datosPlatillos.pack(pady=10, padx=10, fill="x")
 
-        ancho_fijo = 300
-        alto_fijo = 400
-        color_texto = "#FFFFFF"
+        label8 = ctk.CTkLabel(self.datosPlatillos, text="Platillos disponibles:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label8.grid(row=0, column=0, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        label8 = ctk.CTkLabel(self.datosPlatillos, text="Platillos disponicles:", font=("Arial", 16), text_color=color_texto)
-        label8.grid(row=0, column=0, padx=30, pady=20)
+        self.nombreplatillos = ctk.CTkTextbox(self.datosPlatillos, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.nombreplatillos.grid(row=1, column=0, padx=pad_col, pady=(2, 10))
 
-        self.nombreplatillos = ctk.CTkTextbox(self.datosPlatillos, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.nombreplatillos.grid(row=1, column=0, padx=10, pady=5)
+        label9 = ctk.CTkLabel(self.datosPlatillos, text="Distribución de su venta:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label9.grid(row=0, column=1, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        label9 = ctk.CTkLabel(self.datosPlatillos, text="Distribucion de su venta:", font=("Arial", 16), text_color=color_texto)
-        label9.grid(row=0, column=1, padx=10, pady=20)
+        self.distribucionPlatillos = ctk.CTkTextbox(self.datosPlatillos, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.distribucionPlatillos.grid(row=1, column=1, padx=pad_col, pady=(2, 10))
 
-        self.distribucionPlatillos = ctk.CTkTextbox(self.datosPlatillos, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.distribucionPlatillos.grid(row=1, column=1, padx=10, pady=5)
+        label10 = ctk.CTkLabel(self.datosPlatillos, text="Porcentaje de platillos:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label10.grid(row=0, column=2, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        label10 = ctk.CTkLabel(self.datosPlatillos, text="Porcentaje de platillos", font=("Arial", 16), text_color=color_texto)
-        label10.grid(row=0, column=2, padx=10, pady=20)
+        self.Text_categorai_platillos = ctk.CTkTextbox(self.datosPlatillos, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.Text_categorai_platillos.grid(row=1, column=2, padx=pad_col, pady=(2, 10))
 
-        self.Text_categorai_platillos = ctk.CTkTextbox(self.datosPlatillos, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.Text_categorai_platillos.grid(row=1, column=2, padx=10, pady=5)
+        label11 = ctk.CTkLabel(self.datosPlatillos, text="Prob de porcentaje:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label11.grid(row=0, column=3, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        label11 = ctk.CTkLabel(self.datosPlatillos, text="Prob de porcentaje", font=("Arial", 16), text_color=color_texto)
-        label11.grid(row=0, column=3, padx=10, pady=5)
+        self.Text_categorai_platillos_prob = ctk.CTkTextbox(self.datosPlatillos, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.Text_categorai_platillos_prob.grid(row=1, column=3, padx=pad_col, pady=(2, 10))
 
-        self.Text_categorai_platillos_prob = ctk.CTkTextbox(self.datosPlatillos, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.Text_categorai_platillos_prob.grid(row=1, column=3, padx=10, pady=5)
+        label12 = ctk.CTkLabel(self.datosPlatillos, text="Cantidad inicial de Stock:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label12.grid(row=0, column=4, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        label12 = ctk.CTkLabel(self.datosPlatillos, text="Cantidad inicial de Stock", font=("Arial", 16), text_color=color_texto)
-        label12.grid(row=0, column=4, padx=10, pady=20)
+        self.txt_cantidadStock = ctk.CTkTextbox(self.datosPlatillos, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.txt_cantidadStock.grid(row=1, column=4, padx=pad_col, pady=(2, 10))
 
-        self.txt_cantidadStock = ctk.CTkTextbox(self.datosPlatillos, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.txt_cantidadStock.grid(row=1, column=4, padx=10, pady=5)
+        label13 = ctk.CTkLabel(self.datosPlatillos, text="Cantidad mínima de Stock:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label13.grid(row=0, column=5, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        label12 = ctk.CTkLabel(self.datosPlatillos, text="Cantidad minima de Stock", font=("Arial", 16), text_color=color_texto)
-        label12.grid(row=0, column=5, padx=10, pady=20)
+        self.txt_cantidadStock_min = ctk.CTkTextbox(self.datosPlatillos, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.txt_cantidadStock_min.grid(row=1, column=5, padx=pad_col, pady=(2, 10))
 
-        self.txt_cantidadStock_min = ctk.CTkTextbox(self.datosPlatillos, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.txt_cantidadStock_min.grid(row=1, column=5, padx=10, pady=5)
+        label14 = ctk.CTkLabel(self.datosPlatillos, text="Costo del platillo:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label14.grid(row=0, column=6, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        label13 = ctk.CTkLabel(self.datosPlatillos, text="Costo del platillo", font=("Arial", 16), text_color=color_texto)
-        label13.grid(row=0, column=6, padx=10, pady=20)
+        self.texr_costoDelPlatillo = ctk.CTkTextbox(self.datosPlatillos, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.texr_costoDelPlatillo.grid(row=1, column=6, padx=pad_col, pady=(2, 10))
 
-        self.texr_costoDelPlatillo = ctk.CTkTextbox(self.datosPlatillos, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.texr_costoDelPlatillo.grid(row=1, column=6, padx=10, pady=5)
+        label15 = ctk.CTkLabel(self.datosPlatillos, text="Ganancia del platillo:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label15.grid(row=0, column=7, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        label14 = ctk.CTkLabel(self.datosPlatillos, text="Ganancia del paltillo", font=("Arial", 16), text_color=color_texto)
-        label14.grid(row=0, column=7, padx=30, pady=20)
+        self.texr_gananciaDelPlatillo = ctk.CTkTextbox(self.datosPlatillos, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.texr_gananciaDelPlatillo.grid(row=1, column=7, padx=pad_col, pady=(2, 10))
 
-        self.texr_gananciaDelPlatillo = ctk.CTkTextbox(self.datosPlatillos, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.texr_gananciaDelPlatillo.grid(row=1, column=7, padx=10, pady=5)
-
-        for i in range(7):
-            ctk.CTkLabel(self.datosPlatillos, text="").grid(row=2, column=i)
-
+        # ═══════════════════════════════════════════════════════════════
+        #  SECCIÓN 3 – Datos variables  (fila 0-1)
+        # ═══════════════════════════════════════════════════════════════
         self.datosBariables = ctk.CTkFrame(
             self.frame_scroll,
-            width=384,
-            height=150,
-            # fg_color="#4281FF"
+            fg_color=color_fondo,
             border_width=2,
             border_color=color_contorno_azul
-
         )
-        self.datosBariables.pack(pady=20, padx=20)
+        self.datosBariables.pack(pady=10, padx=10, fill="x")
 
+        label16 = ctk.CTkLabel(self.datosBariables, text="Flujo de personas por dia:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label16.grid(row=0, column=0, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        label15 = ctk.CTkLabel(self.datosBariables, text="Flujo de personas por dia:", font=("Arial", 16), text_color=color_texto)
-        label15.grid(row=0, column=0, padx=30, pady=20)
+        self.text_FlujodePersonasPorDia = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.text_FlujodePersonasPorDia.grid(row=1, column=0, padx=pad_col, pady=(2, 10))
 
-        self.text_FlujodePersonasPorDia = ctk.CTkTextbox(self.datosBariables, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.text_FlujodePersonasPorDia.grid(row=1, column=0, padx=10, pady=5)
+        label17 = ctk.CTkLabel(self.datosBariables, text="Prob flujo de personas:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label17.grid(row=0, column=1, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        label16 = ctk.CTkLabel(self.datosBariables, text="Prob del flujo de personas:", font=("Arial", 16), text_color=color_texto)
-        label16.grid(row=0, column=1, padx=30, pady=20)
+        self.text_FlujodePersonasPorDia_prob = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.text_FlujodePersonasPorDia_prob.grid(row=1, column=1, padx=pad_col, pady=(2, 10))
 
-        self.text_FlujodePersonasPorDia_prob = ctk.CTkTextbox(self.datosBariables, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.text_FlujodePersonasPorDia_prob.grid(row=1, column=1, padx=10, pady=5)
+        label18 = ctk.CTkLabel(self.datosBariables, text="Promedio de grupo:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label18.grid(row=0, column=2, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        label17 = ctk.CTkLabel(self.datosBariables, text="Promedio de grupo:", font=("Arial", 16), text_color=color_texto)
-        label17.grid(row=0, column=2, padx=30, pady=20)
+        self.text_TamaniodelGrupo = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.text_TamaniodelGrupo.grid(row=1, column=2, padx=pad_col, pady=(2, 10))
 
-        self.text_TamaniodelGrupo = ctk.CTkTextbox(self.datosBariables, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.text_TamaniodelGrupo.grid(row=1, column=2, padx=10, pady=5)
+        label19 = ctk.CTkLabel(self.datosBariables, text="Prob promedio de grupo:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label19.grid(row=0, column=3, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        label18 = ctk.CTkLabel(self.datosBariables, text="Prob de promedio de grupo:", font=("Arial", 16), text_color=color_texto)
-        label18.grid(row=0, column=3, padx=30, pady=20)
+        self.text_TamaniodelGrupoprob = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.text_TamaniodelGrupoprob.grid(row=1, column=3, padx=pad_col, pady=(2, 10))
 
-        self.text_TamaniodelGrupoprob = ctk.CTkTextbox(self.datosBariables, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.text_TamaniodelGrupoprob.grid(row=1, column=3, padx=10, pady=5)
+        label20 = ctk.CTkLabel(self.datosBariables, text="Preparacion platillo:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label20.grid(row=0, column=4, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        label19 = ctk.CTkLabel(self.datosBariables, text="Preparacion platillo:", font=("Arial", 16), text_color=color_texto)
-        label19.grid(row=0, column=4, padx=30, pady=20)
+        self.tex_preapracion_platillo = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.tex_preapracion_platillo.grid(row=1, column=4, padx=pad_col, pady=(2, 10))
 
-        self.tex_preapracion_platillo = ctk.CTkTextbox(self.datosBariables, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.tex_preapracion_platillo.grid(row=1, column=4, padx=10, pady=5)
+        label21 = ctk.CTkLabel(self.datosBariables, text="Prob preparacion platillo:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label21.grid(row=0, column=5, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        label20 = ctk.CTkLabel(self.datosBariables, text="prob de preparacion platillo:", font=("Arial", 16), text_color=color_texto)
-        label20.grid(row=0, column=5, padx=30, pady=20)
+        self.tex_preapracion_platillo_prob = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.tex_preapracion_platillo_prob.grid(row=1, column=5, padx=pad_col, pady=(2, 10))
 
-        self.tex_preapracion_platillo_prob = ctk.CTkTextbox(self.datosBariables, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.tex_preapracion_platillo_prob.grid(row=1, column=5, padx=10, pady=5)
+        # ── fila 2-3 ──────────────────────────────────────────────────
 
-        label21 = ctk.CTkLabel(self.datosBariables, text="Consumo por persona:", font=("Arial", 16), text_color=color_texto)
-        label21.grid(row=2, column=0, padx=30, pady=20)
+        label22 = ctk.CTkLabel(self.datosBariables, text="Consumo por persona:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label22.grid(row=2, column=0, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        self.text_consumoPorPersona = ctk.CTkTextbox(self.datosBariables, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.text_consumoPorPersona.grid(row=3, column=0, padx=10, pady=5)
+        self.text_consumoPorPersona = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.text_consumoPorPersona.grid(row=3, column=0, padx=pad_col, pady=(2, 10))
 
-        label22 = ctk.CTkLabel(self.datosBariables, text="prob consumo:", font=("Arial", 16), text_color=color_texto)
-        label22.grid(row=2, column=1, padx=30, pady=20)
+        label23 = ctk.CTkLabel(self.datosBariables, text="Prob consumo:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label23.grid(row=2, column=1, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        self.text_comsumoPorPersona_prob = ctk.CTkTextbox(self.datosBariables, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.text_comsumoPorPersona_prob.grid(row=3, column=1, padx=10, pady=5)
+        self.text_comsumoPorPersona_prob = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.text_comsumoPorPersona_prob.grid(row=3, column=1, padx=pad_col, pady=(2, 10))
 
-        label23 = ctk.CTkLabel(self.datosBariables, text="Suministro:", font=("Arial", 16), text_color=color_texto)
-        label23.grid(row=2, column=2, padx=30, pady=20)
+        label24 = ctk.CTkLabel(self.datosBariables, text="Suministro:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label24.grid(row=2, column=2, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        self.text_suministro = ctk.CTkTextbox(self.datosBariables, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.text_suministro.grid(row=3, column=2, padx=10, pady=5)
+        self.text_suministro = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.text_suministro.grid(row=3, column=2, padx=pad_col, pady=(2, 10))
 
-        label24 = ctk.CTkLabel(self.datosBariables, text="Prob suministro:", font=("Arial", 16), text_color=color_texto)
-        label24.grid(row=2, column=3, padx=30, pady=20)
+        label25 = ctk.CTkLabel(self.datosBariables, text="Prob suministro:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label25.grid(row=2, column=3, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        self.text_suministroProb = ctk.CTkTextbox(self.datosBariables, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.text_suministroProb.grid(row=3,column=3, padx=10, pady=5)
+        self.text_suministroProb = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.text_suministroProb.grid(row=3, column=3, padx=pad_col, pady=(2, 10))
 
-        label25 = ctk.CTkLabel(self.datosBariables, text="Evento de RH:", font=("Arial", 16), text_color=color_texto)
-        label25.grid(row=2, column=4, padx=30, pady=20)
+        label26 = ctk.CTkLabel(self.datosBariables, text="Evento de RH:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label26.grid(row=2, column=4, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        self.text_eventoRh = ctk.CTkTextbox(self.datosBariables, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.text_eventoRh.grid(row=3, column=4, padx=10, pady=5)
+        self.text_eventoRh = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.text_eventoRh.grid(row=3, column=4, padx=pad_col, pady=(2, 10))
 
-        label125 = ctk.CTkLabel(self.datosBariables, text="Prob evento de RH:", font=("Arial", 16), text_color=color_texto)
-        label125.grid(row=2, column=5, padx=30, pady=20)
+        label27 = ctk.CTkLabel(self.datosBariables, text="Prob evento de RH:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label27.grid(row=2, column=5, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        self.text_eventoRh_prob = ctk.CTkTextbox(self.datosBariables, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.text_eventoRh_prob.grid(row=3, column=5, padx=10, pady=5)
+        self.text_eventoRh_prob = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.text_eventoRh_prob.grid(row=3, column=5, padx=pad_col, pady=(2, 10))
 
+        # ── fila 4-5 ──────────────────────────────────────────────────
 
-        label26 = ctk.CTkLabel(self.datosBariables, text="Evento de aleatorios:", font=("Arial", 16), text_color=color_texto)
-        label26.grid(row=4, column=0, padx=30, pady=20)
+        label28 = ctk.CTkLabel(self.datosBariables, text="Evento aleatorios:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label28.grid(row=4, column=0, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        self.text_eventoAle = ctk.CTkTextbox(self.datosBariables, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.text_eventoAle.grid(row=5, column=0, padx=10, pady=5)
+        self.text_eventoAle = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.text_eventoAle.grid(row=5, column=0, padx=pad_col, pady=(2, 10))
 
-        label126 = ctk.CTkLabel(self.datosBariables, text="prob evento de aleatorios:", font=("Arial", 16), text_color=color_texto)
-        label126.grid(row=4, column=1, padx=30, pady=20)
+        label29 = ctk.CTkLabel(self.datosBariables, text="Prob evento aleatorios:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label29.grid(row=4, column=1, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        self.text_eventoAle_prob = ctk.CTkTextbox(self.datosBariables, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.text_eventoAle_prob.grid(row=5, column=1, padx=10, pady=5)
+        self.text_eventoAle_prob = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.text_eventoAle_prob.grid(row=5, column=1, padx=pad_col, pady=(2, 10))
 
+        label30 = ctk.CTkLabel(self.datosBariables, text="Horas criticas:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label30.grid(row=4, column=2, padx=pad_col, pady=(10, 2), sticky="ew")
 
+        self.textHorasCriticas = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.textHorasCriticas.grid(row=5, column=2, padx=pad_col, pady=(2, 10))
 
-        label28 = ctk.CTkLabel(self.datosBariables, text="Horas criticas:", font=("Arial", 16), text_color=color_texto)
-        label28.grid(row=4, column=2, padx=30, pady=20)
+        label31 = ctk.CTkLabel(self.datosBariables, text="Prob horas criticas:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label31.grid(row=4, column=3, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        self.textHorasCriticas = ctk.CTkTextbox(self.datosBariables, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.textHorasCriticas.grid(row=5, column=2, padx=10, pady=5)
+        self.textHorasCriticasprob = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.textHorasCriticasprob.grid(row=5, column=3, padx=pad_col, pady=(2, 10))
 
-        label29 = ctk.CTkLabel(self.datosBariables, text="prob horas criticas:", font=("Arial", 16), text_color=color_texto)
-        label29.grid(row=4, column=3, padx=30, pady=20)
-
-        self.textHorasCriticasprob = ctk.CTkTextbox(self.datosBariables, font=("Arial", 16), width=ancho_fijo, height=alto_fijo)
-        self.textHorasCriticasprob.grid(row=5, column=3, padx=10, pady=5)
-
-
-        ancho_fijo = 300
-        alto_fijo = 100
-        color_texto = "#FFBF42"
-        textaso = "#A442FF"
-
+        # ═══════════════════════════════════════════════════════════════
+        #  SECCIÓN 4 – Botones
+        # ═══════════════════════════════════════════════════════════════
         self.Botonsitos = ctk.CTkFrame(
             self.frame_scroll,
-            width=384,
-            height=150,
-            # fg_color="#4281FF"
+            fg_color=color_fondo,
             border_width=2,
             border_color=color_contorno_azul
-
         )
-        self.Botonsitos.pack(pady=20, padx=20)
+        self.Botonsitos.pack(pady=10, padx=10, fill="x")
 
-        self.cargar = ctk.CTkButton(self.Botonsitos, text="Cargar elementos", width=ancho_fijo, height=alto_fijo, fg_color=color_texto, text_color=textaso,
-                                    command=lambda: self.extraervalores())
-        self.cargar.grid(row=0, column=0, padx=40, pady=40)
+        ancho_btn = 200
+        alto_btn  = 55
 
-        self.Baciar = ctk.CTkButton(self.Botonsitos, text="Baciar", width=ancho_fijo, height=alto_fijo, fg_color=color_texto, text_color=textaso,
-                                    command=lambda: self.Bacias())
-        self.Baciar.grid(row=0, column=1, padx=40, pady=40)
+        self.cargar = ctk.CTkButton(
+            self.Botonsitos, text="Cargar elementos",
+            width=ancho_btn, height=alto_btn,
+            fg_color=color_Extra, hover_color=color_hover,
+            text_color=color_texto, font=("Arial", 14, "bold"),
+            command=lambda: self.extraervalores()
+        )
+        self.cargar.grid(row=0, column=0, padx=20, pady=20)
 
-        self.bj = ctk.CTkButton(self.Botonsitos, text="balores bajos", width=ancho_fijo, height=alto_fijo, fg_color=color_texto, text_color=textaso,
-                                command=lambda: self.piloto())
-        self.bj.grid(row=0, column=2, padx=40, pady=40)
+        self.Baciar = ctk.CTkButton(
+            self.Botonsitos, text="Vaciar",
+            width=ancho_btn, height=alto_btn,
+            fg_color=color_Extra, hover_color=color_hover,
+            text_color=color_texto, font=("Arial", 14, "bold"),
+            command=lambda: self.Bacias()
+        )
+        self.Baciar.grid(row=0, column=1, padx=20, pady=20)
 
-        self.at = ctk.CTkButton(self.Botonsitos, text="balores altos", width=ancho_fijo, height=alto_fijo, fg_color=color_texto, text_color=textaso)
-        self.at.grid(row=0, column=3, padx=40, pady=40)
+        self.bj = ctk.CTkButton(
+            self.Botonsitos, text="Valores bajos",
+            width=ancho_btn, height=alto_btn,
+            fg_color=color_Extra, hover_color=color_hover,
+            text_color=color_texto, font=("Arial", 14, "bold"),
+            command=lambda: self.piloto()
+        )
+        self.bj.grid(row=0, column=2, padx=20, pady=20)
 
-        self.md = ctk.CTkButton(self.Botonsitos, text="balores medios", width=ancho_fijo, height=alto_fijo, fg_color=color_texto, text_color=textaso,
-                                command=lambda: self.cargarValoresmedios())
-        self.md.grid(row=0, column=4, padx=40, pady=40)
+        self.at = ctk.CTkButton(
+            self.Botonsitos, text="Valores altos",
+            width=ancho_btn, height=alto_btn,
+            fg_color=color_Extra, hover_color=color_hover,
+            text_color=color_texto, font=("Arial", 14, "bold")
+        )
+        self.at.grid(row=0, column=3, padx=20, pady=20)
 
+        self.md = ctk.CTkButton(
+            self.Botonsitos, text="Valores medios",
+            width=ancho_btn, height=alto_btn,
+            fg_color=color_Extra, hover_color=color_hover,
+            text_color=color_texto, font=("Arial", 14, "bold"),
+            command=lambda: self.cargarValoresmedios()
+        )
+        self.md.grid(row=0, column=4, padx=20, pady=20)
 
         self.cargarElementosEninterface()
 
