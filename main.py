@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from PIL import Image, ImageOps
+
 import os
 
 class main:
@@ -40,7 +41,7 @@ class main:
         self.Lavanderia = ctk.CTkButton(self.menu, text="Lavanderia", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.Lavanderia.pack(padx=10, pady=10)
 
-        self.bar = ctk.CTkButton(self.menu, text="Bar", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
+        self.bar = ctk.CTkButton(self.menu, text="Bar",command=lambda: self.llamabar(), width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.bar.pack(padx=10, pady=10)
 
         self.mantenimiento = ctk.CTkButton(self.menu, text="Mantenimiento", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
@@ -195,6 +196,11 @@ class main:
         # yamea al modelo de la cosina
         from restaurante import cocina
         obj = cocina()
+
+    def llamabar(self):
+        # yamea al modelo de Bar
+        from Bar import Bar
+        obj = Bar()
 
     def ExtrearFechas(self):
         """
