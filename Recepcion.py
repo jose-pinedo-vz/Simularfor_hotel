@@ -39,7 +39,7 @@ class Recepcion:
         
         #Cuadros de texto
         
-        self.prueba_1 = CTkEntry(self.Frame_izq, placeholder_text="Dato 1", width= 130)
+        self.prueba_1 = CTkEntry(self.Frame_izq, placeholder_text="Dias", width= 130)
         self.prueba_1.pack(pady=20, padx=10)
         
         self.prueba_2 = CTkEntry(self.Frame_izq, placeholder_text="Dato 2", width= 130)
