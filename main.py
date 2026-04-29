@@ -55,6 +55,11 @@ class main:
         self.Bodega = ctk.CTkButton(self.menu, text="Bodega central", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.Bodega.pack(padx=10, pady=10)
 
+        self.Habitaciones = ctk.CTkButton(self.menu, text="Habitaciones", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
+        self.Habitaciones.pack(padx=10, pady=10)
+
+        self.Marketing = ctk.CTkButton(self.menu, text="Marketing", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
+        self.Marketing.pack(padx=10, pady=10)
 
         self.contenido = ctk.CTkFrame(self.principal, fg_color="transparent")
         self.contenido.pack(fill="both", expand=True)
