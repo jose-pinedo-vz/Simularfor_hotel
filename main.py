@@ -15,6 +15,7 @@ class main:
         self.ingresos = 0
         self.egresos = 0
         self.total = 0
+        self.diasTotales = 0
         
         try: self.principal.state("zoomed")
         except: self.principal.attributes("-zoomed", True)
@@ -29,7 +30,7 @@ class main:
         color_hover = "#3E2723"
         color_texto = "#FFFFFF"
         color_Extra = "#8C8680"
-
+        
         self.recepcion = ctk.CTkButton(self.menu, text="Recepcion", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.recepcion.pack(padx=5, pady=5)
 
@@ -38,9 +39,6 @@ class main:
 
         self.restaurante = ctk.CTkButton(self.menu, text="Restaurante", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto, command=lambda: self.llamaCosina())
         self.restaurante.pack(padx=5, pady=5)
-
-        self.Artencionmedica = ctk.CTkButton(self.menu, text="Atencion medica", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
-        self.Artencionmedica.pack(padx=5, pady=5)
 
         self.Lavanderia = ctk.CTkButton(self.menu, text="Lavanderia", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.Lavanderia.pack(padx=5, pady=5)
@@ -59,9 +57,27 @@ class main:
 
         self.Bodega = ctk.CTkButton(self.menu, text="Bodega central", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.Bodega.pack(padx=5, pady=5)
-
-        self.Enetretenimiento = ctk.CTkButton(self.menu, text="Entretenimiento", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
+        
+        "-----------------------------------------------"
+        self.Enetretenimiento = ctk.CTkButton(self.menu, 
+                                              text="Entretenimiento", 
+                                              width=w, height=h, 
+                                              fg_color=color_fondo, 
+                                              hover_color=color_hover, 
+                                              text_color=color_texto,
+                                              command=lambda:self.LlamaArea_Entretenimiento())
         self.Enetretenimiento.pack(padx=5, pady=5)
+
+        self.Artencionmedica = ctk.CTkButton(self.menu, 
+                                             text="Atencion medica", 
+                                             width=w, height=h, 
+                                             fg_color=color_fondo, 
+                                             hover_color=color_hover, 
+                                             text_color=color_texto,
+                                             command=lambda:self.LlamaArea_Medica())
+        self.Artencionmedica.pack(padx=5, pady=5)
+
+        "-----------------------------------------------"
 
 
         self.contenido = ctk.CTkFrame(self.principal, fg_color="transparent")
@@ -201,26 +217,26 @@ class main:
     
     def LlamaArea_Medica(self):
         obj=Area_Atencion_Medica()
-        obj.Iniciar(self.Dias_simulacion)
+        obj.Iniciar(self.diasTotales)
 
     def LlamaArea_Entretenimiento(self):
         obj=Area_Entretenimiento()
-        obj.Iniciar(self.Dias_simulacion)
+        obj.Iniciar(self.diasTotales)
         pass
 
     def ExtrearFechas(self):
         """
             Tomando los valores que se encuetran en un entri de arriba se encargara de separar
-            anios, meses y dias, de esta forma noc quedamos unciamente con dias fijos
+            años, meses y dias, de esta forma noc quedamos unciamente con dias fijos
         """
         try:
             textoCurudo = self.Dias.get("0.0", "end").split()
-            anios = int(textoCurudo[1])
+            años = int(textoCurudo[1])
             meses = int(textoCurudo[3])
             dias = int(textoCurudo[5])
-            diasTotales = (anios * 365) + (meses * 30) + dias
+            self.diasTotales = (años * 365) + (meses * 30) + dias
 
-            print(f"dias a simular: {diasTotales}")
+            print(f"dias a simular: {self.diasTotales}")
             self.simulador(dias)
         except:
             self.Dias.delete("0.0", "end") 
