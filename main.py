@@ -204,7 +204,8 @@ class main:
             diasTotales = (anios * 365) + (meses * 30) + dias
 
             print(f"dias a simular: {diasTotales}")
-            self.simulador(dias)
+            print("Se Va")
+            self.simulador(diasTotales)
         except:
             self.Dias.delete("0.0", "end")
             self.Dias.insert("end", f"A: 00 M: 00 D: 00")
@@ -219,8 +220,24 @@ class main:
             resive el parametro dias que se le pasara a cada funcin con el objetivo de
             que esos sean los dias as imular
         """
+        import restaurante as rc
+        print("Se ejecuta restaurante")
+        print(dias)
+        self.egresos, self.ingresos = rc.validaciones(int(dias))
+        print("regresa")
+        self.total = 0
 
-        pass
+
+        self.caja_ingresos.delete("0.0", "end")
+        self.caja_ingresos.insert("end", f"Ingresos: {self.ingresos}")
+        self.caja_Egresos.delete("0.0", "end")
+        self.egresos = round((self.egresos), 2)
+        self.caja_Egresos.insert("end", f"Egresos: {self.egresos}")
+        self.caja_Totales.delete("0.0", "end")
+        total = round((self.ingresos - self.egresos), 2)
+        self.caja_Totales.insert("end", f"Totales: {total}")
+
+
 
 
 

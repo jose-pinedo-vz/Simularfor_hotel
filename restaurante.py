@@ -53,6 +53,66 @@ sueldo_personal = 8000
 
 pago_servicios = 2000
 
+def CargarMedios():
+    global flojo_diario, flujo_siario_prob, grupo, grupo_prob, tem_preparacion, tem_preparacion_prob, consumo, condumo_prob, suministro, \
+        suministro_prob, even_rh, even_rh_prob, Evento_Ale_prob, Evento_Ale, hora_critica, hora_critica_prob, porcen_ora_critica, \
+        porcen_ora_critica_prob, categorai_platillos, categorai_platillos_prob, platillos_disponibles, cantidadMinimaDeStock, cantidadDelStockmaxiom
+
+
+    flojo_diario = [60, 100, 160, 200, 240]
+    flujo_siario_prob = [10, 25, 40, 20, 5]
+
+    grupo = [2, 4, 6, 7, 8]
+    grupo_prob = [10, 40, 30, 15, 5]
+
+    tem_preparacion = [5, 10, 20, 30]
+    tem_preparacion_prob = [20, 55, 15, 10]
+
+    consumo = [1, 2, 3]
+    condumo_prob = [20, 60, 20]
+
+    suministro = [1, 2, 4, 5]
+    suministro_prob = [60, 25, 10, 5]
+
+    even_rh = ["nada", "renuncia", "despedido", "renunacia multiple"]
+    even_rh_prob = [92, 3, 4, 1]
+
+    Evento_Ale_prob = [80, 10, 5, 5]
+    Evento_Ale = ["Nada", "Merma o accidente menor", "Falla en equipo", "Devolucion de platillo"]
+
+    hora_critica = [0, 1]
+    hora_critica_prob = [90, 10]
+
+    porcen_ora_critica = [30, 40, 50]
+    porcen_ora_critica_prob = [40, 30, 30]
+
+    categorai_platillos = [[70, 20, 10], [60, 25, 15], [50, 30, 20]]
+    categorai_platillos_prob = [60, 30, 10]
+
+    platillos_disponibles = ["normal", "caro", "exotico"]
+    platilllosEmpesamos = [400, 200, 40]
+
+    cantidadMinimaDeStock = [200, 70, 10]
+    cantidadDelStockmaxiom = [400, 200, 50]
+
+    global cantidad_de_mesas, cantidad_de_cosineros, sueldo_cosineros, horas_habiles, personal, sueldo_personal, pago_servicios, platillos_lista, \
+        ganancias_por_platillo, ganancias_netas
+
+    platillos_lista = platilllosEmpesamos[:]
+    ganancias_por_platillo = [50, 150, 300]
+    ganancias_netas = [20, 50, 100]
+
+    cantidad_de_mesas = 15
+    cantidad_de_cosineros = 8
+    sueldo_cosineros = 15000
+    horas_habiles = 8
+    personal = 10
+    sueldo_personal = 8000
+
+    pago_servicios = 2000
+
+    print("Si carga")
+
 
 def validar(lista) -> bool:
     if sum(lista) == 100:
@@ -78,11 +138,13 @@ def provavilidar(lista1, lista2):
         if lista2[i] <= rand < lista2[i+1]:
             return lista1[i]
 
-def validaciones() -> None:
+def validaciones(Dias_a_Simular) -> float:
     # validar si las provavilidades son correctas
     global flujo_siario_prob, grupo_prob, tem_preparacion_prob, condumo_prob, categorai_platillos_prob
     global suministro_prob, even_rh_prob, Evento_Ale_prob, porcen_ora_critica_prob, hora_critica_prob
     global flojo_diario
+
+    CargarMedios()
 
     listas_a_validar = [
         flujo_siario_prob, grupo_prob, tem_preparacion_prob, condumo_prob,
@@ -176,8 +238,10 @@ def validaciones() -> None:
     flojo_diario_auxilia = flojo_diario[:]
     inicio_fin_semana = 5
 
+    SumaTotal = 0
+    GastosTotal = 0
 
-    for _ in range(2):
+    for _ in range(Dias_a_Simular):
         print("dia: ", _ + 1)
         flojo_diario = flojo_diario_auxilia[:]
         if inicio_fin_semana <= (_ + 1) and (_ + 1) <= inicio_fin_semana + 2:
@@ -307,6 +371,7 @@ def validaciones() -> None:
 
         print("Final dia ", _ + 1)
         print(f"ganancias {ganancias}")
+        SumaTotal += ganancias
 
         costo_cocineros = (sueldo_cosineros / 30) * cantidad_de_cosineros
         costo_personal = (sueldo_personal / 30) * personal
@@ -315,8 +380,13 @@ def validaciones() -> None:
         total_fijos = costo_cocineros + costo_personal + costo_servicios
         total_fijos = round(total_fijos, 2)
         print(f"gastos: {total_fijos}")
+        GastosTotal += total_fijos
 
-validaciones()
+    # cosina.Bacias()
+    # cosina.cargarValoresmedios()
+
+    return GastosTotal, SumaTotal
+
 
 
 import customtkinter as ctk
@@ -329,12 +399,11 @@ class cocina:
         try: self.ventana.state("zoomed")
         except: self.ventana.attributes("-zoomed", True)
 
-        # ── Colores del proyecto ──────────────────────────────────────
-        color_fondo         = "#5D4037"
-        color_hover         = "#3E2723"
-        color_texto         = "#FFFFFF"
-        color_Extra         = "#8C8680"
-        color_contorno_azul = "#4281FF"
+        color_fondo = "#5D4037"
+        color_hover = "#3E2723"
+        color_texto = "#FFFFFF"
+        color_Extra = "#8C8680"
+        color_contorno_azul = "#FFFFFF"
 
         self.ventana.configure(fg_color=color_hover)
 
@@ -344,17 +413,15 @@ class cocina:
         )
         self.frame_scroll.pack(fill="both", expand=True, padx=10, pady=8)
 
-        # ── Tamaños ───────────────────────────────────────────────────
-        ancho_entry = 148
-        alto_entry  = 36
-        ancho_txt   = 138
-        alto_txt    = 180
-        pad_col     = 6
-        pad_row     = 4
 
-        # ═══════════════════════════════════════════════════════════════
-        #  SECCIÓN 1 – Datos fijos
-        # ═══════════════════════════════════════════════════════════════
+        ancho_entry = 148
+        alto_entry = 36
+        ancho_txt = 138
+        alto_txt = 180
+        pad_col = 6
+        pad_row = 4
+
+
         self.datosFijos = ctk.CTkFrame(
             self.frame_scroll,
             fg_color=color_fondo,
@@ -405,9 +472,7 @@ class cocina:
         self.pagoServicios = ctk.CTkEntry(self.datosFijos, font=("Arial", 13), width=ancho_entry, height=alto_entry)
         self.pagoServicios.grid(row=1, column=6, padx=pad_col, pady=(2, 10))
 
-        # ═══════════════════════════════════════════════════════════════
-        #  SECCIÓN 2 – Datos de platillos
-        # ═══════════════════════════════════════════════════════════════
+
         self.datosPlatillos = ctk.CTkFrame(
             self.frame_scroll,
             fg_color=color_fondo,
@@ -464,9 +529,7 @@ class cocina:
         self.texr_gananciaDelPlatillo = ctk.CTkTextbox(self.datosPlatillos, font=("Arial", 13), width=ancho_txt, height=alto_txt)
         self.texr_gananciaDelPlatillo.grid(row=1, column=7, padx=pad_col, pady=(2, 10))
 
-        # ═══════════════════════════════════════════════════════════════
-        #  SECCIÓN 3 – Datos variables  (fila 0-1)
-        # ═══════════════════════════════════════════════════════════════
+
         self.datosBariables = ctk.CTkFrame(
             self.frame_scroll,
             fg_color=color_fondo,
@@ -511,7 +574,7 @@ class cocina:
         self.tex_preapracion_platillo_prob = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
         self.tex_preapracion_platillo_prob.grid(row=1, column=5, padx=pad_col, pady=(2, 10))
 
-        # ── fila 2-3 ──────────────────────────────────────────────────
+
 
         label22 = ctk.CTkLabel(self.datosBariables, text="Consumo por persona:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
         label22.grid(row=2, column=0, padx=pad_col, pady=(10, 2), sticky="ew")
@@ -549,7 +612,6 @@ class cocina:
         self.text_eventoRh_prob = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
         self.text_eventoRh_prob.grid(row=3, column=5, padx=pad_col, pady=(2, 10))
 
-        # ── fila 4-5 ──────────────────────────────────────────────────
 
         label28 = ctk.CTkLabel(self.datosBariables, text="Evento aleatorios:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
         label28.grid(row=4, column=0, padx=pad_col, pady=(10, 2), sticky="ew")
@@ -575,9 +637,7 @@ class cocina:
         self.textHorasCriticasprob = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
         self.textHorasCriticasprob.grid(row=5, column=3, padx=pad_col, pady=(2, 10))
 
-        # ═══════════════════════════════════════════════════════════════
-        #  SECCIÓN 4 – Botones
-        # ═══════════════════════════════════════════════════════════════
+
         self.Botonsitos = ctk.CTkFrame(
             self.frame_scroll,
             fg_color=color_fondo,
@@ -662,6 +722,7 @@ class cocina:
 
         # parte 2
         self.nombreplatillos.delete("1.0", "end")
+        print("Experimentos: ", platillos_disponibles)
         for platillo in platillos_disponibles:
             self.nombreplatillos.insert("end", str(platillo) + "\n")
 
@@ -771,7 +832,6 @@ class cocina:
         texto_crudo = self.text_FlujodePersonasPorDia.get("1.0", "end")
         flojo_diario = [float(x) for x in texto_crudo.split()]
 
-
         texto_crudo = self.text_comsumoPorPersona_prob.get("1.0", "end")
         flujo_siario_prob = [int(x) for x in texto_crudo.split()]
 
@@ -783,7 +843,6 @@ class cocina:
 
         texto_crudo = self.tex_preapracion_platillo.get("1.0", "end")
         tem_preparacion = [int(x) for x in texto_crudo.split()]
-
 
         #pulir
         texto_crudo = self.tex_preapracion_platillo_prob.get("1.0", "end")
@@ -802,7 +861,6 @@ class cocina:
         texto_crudo = self.text_suministroProb.get("1.0", "end")
         suministro_prob = [int(x) for x in texto_crudo.split()]
 
-
         texto_crudo = self.text_eventoRh.get("1.0", "end")
         even_rh = [x for x in texto_crudo.split()]
 
@@ -818,7 +876,7 @@ class cocina:
         Evento_Ale = [x for x in texto_crudo.split()]
 
 
-# =====
+
         texto_crudo = self.textHorasCriticas.get("1.0", "end")
         hora_critica = [int(x) for x in texto_crudo.split()]
 
@@ -847,7 +905,7 @@ class cocina:
         categorai_platillos_prob = [int(x) for x in texto_crudo.split()]
 
 
-        texto_crudo = self.txt_cantidadStock.get("1.0", "end")
+        texto_crudo = self.nombreplatillos.get("1.0", "end")
         platillos_disponibles = [x for x in texto_crudo.split()]
 
         texto_crudo = self.txt_cantidadStock.get("1.0", "end")
@@ -866,7 +924,7 @@ class cocina:
         platillos_lista = platilllosEmpesamos[:]
 
 
-        texto_crudo = self.texr_gananciaDelPlatillo.get("1.0", "end")
+        texto_crudo = self.texr_costoDelPlatillo.get("1.0", "end")
         ganancias_por_platillo = [float(x) for x in texto_crudo.split()]
 
         texto_crudo = self.texr_gananciaDelPlatillo.get("1.0", "end")
@@ -885,7 +943,6 @@ class cocina:
         print("Todo salio bien")
 
         self.cargarElementosEninterface()
-
 
 
 
@@ -949,6 +1006,8 @@ class cocina:
             suministro_prob, even_rh, even_rh_prob, Evento_Ale_prob, Evento_Ale, hora_critica, hora_critica_prob, porcen_ora_critica, \
             porcen_ora_critica_prob, categorai_platillos, categorai_platillos_prob, platillos_disponibles, cantidadMinimaDeStock, cantidadDelStockmaxiom
 
+        global cantidad_de_mesas, cantidad_de_cosineros, sueldo_cosineros, horas_habiles, personal, sueldo_personal, pago_servicios, platillos_lista, \
+            ganancias_por_platillo, ganancias_netas
 
         flojo_diario = [60, 100, 160, 200, 240]
         flujo_siario_prob = [10, 25, 40, 20, 5]
@@ -980,18 +1039,17 @@ class cocina:
         categorai_platillos = [[70, 20, 10], [60, 25, 15], [50, 30, 20]]
         categorai_platillos_prob = [60, 30, 10]
 
+
+        # otros datos
         platillos_disponibles = ["normal", "caro", "exotico"]
         platilllosEmpesamos = [400, 200, 40]
 
         cantidadMinimaDeStock = [200, 70, 10]
-        cantidadDelStockmaxiom = [400, 200, 50]
-
-        global cantidad_de_mesas, cantidad_de_cosineros, sueldo_cosineros, horas_habiles, personal, sueldo_personal, pago_servicios, platillos_lista, \
-            ganancias_por_platillo, ganancias_netas
+        cantidadDelStockmaxiom = [400, 300, 50]
 
         platillos_lista = platilllosEmpesamos[:]
-        ganancias_por_platillo = [50, 150, 300]
-        ganancias_netas = [20, 50, 100]
+        ganancias_por_platillo = [150, 600, 900]
+        ganancias_netas = [100, 300, 350]
 
         cantidad_de_mesas = 15
         cantidad_de_cosineros = 8
