@@ -26,36 +26,6 @@ class Lavanderia:
         self.Interfaz.grid_columnconfigure(1, weight=1)
         self.Interfaz.grid_rowconfigure(0, weight=1)
         
-        #---------------------------------------------------------
-        
-        # #PANEL IZQUIERDO (Solo para pedir los datos)
-        # self.Frame_izq = CTkFrame(self.Interfaz, width=200, corner_radius=10)
-        # self.Frame_izq.grid(row=0, column=0, padx=10, pady=10, sticky="nsew")
-        
-        
-        # #Titulo (frame izq)
-        # self.Titulo_frame_izq = CTkLabel(self.Frame_izq, text= "DATOS", font= ("Arial", 25 ))
-        # self.Titulo_frame_izq.pack(pady=20, padx=10)
-        
-        # #Cuadros de texto
-        
-        # self.prueba_1 = CTkEntry(self.Frame_izq, placeholder_text="Dias", width= 130)
-        # self.prueba_1.pack(pady=20, padx=10)
-        
-        # self.prueba_2 = CTkEntry(self.Frame_izq, placeholder_text="Dato 2", width= 130)
-        # self.prueba_2.pack(pady=20, padx=10)
-        
-        # self.prueba_3 = CTkEntry(self.Frame_izq, placeholder_text="Dato 3", width= 130)
-        # self.prueba_3.pack(pady=20, padx=10)
-        
-        # self.prueba_4 = CTkEntry(self.Frame_izq, placeholder_text="Dato 4", width= 130)
-        # self.prueba_4.pack(pady=20, padx=10)
-        
-        # self.prueba_5 = CTkEntry(self.Frame_izq, placeholder_text="Dato 5", width= 130)
-        # self.prueba_5.pack(pady=20, padx=10)
-        
-        # self.prueba_6 = CTkEntry(self.Frame_izq, placeholder_text="Dato 6", width= 130)
-        # self.prueba_6.pack(pady=20, padx=10)
         
         #---------------------------------------------------------
         
@@ -74,9 +44,11 @@ class Lavanderia:
         #botones dentro del tabview
         
         self.tabview.add("TABLAS PREDEFINIDAS")
+        self.tabview.add("TABLAS EDITABLES")
         self.tabview.add("MONTE CARLO")
         
-        self.Tablas()        
+        self.Tablas_Predefinidas()  
+        self.Tablas_Editables()      
         
         
         # titulo de la segunda pestaña
@@ -116,18 +88,22 @@ class Lavanderia:
         
         #---------------------------------------------------------
         
-    def Tablas(self):
+    def Tablas_Predefinidas(self):
         
-        tablas = self.tabview.tab("TABLAS PREDEFINIDAS")
+        tablas_pre = self.tabview.tab("TABLAS PREDEFINIDAS")
         
-        self.scroll_frame = CTkScrollableFrame(tablas)
+        self.scroll_frame = CTkScrollableFrame(tablas_pre)
         self.scroll_frame.pack(expand=True, fill="both", padx=10, pady=10)
         
         
-        #tabla 1 (personas por dia)
+        #tabla 1 (cargas por dia)
         
         # Encabezado
-        encabezado_1 = [["Personas", "Probabilidad", "Probabilidad\nacumulada", "Rango"]]
+        encabezado_1 = [["Personas", "Probabilidad", "Probabilidad acumulada", "Rango"]]
+        
+        #titulo
+        self.Titulo_t_1 = CTkLabel(self.scroll_frame, text= "Cargas por dia", font= ("Arial", 20 ))
+        self.Titulo_t_1.pack(pady=10, padx=10)
         
         Tabla_1 = CTkTable(
             self.scroll_frame,
@@ -137,10 +113,10 @@ class Lavanderia:
         # Tabla_1.pack(expand=True, fill="both")
         Tabla_1.pack(expand=True, fill="both", pady=(0, 50))
         
-        fila_t_1_1 = ["10 - 15", "0.15", "0.15", "0 - 0.15"]
-        fila_t_2_1 = ["16 - 25", "0.35", "0.50", "0.1501 - 0.50"]
-        fila_t_3_1 = ["26 - 40", "0.3", "0.8", "0.501 - 0.8"]
-        fila_t_4_1 = ["21 - 60", "0.2", "1", "0.801 - 1"]
+        fila_t_1_1 = ["5 - 10", "0.2", "0.2", "0 - 0.2"]
+        fila_t_2_1 = ["11 - 20", "0.4", "0.6", "0.2001 - 0.60"]
+        fila_t_3_1 = ["21 - 30", "0.3", "0.9", "0.601 - 0.9"]
+        fila_t_4_1 = ["31 - 40", "0.1", "1", "0.9001 - 1"]
         
         Tabla_1.add_row(values= fila_t_1_1)
         Tabla_1.add_row(values= fila_t_2_1)
@@ -148,10 +124,14 @@ class Lavanderia:
         Tabla_1.add_row(values= fila_t_4_1)
         
         
-        #tabla 2 (tipos de atencion)
+        #tabla 2 (Tipos de cargas)
         
         # Encabezado
-        encabezado_2 = [["Tiempo", "Probabilidad", "Probabilidad\nacumulada", "Rango"]]
+        encabezado_2 = [["Tiempo", "Probabilidad", "Probabilidad acumulada", "Rango"]]
+        
+        #titulo
+        self.Titulo_t_2 = CTkLabel(self.scroll_frame, text= "Tipos de cargas", font= ("Arial", 20 ))
+        self.Titulo_t_2.pack(pady=10, padx=10)
         
         Tabla_2 = CTkTable(
             self.scroll_frame,
@@ -161,21 +141,23 @@ class Lavanderia:
         # Tabla_2.pack(expand=True, fill="both")
         Tabla_2.pack(expand=True, fill="both", pady=(0, 50))
         
-        fila_t_1_2 = ["10 - 15", "0.15", "0.15", "0 - 0.15"]
-        fila_t_2_2 = ["16 - 25", "0.35", "0.50", "0.1501 - 0.50"]
-        fila_t_3_2 = ["26 - 40", "0.3", "0.8", "0.501 - 0.8"]
-        fila_t_4_2 = ["21 - 60", "0.2", "1", "0.801 - 1"]
+        fila_t_1_2 = ["Sabanas / Toallas", "0.6", "0.6", "0 - 0.6"]
+        fila_t_2_2 = ["Ropa de huesped", "0.3", "0.9", "0.6001 - 0.9"]
+        fila_t_3_2 = ["Ropa del staff", "0.1", "1", "0.901 - 1"]
         
         Tabla_2.add_row(values= fila_t_1_2)
         Tabla_2.add_row(values= fila_t_2_2)
         Tabla_2.add_row(values= fila_t_3_2)
-        Tabla_2.add_row(values= fila_t_4_2)
         
         
-        #tabla 3 (recepcionistas por dia)
+        #tabla 3 (Estado de las maquinas)
         
         # Encabezado
-        encabezado_3 = [["Cantidad", "Probabilidad", "Probabilidad\nacumulada", "Rango"]]
+        encabezado_3 = [["Cantidad", "Probabilidad", "Probabilidad acumulada", "Rango"]]
+        
+        #titulo
+        self.Titulo_t_3 = CTkLabel(self.scroll_frame, text= "Estado de las maquinas", font= ("Arial", 20 ))
+        self.Titulo_t_3.pack(pady=10, padx=10)
         
         Tabla_3 = CTkTable(
             self.scroll_frame,
@@ -185,20 +167,24 @@ class Lavanderia:
         # Tabla_3.pack(expand=True, fill="both")
         Tabla_3.pack(expand=True, fill="both", pady=(0, 50))
         
-        fila_t_1_3 = ["10 - 15", "0.15", "0.15", "0 - 0.15"]
-        fila_t_2_3 = ["16 - 25", "0.35", "0.50", "0.1501 - 0.50"]
-        fila_t_3_3 = ["26 - 40", "0.3", "0.8", "0.501 - 0.8"]
-        fila_t_4_3 = ["21 - 60", "0.2", "1", "0.801 - 1"]
+        fila_t_1_3 = ["Normal", "0.15", "0.15", "0 - 0.15"]
+        fila_t_2_3 = ["Retraso", "0.35", "0.50", "0.1501 - 0.50"]
+        fila_t_3_3 = ["Falla", "0.3", "0.8", "0.501 - 0.8"]
+        fila_t_4_3 = ["Corte de luz / agua", "0.2", "1", "0.801 - 1"]
         
         Tabla_3.add_row(values= fila_t_1_3)
         Tabla_3.add_row(values= fila_t_2_3)
         Tabla_3.add_row(values= fila_t_3_3)
         Tabla_3.add_row(values= fila_t_4_3)
         
-        #tabla 4 (cantidad de abandonos)
+        #tabla 4 (Numero de maquinas)
         
         # Encabezado
-        encabezado_4 = [["Abandonos", "Probabilidad", "Probabilidad\nacumulada", "Rango"]]
+        encabezado_4 = [["Abandonos", "Probabilidad", "Probabilidad acumulada", "Rango"]]
+        
+        #titulo
+        self.Titulo_t_4 = CTkLabel(self.scroll_frame, text= "Numero de maquinas", font= ("Arial", 20 ))
+        self.Titulo_t_4.pack(pady=10, padx=10)
         
         Tabla_4 = CTkTable(
             self.scroll_frame,
@@ -208,20 +194,24 @@ class Lavanderia:
         # Tabla_4.pack(expand=True, fill="both")
         Tabla_4.pack(expand=True, fill="both", pady=(0, 50))
         
-        fila_t_1_4 = ["10 - 15", "0.15", "0.15", "0 - 0.15"]
-        fila_t_2_4 = ["16 - 25", "0.35", "0.50", "0.1501 - 0.50"]
-        fila_t_3_4 = ["26 - 40", "0.3", "0.8", "0.501 - 0.8"]
-        fila_t_4_4 = ["21 - 60", "0.2", "1", "0.801 - 1"]
+        fila_t_1_4 = ["1", "0.15", "0.15", "0 - 0.15"]
+        fila_t_2_4 = ["2", "0.45", "0.6", "0.1501 - 0.60"]
+        fila_t_3_4 = ["3", "0.3", "0.9", "0.601 - 0.9"]
+        fila_t_4_4 = ["4", "0.1", "1", "0.901 - 1"]
         
         Tabla_4.add_row(values= fila_t_1_4)
         Tabla_4.add_row(values= fila_t_2_4)
         Tabla_4.add_row(values= fila_t_3_4)
         Tabla_4.add_row(values= fila_t_4_4)
         
-        #tabla 5 (tiempo de espera en la cola)
+        #tabla 5 (Tiempo de ciclo "lavado, secado y doblado"
         
         # Encabezado
-        encabezado_5 = [["Tiempo", "Probabilidad", "Probabilidad\nacumulada", "Rango"]]
+        encabezado_5 = [["Tiempo", "Probabilidad", "Probabilidad acumulada", "Rango"]]
+        
+        #titulo
+        self.Titulo_t_5 = CTkLabel(self.scroll_frame, text= "Tiempo de ciclo lavado, secado y doblado", font= ("Arial", 20 ))
+        self.Titulo_t_5.pack(pady=10, padx=10)
         
         Tabla_5 = CTkTable(
             self.scroll_frame,
@@ -231,107 +221,175 @@ class Lavanderia:
         # Tabla_5.pack(expand=True, fill="both")
         Tabla_5.pack(expand=True, fill="both", pady=(0, 50))
         
-        fila_t_1_5 = ["10 - 15", "0.15", "0.15", "0 - 0.15"]
-        fila_t_2_5 = ["16 - 25", "0.35", "0.50", "0.1501 - 0.50"]
-        fila_t_3_5 = ["26 - 40", "0.3", "0.8", "0.501 - 0.8"]
-        fila_t_4_5 = ["21 - 60", "0.2", "1", "0.801 - 1"]
+        fila_t_1_5 = ["20", "0.35", "0.35", "0 - 0.35"]
+        fila_t_2_5 = ["30", "0.4", "0.75", "0.3501 - 0.75"]
+        fila_t_3_5 = ["40", "0.2", "0.95", "0.7501 - 0.95"]
+        fila_t_4_5 = ["50", "0.05", "1", "0.9501 - 1"]
         
         Tabla_5.add_row(values= fila_t_1_5)
         Tabla_5.add_row(values= fila_t_2_5)
         Tabla_5.add_row(values= fila_t_3_5)
         Tabla_5.add_row(values= fila_t_4_5)
         
-        #tabla 6 (tipo de solicitud)
+    def Tablas_Editables(self):
+        
+        tablas = self.tabview.tab("TABLAS EDITABLES")
+        
+        self.frame_sup = CTkFrame(tablas, width=200, height= 200, corner_radius=10)
+        self.frame_sup.pack(fill="both", pady=20, padx=10)
+        
+        
+        
+        self.Valor = CTkEntry(self.frame_sup, placeholder_text= "Valor", width= 130)
+        self.Valor.pack(side="left", padx=10)
+        
+        self.Probabilidad = CTkEntry(self.frame_sup, placeholder_text= "Probabilidad", width= 130)
+        self.Probabilidad.pack(side="left", padx=10)
+        
+        self.btn_Actualizar = CTkButton(self.frame_sup, text= "actualizar", font= ("Arial", 20))# , command= self.actualizar_datos)
+        self.btn_Actualizar.pack(side="left", padx=10)
+        
+        
+        
+        self.scroll_frame = CTkScrollableFrame(tablas)
+        self.scroll_frame.pack(expand=True, fill="both", padx=10, pady=10)
+        
+        #---------------------------------------------------------
+        
+        #tabla 1 (cargas por dia)
         
         # Encabezado
-        encabezado_6 = [["Tipo de\nservicio", "Probabilidad", "Probabilidad\nacumulada", "Rango"]]
+        encabezado_1 = [["Personas", "Probabilidad", "Probabilidad acumulada", "Rango"]]
         
-        Tabla_6 = CTkTable(
+        #titulo
+        self.Titulo_t_1 = CTkLabel(self.scroll_frame, text= "Cargas por dia", font= ("Arial", 20 ))
+        self.Titulo_t_1.pack(pady=10, padx=10)
+        
+        Tabla_1 = CTkTable(
             self.scroll_frame,
-            values= encabezado_6,
+            values= encabezado_1,
             header_color="#0a2e57"
         )
-        # Tabla_6.pack(expand=True, fill="both")
-        Tabla_6.pack(expand=True, fill="both", pady=(0, 50))
+        # Tabla_1.pack(expand=True, fill="both")
+        Tabla_1.pack(expand=True, fill="both", pady=(0, 50))
         
-        fila_t_1_6 = ["10 - 15", "0.15", "0.15", "0 - 0.15"]
-        fila_t_2_6 = ["16 - 25", "0.35", "0.50", "0.1501 - 0.50"]
-        fila_t_3_6 = ["26 - 40", "0.3", "0.8", "0.501 - 0.8"]
-        fila_t_4_6 = ["21 - 60", "0.2", "1", "0.801 - 1"]
+        fila_t_1_1 = ["5 - 10", "0.2", "0.2", "0 - 0.2"]
+        fila_t_2_1 = ["11 - 20", "0.4", "0.6", "0.2001 - 0.60"]
+        fila_t_3_1 = ["21 - 30", "0.3", "0.9", "0.601 - 0.9"]
+        fila_t_4_1 = ["31 - 40", "0.1", "1", "0.9001 - 1"]
         
-        Tabla_6.add_row(values= fila_t_1_6)
-        Tabla_6.add_row(values= fila_t_2_6)
-        Tabla_6.add_row(values= fila_t_3_6)
-        Tabla_6.add_row(values= fila_t_4_6)
+        Tabla_1.add_row(values= fila_t_1_1)
+        Tabla_1.add_row(values= fila_t_2_1)
+        Tabla_1.add_row(values= fila_t_3_1)
+        Tabla_1.add_row(values= fila_t_4_1)
         
-        #tabla 7 (Grupo de personas)
+        
+        #tabla 2 (Tipos de cargas)
         
         # Encabezado
-        encabezado_7 = [["Personas", "Probabilidad", "Probabilidad\nacumulada", "Rango"]]
+        encabezado_2 = [["Tiempo", "Probabilidad", "Probabilidad acumulada", "Rango"]]
         
-        Tabla_7 = CTkTable(
+        #titulo
+        self.Titulo_t_2 = CTkLabel(self.scroll_frame, text= "Tipos de cargas", font= ("Arial", 20 ))
+        self.Titulo_t_2.pack(pady=10, padx=10)
+        
+        Tabla_2 = CTkTable(
             self.scroll_frame,
-            values= encabezado_7,
+            values= encabezado_2,
             header_color="#0a2e57"
         )
-        # Tabla_7.pack(expand=True, fill="both")
-        Tabla_7.pack(expand=True, fill="both", pady=(0, 50))
+        # Tabla_2.pack(expand=True, fill="both")
+        Tabla_2.pack(expand=True, fill="both", pady=(0, 50))
         
-        fila_t_1_7 = ["10 - 15", "0.15", "0.15", "0 - 0.15"]
-        fila_t_2_7 = ["16 - 25", "0.35", "0.50", "0.1501 - 0.50"]
-        fila_t_3_7 = ["26 - 40", "0.3", "0.8", "0.501 - 0.8"]
-        fila_t_4_7 = ["21 - 60", "0.2", "1", "0.801 - 1"]
+        fila_t_1_2 = ["Sabanas / Toallas", "0.6", "0.6", "0 - 0.6"]
+        fila_t_2_2 = ["Ropa de huesped", "0.3", "0.9", "0.6001 - 0.9"]
+        fila_t_3_2 = ["Ropa del staff", "0.1", "1", "0.901 - 1"]
         
-        Tabla_7.add_row(values= fila_t_1_7)
-        Tabla_7.add_row(values= fila_t_2_7)
-        Tabla_7.add_row(values= fila_t_3_7)
-        Tabla_7.add_row(values= fila_t_4_7)
+        Tabla_2.add_row(values= fila_t_1_2)
+        Tabla_2.add_row(values= fila_t_2_2)
+        Tabla_2.add_row(values= fila_t_3_2)
         
-        #tabla 8 (tipo de habitaciones)
+        
+        #tabla 3 (Estado de las maquinas)
         
         # Encabezado
-        encabezado_8 = [["Tipos", "Probabilidad", "Probabilidad\nacumulada", "Rango"]]
+        encabezado_3 = [["Cantidad", "Probabilidad", "Probabilidad acumulada", "Rango"]]
         
-        Tabla_8 = CTkTable(
+        #titulo
+        self.Titulo_t_3 = CTkLabel(self.scroll_frame, text= "Estado de las maquinas", font= ("Arial", 20 ))
+        self.Titulo_t_3.pack(pady=10, padx=10)
+        
+        Tabla_3 = CTkTable(
             self.scroll_frame,
-            values= encabezado_8,
+            values= encabezado_3,
             header_color="#0a2e57"
         )
-        # Tabla_8.pack(expand=True, fill="both")
-        Tabla_8.pack(expand=True, fill="both", pady=(0, 50))
+        # Tabla_3.pack(expand=True, fill="both")
+        Tabla_3.pack(expand=True, fill="both", pady=(0, 50))
         
-        fila_t_1_8 = ["10 - 15", "0.15", "0.15", "0 - 0.15"]
-        fila_t_2_8 = ["16 - 25", "0.35", "0.50", "0.1501 - 0.50"]
-        fila_t_3_8 = ["26 - 40", "0.3", "0.8", "0.501 - 0.8"]
-        fila_t_4_8 = ["21 - 60", "0.2", "1", "0.801 - 1"]
+        fila_t_1_3 = ["Normal", "0.15", "0.15", "0 - 0.15"]
+        fila_t_2_3 = ["Retraso", "0.35", "0.50", "0.1501 - 0.50"]
+        fila_t_3_3 = ["Falla", "0.3", "0.8", "0.501 - 0.8"]
+        fila_t_4_3 = ["Corte de luz / agua", "0.2", "1", "0.801 - 1"]
         
-        Tabla_8.add_row(values= fila_t_1_8)
-        Tabla_8.add_row(values= fila_t_2_8)
-        Tabla_8.add_row(values= fila_t_3_8)
-        Tabla_8.add_row(values= fila_t_4_8)
+        Tabla_3.add_row(values= fila_t_1_3)
+        Tabla_3.add_row(values= fila_t_2_3)
+        Tabla_3.add_row(values= fila_t_3_3)
+        Tabla_3.add_row(values= fila_t_4_3)
         
-        #tabla 9 (costos brutos)
+        #tabla 4 (Numero de maquinas)
         
         # Encabezado
-        encabezado_9 = [["Concepto", "Probabilidad", "Probabilidad\nacumulada", "Rango"]]
+        encabezado_4 = [["Abandonos", "Probabilidad", "Probabilidad acumulada", "Rango"]]
         
-        Tabla_9 = CTkTable(
+        #titulo
+        self.Titulo_t_4 = CTkLabel(self.scroll_frame, text= "Numero de maquinas", font= ("Arial", 20 ))
+        self.Titulo_t_4.pack(pady=10, padx=10)
+        
+        Tabla_4 = CTkTable(
             self.scroll_frame,
-            values= encabezado_9,
+            values= encabezado_4,
             header_color="#0a2e57"
         )
-        # Tabla_9.pack(expand=True, fill="both")
-        Tabla_9.pack(expand=True, fill="both", pady=(0, 50))
+        # Tabla_4.pack(expand=True, fill="both")
+        Tabla_4.pack(expand=True, fill="both", pady=(0, 50))
         
-        fila_t_1_9 = ["10 - 15", "0.15", "0.15", "0 - 0.15"]
-        fila_t_2_9 = ["16 - 25", "0.35", "0.50", "0.1501 - 0.50"]
-        fila_t_3_9 = ["26 - 40", "0.3", "0.8", "0.501 - 0.8"]
-        fila_t_4_9 = ["21 - 60", "0.2", "1", "0.801 - 1"]
+        fila_t_1_4 = ["1", "0.15", "0.15", "0 - 0.15"]
+        fila_t_2_4 = ["2", "0.45", "0.6", "0.1501 - 0.60"]
+        fila_t_3_4 = ["3", "0.3", "0.9", "0.601 - 0.9"]
+        fila_t_4_4 = ["4", "0.1", "1", "0.901 - 1"]
         
-        Tabla_9.add_row(values= fila_t_1_9)
-        Tabla_9.add_row(values= fila_t_2_9)
-        Tabla_9.add_row(values= fila_t_3_9)
-        Tabla_9.add_row(values= fila_t_4_9)
+        Tabla_4.add_row(values= fila_t_1_4)
+        Tabla_4.add_row(values= fila_t_2_4)
+        Tabla_4.add_row(values= fila_t_3_4)
+        Tabla_4.add_row(values= fila_t_4_4)
+        
+        #tabla 5 (Tiempo de ciclo "lavado, secado y doblado"
+        
+        # Encabezado
+        encabezado_5 = [["Tiempo", "Probabilidad", "Probabilidad acumulada", "Rango"]]
+        
+        #titulo
+        self.Titulo_t_5 = CTkLabel(self.scroll_frame, text= "Tiempo de ciclo lavado, secado y doblado", font= ("Arial", 20 ))
+        self.Titulo_t_5.pack(pady=10, padx=10)
+        
+        Tabla_5 = CTkTable(
+            self.scroll_frame,
+            values= encabezado_5,
+            header_color="#0a2e57"
+        )
+        # Tabla_5.pack(expand=True, fill="both")
+        Tabla_5.pack(expand=True, fill="both", pady=(0, 50))
+        
+        fila_t_1_5 = ["20", "0.35", "0.35", "0 - 0.35"]
+        fila_t_2_5 = ["30", "0.4", "0.75", "0.3501 - 0.75"]
+        fila_t_3_5 = ["40", "0.2", "0.95", "0.7501 - 0.95"]
+        fila_t_4_5 = ["50", "0.05", "1", "0.9501 - 1"]
+        
+        Tabla_5.add_row(values= fila_t_1_5)
+        Tabla_5.add_row(values= fila_t_2_5)
+        Tabla_5.add_row(values= fila_t_3_5)
+        Tabla_5.add_row(values= fila_t_4_5)
         
     def Creacion_tabla(self):
         
