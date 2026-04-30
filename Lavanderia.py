@@ -1,5 +1,5 @@
 
-#! Interfaz sin funcionamiento 
+#! Interfaz sin funcionamiento, por el momento  
 
 from customtkinter import *
 import customtkinter as ctk
