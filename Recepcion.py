@@ -349,7 +349,8 @@ class Recepcion:
         
     def Tablas_Editables(self):
         
-        tablas = self.tabview.tab("TABLA.actualizar_datos")
+        tablas = self.tabview.tab("TABLAS EDITABLES")
+        
         
         #---------------------------------------------------------
         
