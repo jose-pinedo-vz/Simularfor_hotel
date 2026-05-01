@@ -68,14 +68,12 @@ class Marketing:
 
         ctk.CTkLabel(frame_tabla1, text="Generación de Leads", text_color=COLOR_TEXTO, font=("Arial", 16, "bold")).pack(pady=10)
 
-        tabla_leads = [
-            ["Leads", "Prob", "Acum", "Rango"],
-            [0, 0.10, 0.10, "0.00 - 0.1"],
-            [5, 0.20, 0.30, "0.1001 - 0.3"],
-            [10, 0.30, 0.60, "0.3001 - 0.6"],
-            [15, 0.25, 0.85, "0.6001 - 0.85"],
-            [20, 0.15, 1.00, "0.8501 - 1.00"]
-        ]
+        tabla_leads = [["Leads", "Prob", "Acum", "Rango"],
+                       [0, 0.10, 0.10, "0.00 - 0.1"],
+                       [5, 0.20, 0.30, "0.1001 - 0.3"],
+                       [10, 0.30, 0.60, "0.3001 - 0.6"],
+                       [15, 0.25, 0.85, "0.6001 - 0.85"],
+                       [20, 0.15, 1.00, "0.8501 - 1.00"]]
 
         self.tabla_leads = CTkTable(frame_tabla1, values=tabla_leads)
         self.tabla_leads.pack(padx=10, pady=10)
@@ -85,14 +83,12 @@ class Marketing:
 
         ctk.CTkLabel(frame_tabla2, text="Conversión de Reservas", text_color=COLOR_TEXTO, font=("Arial", 16, "bold")).pack(pady=10)
 
-        tabla_conversion = [
-            ["Reservas", "Prob", "Acum", "Rango"],
-            [1, 0.20, 0.20, "0.00 - 0.2"],
-            [2, 0.30, 0.50, "0.2001 - 0.5"],
-            [3, 0.25, 0.75, "0.5001 - 0.75"],
-            [4, 0.15, 0.90, "0.7501 - 0.9"],
-            [5, 0.10, 1.00, "0.9001 - 1.0"]
-        ]
+        tabla_conversion = [["Reservas", "Prob", "Acum", "Rango"],
+                            [1, 0.20, 0.20, "0.00 - 0.2"],
+                            [2, 0.30, 0.50, "0.2001 - 0.5"],
+                            [3, 0.25, 0.75, "0.5001 - 0.75"],
+                            [4, 0.15, 0.90, "0.7501 - 0.9"],
+                            [5, 0.10, 1.00, "0.9001 - 1.0"]]
 
         self.tabla_conversion = CTkTable(frame_tabla2, values=tabla_conversion)
         self.tabla_conversion.pack(padx=10, pady=10)
@@ -102,12 +98,10 @@ class Marketing:
 
         ctk.CTkLabel(frame_tabla3, text="Impacto de Campaña", text_color=COLOR_TEXTO, font=("Arial", 16, "bold")).pack(pady=10)
 
-        tabla_impacto = [
-            ["Impacto", "Prob", "Acum", "Rango"],
-            ["Bajo", 0.30, 0.30, "0.00 - 0.3"],
-            ["Medio", 0.50, 0.80, "0.3001 - 0.8"],
-            ["Alto", 0.20, 1.00, "0.8001 - 1.0"]
-        ]
+        tabla_impacto = [["Impacto", "Prob", "Acum", "Rango"],
+                         ["Bajo", 0.30, 0.30, "0.00 - 0.3"],
+                         ["Medio", 0.50, 0.80, "0.3001 - 0.8"],
+                         ["Alto", 0.20, 1.00, "0.8001 - 1.0"]]
 
         self.tabla_impacto = CTkTable(frame_tabla3, values=tabla_impacto)
         self.tabla_impacto.pack(padx=10, pady=10)
@@ -151,13 +145,11 @@ class Marketing:
         titulo_resultados = ctk.CTkLabel(self.frame_resultados, text="RESULTADOS DE LA SIMULACIÓN", text_color=COLOR_TEXTO, font=("Arial", 20, "bold"))
         titulo_resultados.pack(pady=20)
 
-        tabla_resultados = [
-            ["Día", "Leads", "Reservas", "Ingresos", "Costos", "ROI"],
-            ["", "", "", "", "", ""],
-            ["", "", "", "", "", ""],
-            ["", "", "", "", "", ""],
-            ["", "", "", "", "", ""]
-        ]
+        tabla_resultados = [["Día", "Leads", "Reservas", "Ingresos", "Costos", "ROI"],
+                            ["", "", "", "", "", ""],
+                            ["", "", "", "", "", ""],
+                            ["", "", "", "", "", ""],
+                            ["", "", "", "", "", ""]]
 
         self.tabla_resultados = CTkTable(self.frame_resultados, values=tabla_resultados)
         self.tabla_resultados.pack(padx=20, pady=20)
