@@ -616,7 +616,7 @@ class Habitaciones:
 
             tabla_finanzas=[["Día", "Ingresos", "Costos", "Ganancia"]]
 
-            tabla_resumen=[["Métrica", "Valor"]]
+            tabla_resumen=[["Indicador", "Valor"]]
 
             ingresos_totales=0
             costos_totales=0
@@ -767,7 +767,7 @@ class Habitaciones:
 
             # TABLA CLIENTES
             ctk.CTkLabel(self.frame_resultados, text="CLIENTES", text_color=COLOR_TEXTO, font=("Arial", 18, "bold")).pack(pady=10)
-            frame_clientes=ctk.CTkScrollableFrame(self.frame_resultados, orientation="horizontal", width=1200, height=1000)
+            frame_clientes=ctk.CTkScrollableFrame(self.frame_resultados, orientation="horizontal", width=1200, height=2000)
             frame_clientes.pack(fill="x", padx=20, pady=10)
             self.tabla_clientes=CTkTable(frame_clientes, values=tabla_clientes)
             self.tabla_clientes.pack(padx=10, pady=10)
