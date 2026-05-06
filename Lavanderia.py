@@ -1,4 +1,6 @@
 
+#* Ya funciona la seleccion, actualizacion, agregacion y borar filas de la tablas de probabilidades
+
 from customtkinter import *
 import customtkinter as ctk
 from tkinter import messagebox
