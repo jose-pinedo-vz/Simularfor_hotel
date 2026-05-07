@@ -639,6 +639,29 @@ class Lavanderia:
                     self.lista_datos_activa.pop(indice_a_borrar)
                     self.Tabla_1_e.delete_row(indice_a_borrar)
                     
+                    
+                elif self.tabla_activa == self.Tabla_2_e:
+                    indice_a_borrar = self.indice_selec - 1
+                    self.lista_datos_activa.pop(indice_a_borrar)
+                    self.Tabla_2_e.delete_row(indice_a_borrar)
+                    
+                    
+                elif self.tabla_activa == self.Tabla_3_e:
+                    indice_a_borrar = self.indice_selec - 1
+                    self.lista_datos_activa.pop(indice_a_borrar)
+                    self.Tabla_3_e.delete_row(indice_a_borrar)
+                    
+                    
+                elif self.tabla_activa == self.Tabla_4_e:
+                    indice_a_borrar = self.indice_selec - 1
+                    self.lista_datos_activa.pop(indice_a_borrar)
+                    self.Tabla_4_e.delete_row(indice_a_borrar)
+                    
+                    
+                elif self.tabla_activa == self.Tabla_5_e:
+                    indice_a_borrar = self.indice_selec - 1
+                    self.lista_datos_activa.pop(indice_a_borrar)
+                    self.Tabla_5_e.delete_row(indice_a_borrar)
                 
                 self.Actualizar_tabla()
                 
