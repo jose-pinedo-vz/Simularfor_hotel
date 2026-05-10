@@ -1,10 +1,11 @@
 
-#* Ya funciona la seleccion, actualizacion, agregacion y borar filas de la tablas de probabilidades
+#* Ya muestra los valores en la tabla (falta cheacar que si se actualizan los datos, si se muestren correctamente. Adeamas faltaria poner un bloqueo si la probabilidad no llega a 1)
 
 from customtkinter import *
 import customtkinter as ctk
 from tkinter import messagebox
 from CTkTable import CTkTable
+import random
 
 # Configuración de estilo
 ctk.set_appearance_mode("dark") 
@@ -30,6 +31,12 @@ class Lavanderia:
         self.Tabla_3_e = None
         self.Tabla_4_e = None
         self.Tabla_5_e = None
+        
+        self.L_tabla_1 = []
+        self.L_tabla_2 = []
+        self.L_tabla_3 = []
+        self.L_tabla_4 = []
+        self.L_tabla_5 = []
         
         self.tabla_activa = None
         self.indice_selec = -1
@@ -65,7 +72,7 @@ class Lavanderia:
         
         #-------------------------------------------------------------------------------------------------------------------------------------------------
         
-        # Tercera pestaña
+        # Tercera pestaña 
         
         self.Monte_carlo = self.tabview.tab("MONTE CARLO")    
         
@@ -76,8 +83,8 @@ class Lavanderia:
         
         #Boton de simular
 
-        self.btn_generar = CTkButton(self.Monte_carlo, text= "simular", font= ("Arial", 25) , command= self.Creacion_tabla)
-        self.btn_generar.pack(pady=10)
+        self.btn_simular = CTkButton(self.Monte_carlo, text= "simular", font= ("Arial", 25), command= self.Creacion_tabla)
+        self.btn_simular.pack(pady=10)
         
         # Para que la tabla no se salga de la pantalla
         
@@ -87,6 +94,8 @@ class Lavanderia:
         #-------------------------------------------------------------------------------------------------------------------------------------------------
         
         self.Tabla = None
+        self.resultados_tabla_3 = []
+        self.resultados_tabla_5 = []
         
         self.Interfaz.update()
         
@@ -99,7 +108,7 @@ class Lavanderia:
         
         
         
-        # self.Interfaz.state("zoomed") #windows
+        self.Interfaz.state("zoomed") #windows
         # self.Interfaz.attributes('-zoomed', True) #Linux
         
         self.Interfaz.mainloop()
@@ -150,6 +159,13 @@ class Lavanderia:
             ["50", 0.05]
         ]
         
+        self.Tabla_6_e_d = [
+            ["Normal", 1],
+            ["Retraso", 1.5],
+            ["Falla", 0],
+            ["Corte de luz / agua", 2]
+        ]
+        
 #-------------------------------------------------------------------------------------------------------------------------------------------------
     
     def Calculos_probAcu_rang(self):
@@ -177,7 +193,7 @@ class Lavanderia:
         
         Probabilidad_acumulada_2 = 0.0
         self.Tabla_2_e_d = []
-        
+            
         for val_2, prob_2 in self.Tipos_cargas:
             
             inicio_2 = Probabilidad_acumulada_2
@@ -261,6 +277,9 @@ class Lavanderia:
         self.Valor = CTkEntry(self.frame_sup, placeholder_text= "Valor", width= 130)
         self.Valor.pack(side="left", padx=10)
         
+        #se deja sin pack para mostarlo despues (SOLO CUANDO ESTA SELECCIONADA LA TABLA 6)
+        self.Tiempo = CTkEntry(self.frame_sup, placeholder_text="Tiempo", width=130)
+        
         self.Probabilidad = CTkEntry(self.frame_sup, placeholder_text= "Probabilidad", width= 130)
         self.Probabilidad.pack(side="left", padx=10)
         
@@ -290,7 +309,7 @@ class Lavanderia:
         #tabla 1 (cargas por dia) 
         
         # Encabezado
-        encabezado_1 = [["Personas", "Probabilidad", "Probabilidad acumulada", "Rango"]]
+        encabezado_1 = [["Cargas", "Probabilidad", "Probabilidad acumulada", "Rango"]]
         
         #titulo
         self.Titulo_t_1 = CTkLabel(self.scroll_frame, text= "Cargas por dia", font= ("Arial", 20 ))
@@ -310,7 +329,7 @@ class Lavanderia:
         #tabla 2 (Tipos de cargas)
         
         # Encabezado
-        encabezado_2 = [["Tiempo", "Probabilidad", "Probabilidad acumulada", "Rango"]]
+        encabezado_2 = [["Tipo", "Probabilidad", "Probabilidad acumulada", "Rango"]]
         
         #titulo
         self.Titulo_t_2 = CTkLabel(self.scroll_frame, text= "Tipos de cargas", font= ("Arial", 20 ))
@@ -330,7 +349,7 @@ class Lavanderia:
         #tabla 3 (Estado de las maquinas)
         
         # Encabezado
-        encabezado_3 = [["Cantidad", "Probabilidad", "Probabilidad acumulada", "Rango"]]
+        encabezado_3 = [["Estado", "Probabilidad", "Probabilidad acumulada", "Rango"]]
         
         #titulo
         self.Titulo_t_3 = CTkLabel(self.scroll_frame, text= "Estado de las maquinas", font= ("Arial", 20 ))
@@ -351,7 +370,7 @@ class Lavanderia:
         #tabla 4 (Numero de maquinas)
         
         # Encabezado
-        encabezado_4 = [["Abandonos", "Probabilidad", "Probabilidad acumulada", "Rango"]]
+        encabezado_4 = [["Cantidad", "Probabilidad", "Probabilidad acumulada", "Rango"]]
         
         #titulo
         self.Titulo_t_4 = CTkLabel(self.scroll_frame, text= "Numero de maquinas", font= ("Arial", 20 ))
@@ -386,31 +405,81 @@ class Lavanderia:
         )
         self.Tabla_5_e.pack(expand=True, fill="both", pady=(0, 50))
         
+        
+        #-------------------------------------------------------------------------------------------------------------------------------------------------
+        
+        #Tabla de tiempo 
+        
+        # Encabezado
+        encabezado_6 = [["Estado de la maquina", "Tiempo que se multiplica"]]
+        
+        self.Titulo_t_6 = CTkLabel(self.scroll_frame, text= "Tiempo total de trabajo de las maquinas", font= ("Arial", 20 ))
+        self.Titulo_t_6.pack(pady=10, padx=10)
+        
+        self.Tabla_6_e = CTkTable(
+            self.scroll_frame,
+            values= encabezado_6 + self.Tabla_6_e_d,
+            header_color="#0a2e57",
+            command=self.Seleccionar_tabla_6
+        )
+        self.Tabla_6_e.pack(expand=True, fill="both", pady=(0, 50))
+        
 #-------------------------------------------------------------------------------------------------------------------------------------------------
     
     def Seleccionar_tabla_1(self, data):
         self.tabla_activa = self.Tabla_1_e
         self.lista_datos_activa = self.Cargas_dias
+        
+        #ocultamos el entry
+        self.Tiempo.pack_forget()
+        self.Probabilidad.pack(side="left", padx=10, after= self.Valor)
         self.Seleccionar_fila(data)
         
     def Seleccionar_tabla_2(self, data):
         self.tabla_activa = self.Tabla_2_e
         self.lista_datos_activa = self.Tipos_cargas
+        
+        #ocultamos el entry
+        self.Tiempo.pack_forget()
+        self.Probabilidad.pack(side="left", padx=10, after= self.Valor)
         self.Seleccionar_fila(data)
         
     def Seleccionar_tabla_3(self, data):
         self.tabla_activa = self.Tabla_3_e
         self.lista_datos_activa = self.Estado_maquinas
+        
+        #ocultamos el entry
+        self.Tiempo.pack_forget()
+        self.Probabilidad.pack(side="left", padx=10, after= self.Valor)
         self.Seleccionar_fila(data)
         
     def Seleccionar_tabla_4(self, data):
         self.tabla_activa = self.Tabla_4_e
         self.lista_datos_activa = self.Numero_maquinas
+        
+        #ocultamos el entry
+        self.Tiempo.pack_forget()
+        self.Probabilidad.pack(side="left", padx=10, after= self.Valor)
         self.Seleccionar_fila(data)
         
     def Seleccionar_tabla_5(self, data):
         self.tabla_activa = self.Tabla_5_e
         self.lista_datos_activa = self.Tiempo_ciclo
+        
+        #ocultamos el entry
+        self.Tiempo.pack_forget()
+        self.Probabilidad.pack(side="left", padx=10, after= self.Valor)
+        self.Seleccionar_fila(data)
+        
+    def Seleccionar_tabla_6(self, data):
+        self.tabla_activa = self.Tabla_6_e
+        self.lista_datos_activa = self.Tabla_6_e_d
+        
+        #ocultamos el entry
+        self.Probabilidad.pack_forget()
+        
+        #se mustra el entry
+        self.Tiempo.pack(side= "left", padx= 10, after= self.Valor)
         self.Seleccionar_fila(data)
         
 #-------------------------------------------------------------------------------------------------------------------------------------------------
@@ -422,9 +491,16 @@ class Lavanderia:
             valores_fila = self.tabla_activa.get_row(self.indice_selec)
             
             self.Valor.delete(0, "end")    
-            self.Valor.insert(0, valores_fila[0])    
-            self.Probabilidad.delete(0, "end")    
-            self.Probabilidad.insert(0, valores_fila[1])
+            self.Valor.insert(0, valores_fila[0])  
+            
+            if self.tabla_activa == self.Tabla_6_e:
+                
+                self.Tiempo.delete(0, "end")
+                self.Tiempo.insert(0, valores_fila[1])
+            
+            else:
+                self.Probabilidad.delete(0, "end")    
+                self.Probabilidad.insert(0, valores_fila[1])
         
 #-------------------------------------------------------------------------------------------------------------------------------------------------
     
@@ -434,7 +510,9 @@ class Lavanderia:
         if self.lista_datos_activa:
             
             for fila in self.lista_datos_activa:
-                self.suma_total += float(fila[1])
+                
+                if self.tabla_activa != self.Tabla_6_e:
+                    self.suma_total += float(fila[1])
                 
         self.suma_total = round(self.suma_total, 2)
         
@@ -442,37 +520,48 @@ class Lavanderia:
     
     def Actualizar_datos(self):
         
+        # cosas para la tabla 6 y para la normal 
+        
         if self.lista_datos_activa is None or self.indice_selec <= 0:
             messagebox.showwarning("ATENCION", "Primero seleccione una fila de una tabla")
             return
         
-        new_val = self.Valor.get()
-        new_prob = float(self.Probabilidad.get())
-        
-        
-        new_suma = 0.0
-        
-        for i in range(len(self.lista_datos_activa)):
+        if self.tabla_activa == self.Tabla_6_e:
             
-            if i == self.indice_selec - 1:
-                new_suma +=  new_prob
-                
-            else: 
-                new_suma += float(self.lista_datos_activa[i][1])
-                
-        new_suma = round(new_suma, 2)
-        
-        
-        if new_suma > 1.0:
-            messagebox.showerror("ERROR", F"La suma de las probabilidades debe de ser de 1, tu tienes {new_suma}")
-            return
-        
-        self.lista_datos_activa[self.indice_selec - 1] = [new_val, new_prob]
-        
-        self.Actualizar_tabla()
-        
-        messagebox.showinfo("EXITO", "Datos actualizados correctamente")
-        
+            new_val = self.Valor.get()
+            new_tiempo = int(self.Tiempo.get())
+            
+            self.lista_datos_activa[self.indice_selec - 1] = [new_val, new_tiempo]
+            
+        else:
+            
+            new_val = self.Valor.get()
+            new_prob = float(self.Probabilidad.get())
+
+
+            new_suma = 0.0
+
+            for i in range(len(self.lista_datos_activa)):
+
+                if i == self.indice_selec - 1:
+                    new_suma +=  new_prob
+
+                else: 
+                    new_suma += float(self.lista_datos_activa[i][1])
+
+            new_suma = round(new_suma, 2)
+
+
+            if new_suma > 1.0:
+                messagebox.showerror("ERROR", F"La suma de las probabilidades debe de ser de 1, tu tienes {new_suma}")
+                return
+
+            self.lista_datos_activa[self.indice_selec - 1] = [new_val, new_prob]
+
+            self.Actualizar_tabla()
+
+            messagebox.showinfo("EXITO", "Datos actualizados correctamente")
+
 #-------------------------------------------------------------------------------------------------------------------------------------------------
     
     def Actualizar_tabla(self):
@@ -484,12 +573,14 @@ class Lavanderia:
         encabezado_3 = [["Cantidad", "Probabilidad", "Probabilidad acumulada", "Rango"]]
         encabezado_4 = [["Abandonos", "Probabilidad", "Probabilidad acumulada", "Rango"]]
         encabezado_5 = [["Tiempo", "Probabilidad", "Probabilidad acumulada", "Rango"]]
+        encabezado_6 = [["Estado de la maquina", "Tiempo que se multiplica"]]
         
         datos_completos_1 = encabezado_1 + self.Tabla_1_e_d 
         datos_completos_2 = encabezado_2 + self.Tabla_2_e_d
         datos_completos_3 = encabezado_3 + self.Tabla_3_e_d
         datos_completos_4 = encabezado_4 + self.Tabla_4_e_d
         datos_completos_5 = encabezado_5 + self.Tabla_5_e_d
+        datos_completos_6 = encabezado_6 + self.Tabla_6_e_d
         
         
         self.Tabla_1_e.configure(values=datos_completos_1)
@@ -511,6 +602,9 @@ class Lavanderia:
         self.Tabla_5_e.configure(values=datos_completos_5)
         self.Tabla_5_e.update_values(datos_completos_5)
         
+        
+        self.Tabla_6_e.configure(values=datos_completos_6)
+        self.Tabla_6_e.update_values(datos_completos_6)
         
         
         self.tabla_activa = None
@@ -541,8 +635,12 @@ class Lavanderia:
                 messagebox.showerror("ERROR", F"La suma de las probabilidades debe de ser de 1, tu tienes {suma_futura}")
                 return
             
+            if self.tabla_activa == self.Tabla_6_e:
+                new_tiempo = self.Tiempo.get()
+                self.lista_datos_activa.append([new_val, new_tiempo])
             
-            self.lista_datos_activa.append([new_val, new_prob])
+            else:
+                self.lista_datos_activa.append([new_val, new_prob])
             
             
             if self.tabla_activa == self.Tabla_1_e:
@@ -564,6 +662,8 @@ class Lavanderia:
             elif self.tabla_activa == self.Tabla_5_e:
                 self.Tabla_5_e_d.append(self.lista_datos_activa[-1])
                 
+            elif self.tabla_activa == self.Tabla_6_e:
+                self.Tabla_6_e_d.append(self.lista_datos_activa[-1])
                 
             self.indice_selec = -1
             
@@ -589,12 +689,14 @@ class Lavanderia:
         encabezado_3 = [["Cantidad", "Probabilidad", "Probabilidad acumulada", "Rango"]]
         encabezado_4 = [["Abandonos", "Probabilidad", "Probabilidad acumulada", "Rango"]]
         encabezado_5 = [["Tiempo", "Probabilidad", "Probabilidad acumulada", "Rango"]]
+        encabezado_6 = [["Estado de la maquina", "Tiempo que se multiplica"]]
         
         datos_completos_1 = encabezado_1 + self.Tabla_1_e_d 
         datos_completos_2 = encabezado_2 + self.Tabla_2_e_d
         datos_completos_3 = encabezado_3 + self.Tabla_3_e_d
         datos_completos_4 = encabezado_4 + self.Tabla_4_e_d
         datos_completos_5 = encabezado_5 + self.Tabla_5_e_d
+        datos_completos_6 = encabezado_6 + self.Tabla_6_e_d
         
         
         if self.tabla_activa == self.Tabla_1_e:
@@ -615,7 +717,10 @@ class Lavanderia:
             
         elif self.tabla_activa == self.Tabla_5_e:
             self.Tabla_5_e.add_row(datos_completos_5[-1])
-        
+            
+            
+        elif self.tabla_activa == self.Tabla_6_e:
+            self.Tabla_6_e.add_row(datos_completos_6[-1])
         
         self.tabla_activa = None
         self.lista_datos_activa = None
@@ -662,6 +767,11 @@ class Lavanderia:
                     indice_a_borrar = self.indice_selec - 1
                     self.lista_datos_activa.pop(indice_a_borrar)
                     self.Tabla_5_e.delete_row(indice_a_borrar)
+                    
+                elif self.tabla_activa == self.Tabla_6_e:
+                    indice_a_borrar = self.indice_selec - 1
+                    self.lista_datos_activa.pop(indice_a_borrar)
+                    self.Tabla_6_e.delete_row(indice_a_borrar)
                 
                 self.Actualizar_tabla()
                 
@@ -683,21 +793,18 @@ class Lavanderia:
         
         try:
             
-            filas_predeterminadas = 10
-            # filas_predeterminadas = int(self.prueba_1.get())
+            self.filas_tabla_monte_carlo = 10
             
         except Exception:
                 messagebox.showerror("INVALIDACION","Datos invalidos", parent= self.Interfaz)
                 return False
             
-            
         if self.Tabla:
             self.Tabla.destroy()
+            
+        encabezados = [["Dias", "Aleatorio\ncargas", "Rango de\nCargas", "Cargas\nExactas", "Aleatorio\ntipo de\ncargas", "Tipo de\ncargas","Aleatorio\nmaquinas", "Cantidad de\nmaquinas", "Aleatorio\ntiempo de\nciclo", "Tiempo de\nciclo", "Aleatorio\nestado\nmaquinas", "Estado\nmaquinas", "Tiempo"]]
         
-        
-        encabezados = [["Dias", "Aleatorio\ncargas", "Cargas", "Aleatorio\ntipo de\ncargas", "Tipo de\ncargas","Aleatorio\nmaquinas", "Cantidad de\nmaquinas", "Aleatorio\ntiempo de\nciclo", "Tiempo de\nciclo", "Aleatorio\nestado\nmaquinas", "Estado\nmaquinas", "Tiempo", "Total"]]
-        
-        for i in range(filas_predeterminadas):
+        for i in range(self.filas_tabla_monte_carlo):
             fila_vacia = [str(i+1)] + [""] * 12
             encabezados.append(fila_vacia)
             
@@ -705,7 +812,7 @@ class Lavanderia:
         
         self.Tabla = CTkTable(
             master = self.scroll_frame, 
-            row = filas_predeterminadas + 1, 
+            row = self.filas_tabla_monte_carlo + 1, 
             column= len(fila_vacia), #12 
             values= encabezados,
             width = 100,
@@ -716,4 +823,318 @@ class Lavanderia:
         #mostrar tabla
         self.Tabla.pack(expand=True, fill="both", padx=10, pady=10)
         
+        self.Generacion_aleatorios()
+    
+    
+    def Generacion_aleatorios(self):
+        
+        self.L_tabla_1 = []
+        self.L_tabla_2 = []
+        self.L_tabla_3 = []
+        self.L_tabla_4 = []
+        self.L_tabla_5 = []
+        
+        for _ in range(self.filas_tabla_monte_carlo):
+            
+            
+            ale_tabla_1 = round(random.random(), 4)
+            ale_tabla_2 = round(random.random(), 4)
+            ale_tabla_3 = round(random.random(), 4)
+            ale_tabla_4 = round(random.random(), 4)
+            ale_tabla_5 = round(random.random(), 4)
+            
+            
+            self.L_tabla_1.append(ale_tabla_1)
+            self.L_tabla_2.append(ale_tabla_2)
+            self.L_tabla_3.append(ale_tabla_3)
+            self.L_tabla_4.append(ale_tabla_4)
+            self.L_tabla_5.append(ale_tabla_5)
+            
+            
+            # Aleatorios 1  (cargas exactas)
+            
+            columna_tabla_1 = 1
+            for indice_1 in range(len(self.L_tabla_1)):
+                valor_1 = self.L_tabla_1[indice_1]
+                
+                self.Tabla.insert(indice_1 + 1, columna_tabla_1, valor_1)
+            
+            
+            # Aleatorios 2 (tipos de cargas)
+            
+            columna_tabla_2 = 4
+            for indice_2 in range(len(self.L_tabla_2)):
+                valor_2 = self.L_tabla_2[indice_2]
+                
+                self.Tabla.insert(indice_2 + 1, columna_tabla_2, valor_2)
+            
+            
+            
+            # Aleatorios 3 (estados de maquinas)
+            
+            columna_tabla_3 = 10
+            for indice_3 in range(len(self.L_tabla_3)):
+                valor_3 = self.L_tabla_3[indice_3]
+                
+                self.Tabla.insert(indice_3 + 1, columna_tabla_3, valor_3)
+            
+            
+            
+            # Aleatorios 4 (numero de maquinas)
+            
+            columna_tabla_4 = 6
+            for indice_4 in range(len(self.L_tabla_4)):
+                valor_4 = self.L_tabla_4[indice_4]
+                
+                self.Tabla.insert(indice_4 + 1, columna_tabla_4, valor_4)
+            
+            
+            
+            # Aleatorios 5 (tiempo de ciclo)
+            
+            columna_tabla_5 = 8
+            for indice_5 in range(len(self.L_tabla_5)):
+                valor_5 = self.L_tabla_5[indice_5]
+                
+                self.Tabla.insert(indice_5 + 1, columna_tabla_5, valor_5)
+            
+        self.Probabilidades_Cargas_dias()
+    
+    
+    def Probabilidades_Cargas_dias(self):
+        
+        #comparar con los rangos
+        
+        resultados_tabla_1 = []
+        resultados_cargas_exactos = []
+        
+        for ale in self.L_tabla_1:
+            
+            for fila in self.Tabla_1_e_d:
+                
+                str_rango = fila[-1]
+                partes = str_rango.split(" - ")
+                
+                inf = float(partes[0].strip())
+                sup = float(partes[1].strip())
+                
+                
+                
+                if ale > inf and ale <= sup:
+                    
+                    valor_correcto = fila[0]
+                    
+                    resultados_tabla_1.append(valor_correcto)
+                    
+                    
+                    
+                    
+                    #Encontrar las cargas exactas
+                    
+                    parte_c_e = valor_correcto.split(" - ")
+                    primero = int(parte_c_e[0].strip())
+                    segundo = int(parte_c_e[1].strip())
+                    
+                    suma = (primero + segundo) 
+                    res = suma // 2
+                    
+                    resultados_cargas_exactos.append(res)
+                    
+                    break
+                
+                
+                
+            # Cargas Dias
+            
+            columna_tabla_1 = 2
+            for indice_1 in range(len(resultados_tabla_1)):
+                valor_1 = resultados_tabla_1[indice_1]
+                
+                self.Tabla.insert(indice_1 + 1, columna_tabla_1, valor_1)
+            
+            
+            
+            
+            #Cargas exactas 
+            
+            columna_tabla_1_1 = 3
+            for indice_1_1 in range(len(resultados_cargas_exactos)):
+                valor_1_1 = resultados_cargas_exactos[indice_1_1]
+                
+                self.Tabla.insert(indice_1_1 + 1, columna_tabla_1_1, valor_1_1)
+            
+        self.Probabilidades_Tipos_cargas()
+    
+    
+    def Probabilidades_Tipos_cargas(self):
+        
+        #comparar con los rangos 
+        
+        resultados_tabla_2 = []
+        
+        
+        for ale in self.L_tabla_2:
+            
+            for fila in self.Tabla_2_e_d:
+                
+                str_rango = fila[-1]
+                partes = str_rango.split(" - ")
+                
+                inf = float(partes [0].strip())
+                sup = float(partes [1].strip())
+                
+                if ale > inf and ale <= sup:
+                    
+                    valor_correcto = fila[0]
+                    
+                    resultados_tabla_2.append(valor_correcto)
+                    
+                    break
+                
+        
+            # Tipos de cargas
+            columna_tabla_2 = 5
+
+            for indice_2 in range(len(resultados_tabla_2)): 
+                valor_2 = resultados_tabla_2[indice_2]
+
+                self.Tabla.insert(indice_2 + 1, columna_tabla_2, valor_2)
+        
+        self.Probabilidades_Numero_maquinas()
+    
+    
+    def Probabilidades_Numero_maquinas(self):
+        
+        resultados_tabla_4 = []
+        
+        for ale in self.L_tabla_4:
+            
+            for fila in self.Tabla_4_e_d:
+                
+                str_rango = fila[-1]
+                partes = str_rango.split(" - ")
+                
+                inf = float(partes[0].strip())
+                sup = float(partes[1].strip())
+                
+                if ale > inf and ale <= sup:
+                    
+                    valor_correcto = fila[0]
+                    
+                    resultados_tabla_4.append(valor_correcto)
+                    
+                    break
+                
+            # Numero de maquinas
+            
+            columna_tabla_4 = 7
+            
+            for indice_4 in range(len(resultados_tabla_4)):
+                valor_4 = resultados_tabla_4[indice_4]
+                
+                self.Tabla.insert(indice_4 + 1, columna_tabla_4, valor_4)
+                
+        self.Probabilidades_Tiempo_ciclo()
+    
+    
+    def Probabilidades_Tiempo_ciclo(self):
+        
+        self.resultados_tabla_5 = []
+        
+        for ale in self.L_tabla_5:
+            
+            for fila in self.Tabla_5_e_d:
+                
+                str_rango = fila[-1]
+                partes = str_rango.split(" - ")
+                
+                inf = float(partes[0].strip())
+                sup = float(partes[1].strip())
+                
+                if ale > inf and ale <= sup:
+                    
+                    valor_correcto = fila[0]
+                    
+                    self.resultados_tabla_5.append(valor_correcto)
+                    
+                    break
+                
+            # Tiempo_ciclo  
+            
+            columna_tabla_5 = 9
+            
+            for indice_5 in range(len(self.resultados_tabla_5)):
+                
+                valor_5 = self.resultados_tabla_5[indice_5]
+                
+                self.Tabla.insert(indice_5 + 1, columna_tabla_5, valor_5)
+                
+        
+        self.Probabilidades_Estados_maquinas()
+    
+    
+    def Probabilidades_Estados_maquinas(self):
+        
+        #comparar con los rangos 
+        
+        self.resultados_tabla_3 = []
+        
+        for ale in self.L_tabla_3:
+            
+            for fila in self.Tabla_3_e_d:
+                
+                str_rango = fila[-1]
+                partes = str_rango.split(" - ")
+                
+                inf = float(partes [0].strip())
+                sup = float(partes [1].strip())
+                
+                if ale > inf and ale <= sup:
+                    
+                    valor_correcto = fila[0]
+                    
+                    self.resultados_tabla_3.append(valor_correcto)
+                    
+                    break
+                
+            #Estados de maquinas
+            
+            columna_tabla_3 = 11
+            
+            for indice_3 in range(len(self.resultados_tabla_3)):
+                valor_3 = self.resultados_tabla_3[indice_3]
+                
+                self.Tabla.insert(indice_3 + 1, columna_tabla_3, valor_3)
+                
+        self.Tiempo_final()
+    
+    def Tiempo_final(self):
+        
+        resultado_tabla_6 = []
+        
+        for i in range(len(self.resultados_tabla_3)):
+            
+            res_t_3 = self.resultados_tabla_3[i]
+            
+            for val, n in self.Tabla_6_e_d:
+                
+                if res_t_3 == val:
+                    
+                    res_t_5 = self.resultados_tabla_5[i]
+                    
+                    mult = float(res_t_5) * n
+                    
+                    resultado_tabla_6.append(mult)
+                    
+                    break
+                
+            #ultima columna
+            
+            columna_tabla_6 = 12
+            
+            for indice_6 in range(len(resultado_tabla_6)):
+                valor_6 = resultado_tabla_6[indice_6]
+                
+                self.Tabla.insert(indice_6 + 1, columna_tabla_6, valor_6)
+    
 Lavanderia()
