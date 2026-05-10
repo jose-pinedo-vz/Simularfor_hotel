@@ -108,7 +108,11 @@ class Lavanderia:
         
         
         
-        self.Interfaz.state("zoomed") #windows
+        # self.Interfaz.state("zoomed") #windows
+
+        try: self.Interfaz.state("zoomed")
+        except: self.Interfaz.attributes("-zoomed", True)
+
         # self.Interfaz.attributes('-zoomed', True) #Linux
         
         self.Interfaz.mainloop()
