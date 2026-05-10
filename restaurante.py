@@ -83,7 +83,7 @@ class mostrar_Tablasa():
                                     font=("Arial", 24, "bold"))
         label_titulo.pack(pady=20)
 
-        self.frameMontecarlo = ctk.CTkScrollableFrame(fm_General, border_width=5, border_color="#4281FF", fg_color="transparent", orientation="horizontal")
+        self.frameMontecarlo = ctk.CTkScrollableFrame(fm_General, border_width=5, height=500, border_color="#4281FF", fg_color="transparent", orientation="horizontal")
         self.frameMontecarlo.pack(fill="both", expand=True, padx=20, pady=20)
 
         label_titulo2 = ctk.CTkLabel(fm_General, text="PRODUCTOS", font=("Arial", 24, "bold"))
@@ -101,6 +101,7 @@ class mostrar_Tablasa():
             "personas atendidas",
             "Ale critica",
             "Ubo ora critica",
+            "Percentaje de hora critica",
             "perdidas en hora pico",
             "Personas atendidas en total",
             "Ale eveto",
@@ -119,7 +120,7 @@ class mostrar_Tablasa():
             self.tabla.column(valor, width=250, anchor="center")
         self.tabla.pack(fill="both", expand=True)
 
-        self.frameMontecarlo2 = ctk.CTkScrollableFrame(fm_General, border_width=5, border_color="#4281FF", fg_color="transparent", orientation="horizontal")
+        self.frameMontecarlo2 = ctk.CTkScrollableFrame(fm_General, border_width=5, height=500, border_color="#4281FF", fg_color="transparent", orientation="horizontal")
         self.frameMontecarlo2.pack(fill="both", expand=True, padx=20, pady=20)
 
         columnas_tabla2 = [
@@ -136,6 +137,7 @@ class mostrar_Tablasa():
             "tiempo de hocio de cada cosinero",
             "Ale Distribucion",
             "distribucion de los platillos",
+            "Platillos a cosinar",
             "Platillos rechasados",
             "Ganancias de todos los platillos",
             "Gastos de insumos"
@@ -349,6 +351,11 @@ def validaciones(Dias_a_Simular) -> float:
     SumaTotal = 0
     GastosTotal = 0
 
+    ganancias_totales = 0
+    gastos_totales = 0
+
+    lista_de_platillos_vendidos = []
+
 
     for _ in range(Dias_a_Simular):
         print("dia: ", _ + 1)
@@ -402,10 +409,13 @@ def validaciones(Dias_a_Simular) -> float:
         criticas, random8 = provavilidar(hora_critica, hora_critica_prob)
         existencia_de_hora_critica = ""
         personas_perdidas_pico = 0
+        porncentaje_de_personas_en_hora_pico = ""
         if criticas == 1:
             print("ubo una hora crítica")
             existencia_de_hora_critica = "Si"
             porcentaje, random10 = provavilidar(porcen_ora_critica, porcen_ora_critica_prob)
+            porncentaje_de_personas_en_hora_pico = f"{porcentaje}%"
+
             # total de personas
             personas_pico = int(personas * (porcentaje / 100))
 
@@ -450,6 +460,8 @@ def validaciones(Dias_a_Simular) -> float:
             print(f"de la categoria {i + 1} son {math.ceil(total_de_platillos * (distribucion_platillos[i]/100))}")
             platillos_totales_sumatoria.append(math.ceil(total_de_platillos * (distribucion_platillos[i]/100)))
 
+        print(f"Lista platillos totales: {platillos_totales_sumatoria}")
+
         platillosRechasados = 0
         ganancias_totales_dia = 0
         ganancias_netas_dia = 0
@@ -475,7 +487,14 @@ def validaciones(Dias_a_Simular) -> float:
         ganancias_netas_final = ganancias_netas_dia
         gastos_insumos = ganancias - ganancias_netas_final
 
+
         print(f"platillos rechazados: {platillosRechasados}")
+
+        Platillos_vendidos_totales = sum(platillos_totales_sumatoria) - platillosRechasados
+
+        print(f"Platillos vendidos totales: {Platillos_vendidos_totales}")
+
+        lista_de_platillos_vendidos.append(Platillos_vendidos_totales)
 
         print(f"ganancias de platillos {ganancias_netas}")
         print(f"ganancias netas final {ganancias_netas_final}")
@@ -552,6 +571,10 @@ def validaciones(Dias_a_Simular) -> float:
         print(f"ganancias netas = {ganancias - GastosTotal}")
         Ganancias_totales = ganancias - GastosTotal
 
+
+        ganancias_totales += ganancias
+        gastos_totales += GastosTotal
+
         diccionario = {
             "Dia": _ + 1,
             "Ale personas": random_1,
@@ -564,6 +587,7 @@ def validaciones(Dias_a_Simular) -> float:
             "personas atendidas": personas_totales_en_el_dia - personas_perdidas,
             "Ale critica": random8,
             "Ubo ora critica": existencia_de_hora_critica,
+            "Percentaje de hora critica": porncentaje_de_personas_en_hora_pico,
             "perdidas en hora pico": personas_perdidas_pico,
             "Personas atendidas en total": personas,
             "Ale eveto": random_6,
@@ -574,11 +598,8 @@ def validaciones(Dias_a_Simular) -> float:
             "Platillos encargados": pedido_del_dia_para_diccionario,
             "ingresos": ganancias,
             "egresos": GastosTotal,
-            "Total": Ganancias_totales
+            "Total": round(Ganancias_totales, 2)
         }
-
-
-
 
         diccionario2 = {
             "Dia": _ + 1,
@@ -591,35 +612,26 @@ def validaciones(Dias_a_Simular) -> float:
             "Tiempo de cosina por platillo": temp_cosina_promedio,
             "Minutos cosinados totales": horas_cosina_totales,
             "Minutos por cosinero": minutos_por_cosinero,
-            "tiempo de hocio de cada cosinero": horas_habiles - (minutos_por_cosinero / 60),
+            "tiempo de hocio de cada cosinero": round((horas_habiles - (minutos_por_cosinero / 60)), 2),
             "Ale Distribucion": random_5,
             "distribucion de los platillos": distribucion_platillos,
+            "Platillos a cosinar": platillos_totales_sumatoria,
             "Platillos rechasados": platillosRechasados,
-            "Ganancias de todos los platillos": ganancias_netas_final,
+            "Ganancias de todos los platillos": ganancias,
             "Gastos de insumos": gastos_insumos
         }
 
-        # [
-        #     "Dia",
-        #     "PlatillosIniciales",
-        #     "Estado de encarga ",
-        #     "Ale platillos",
-        #     "promedio de platillos por persona",
-        #     "total de platillos vendidos",
-        #     "Ale timpo",
-        #     "Tiempo de cosina por platillo",
-        #     "Minutos cosinados totales",
-        #     "Minutos por cosinero",
-        #     "tiempo de hocio de cada cosinero",
-        #     "Ale Distribucion",
-        #     "distribucion de los platillos",
-        #     "Platillos rechasados",
-        #     "Ganancias de todos los platillos",
-        #     "Gastos de insumos"
-        # ]
 
         listaDiccionarios1.append(diccionario)
         listaDiccionarios2.append(diccionario2)
+
+
+    concluciones = {
+        "Promedio de platillos por dia": (sum(Platillos_vendidos_totales) / len(Platillos_vendidos_totales)),
+        "Invercion total": gastos_totales,
+        "Ganancias": ganancias_totales,
+        "Ganancias totales": ganancias - gastos_totales
+    }
 
     print("DIccionario 1 \n")
     print(listaDiccionarios1)
@@ -629,7 +641,7 @@ def validaciones(Dias_a_Simular) -> float:
 
     mostrar_Tablasa(listaDiccionarios1, listaDiccionarios2)
 
-validaciones(100)
+validaciones(10)
 
 
 
