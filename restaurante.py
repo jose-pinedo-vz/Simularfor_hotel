@@ -4,61 +4,66 @@ import customtkinter as ctk
 from tkinter import ttk
 
 
-
-flojo_diario = [60, 100, 160, 200, 240]
-flujo_siario_prob = [10, 25, 40, 20, 5]
-
-grupo = [2, 4, 6, 7, 8]
-grupo_prob = [10, 40, 30, 15, 5]
-
-tem_preparacion = [5, 10, 20, 30]
-tem_preparacion_prob = [20, 55, 15, 10]
-
-consumo = [1, 2, 3]
-condumo_prob = [20, 60, 20]
-
-suministro = [1, 2, 4, 5]
-suministro_prob = [60, 25, 10, 5]
-
-even_rh = ["nada", "renuncia", "despedido", "renunacia multiple"]
-even_rh_prob = [92, 3, 4, 1]
-
-Evento_Ale_prob = [80, 10, 5, 5]
-Evento_Ale = ["Nada", "Merma o accidente menor", "Falla en equipo", "Devolucion de platillo"]
-
-hora_critica = [0, 1]
-hora_critica_prob = [90, 10]
-
-porcen_ora_critica = [30, 40, 50]
-porcen_ora_critica_prob = [40, 30, 30]
-
-categorai_platillos = [[70, 20, 10], [60, 25, 15], [50, 30, 20]]
-categorai_platillos_prob = [60, 30, 10]
+import tkinter as tk
+from tkinter import ttk
+import customtkinter as ctk
 
 
 
-# otros datos
-platillos_disponibles = ["normal", "caro", "exotico"]
-platilllosEmpesamos = [400, 200, 40]
+# flojo_diario = [60, 100, 160, 200, 240]
+# flujo_siario_prob = [10, 25, 40, 20, 5]
 
-cantidadMinimaDeStock = [200, 70, 10]
-cantidadDelStockmaxiom = [400, 300, 50]
+# grupo = [2, 4, 6, 7, 8]
+# grupo_prob = [10, 40, 30, 15, 5]
 
-platillos_lista = platilllosEmpesamos[:]
-ganancias_por_platillo = [150, 600, 900]
-ganancias_netas = [100, 300, 350]
+# tem_preparacion = [5, 10, 20, 30]
+# tem_preparacion_prob = [20, 55, 15, 10]
 
-cantidad_de_mesas = 2
-cantidad_de_cosineros = 8
-sueldo_cosineros = 15000
-horas_habiles = 8
-personal = 10
-sueldo_personal = 8000
+# consumo = [1, 2, 3]
+# condumo_prob = [20, 60, 20]
 
-pago_servicios = 2000
+# suministro = [1, 2, 4, 5]
+# suministro_prob = [60, 25, 10, 5]
+
+# even_rh = ["nada", "renuncia", "despedido", "renunacia multiple"]
+# even_rh_prob = [92, 3, 4, 1]
+
+# Evento_Ale_prob = [80, 10, 5, 5]
+# Evento_Ale = ["Nada", "Merma o accidente menor", "Falla en equipo", "Devolucion de platillo"]
+
+# hora_critica = [0, 1]
+# hora_critica_prob = [90, 10]
+
+# porcen_ora_critica = [30, 40, 50]
+# porcen_ora_critica_prob = [40, 30, 30]
+
+# categorai_platillos = [[70, 20, 10], [60, 25, 15], [50, 30, 20]]
+# categorai_platillos_prob = [60, 30, 10]
+
+
+
+# # otros datos
+# platillos_disponibles = ["normal", "caro", "exotico"]
+# platilllosEmpesamos = [400, 200, 40]
+
+# cantidadMinimaDeStock = [200, 70, 10]
+# cantidadDelStockmaxiom = [400, 300, 50]
+
+# platillos_lista = platilllosEmpesamos[:]
+# ganancias_por_platillo = [150, 600, 900]
+# ganancias_netas = [100, 300, 350]
+
+# cantidad_de_mesas = 2
+# cantidad_de_cosineros = 8
+# sueldo_cosineros = 15000
+# horas_habiles = 8
+# personal = 10
+# sueldo_personal = 8000
+
+# pago_servicios = 2000
 
 class mostrar_Tablasa():
-    def __init__(self, diccionario, diccionario2):
+    def __init__(self, diccionario, diccionario2, concluciones):
         self.diccionario = diccionario
         self.diccionario2 = diccionario2
         self.ventana_tablas = ctk.CTkToplevel()
@@ -83,78 +88,118 @@ class mostrar_Tablasa():
                                     font=("Arial", 24, "bold"))
         label_titulo.pack(pady=20)
 
-        self.frameMontecarlo = ctk.CTkScrollableFrame(fm_General, border_width=5, height=500, border_color="#4281FF", fg_color="transparent", orientation="horizontal")
-        self.frameMontecarlo.pack(fill="both", expand=True, padx=20, pady=20)
 
-        label_titulo2 = ctk.CTkLabel(fm_General, text="PRODUCTOS", font=("Arial", 24, "bold"))
-        label_titulo2.pack(pady=20)
+        style = ttk.Style()
+        style.theme_use("default")
 
-        columnas_tabla1 = [
-            "Dia",
-            "Ale personas",
-            "personas en el dia",
-            "Ale grupos",
-            "personas por grupo",
-            "cantidad de mesas",
-            "mesas ocupadas por horas",
-            "personas perdidas",
-            "personas atendidas",
-            "Ale critica",
-            "Ubo ora critica",
-            "Percentaje de hora critica",
-            "perdidas en hora pico",
-            "Personas atendidas en total",
-            "Ale eveto",
-            "evento del dia",
-            "Evento del personal",
-            "Ale RH",
-            "Encarga a provedores",
-            "Platillos encargados",
-            "ingresos",
-            "egresos",
-            "Total"
-        ]
-        self.tabla = ttk.Treeview(self.frameMontecarlo, columns=columnas_tabla1, show="headings")
-        for valor in columnas_tabla1:
-            self.tabla.heading(valor, text=f"{valor}")
-            self.tabla.column(valor, width=250, anchor="center")
+        style.configure("Treeview",
+            background="#2B2B2B",
+            foreground="white",
+            fieldbackground="#2B2B2B",
+            rowheight=35,
+            borderwidth=0,
+            font=("Arial", 9)
+        )
+
+        style.configure("Treeview.Heading",
+            background="#1F6AA5",
+            foreground="white",
+            relief="flat",
+            font=("Arial", 9, "bold")
+        )
+
+        style.map("Treeview", background=[("selected", "#4281FF")])
+
+        label_t1 = ctk.CTkLabel(fm_General, text="RESULTADOS DE SIMULACIÓN", font=("Arial", 22, "bold"), text_color="#4281FF")
+        label_t1.pack(pady=(20, 5))
+
+        self.frame1 = ctk.CTkScrollableFrame(fm_General, border_width=2, height=400, border_color="#4281FF", fg_color="#2B2B2B", orientation="horizontal")
+        self.frame1.pack(fill="both", expand=True, padx=20, pady=10)
+
+        columnas_tabla1 = ["Dia", "Ale personas", "personas en el dia", "Ale grupos", "personas por grupo",
+            "cantidad de mesas", "mesas ocupadas por horas", "personas perdidas",
+            "personas atendidas", "Ale critica", "Ubo ora critica", "Percentaje de hora critica",
+            "perdidas en hora pico", "Personas atendidas en total", "Ale eveto",
+            "evento del dia", "Evento del personal", "Ale RH", "Encarga a provedores",
+            "Platillos encargados", "ingresos", "egresos", "Total"]
+
+        self.tabla = ttk.Treeview(self.frame1, columns=columnas_tabla1, show="headings")
+
+        for col in columnas_tabla1:
+            self.tabla.heading(col, text=col.upper())
+            self.tabla.column(col, width=250, anchor="center")
+
         self.tabla.pack(fill="both", expand=True)
 
-        self.frameMontecarlo2 = ctk.CTkScrollableFrame(fm_General, border_width=5, height=500, border_color="#4281FF", fg_color="transparent", orientation="horizontal")
-        self.frameMontecarlo2.pack(fill="both", expand=True, padx=20, pady=20)
+        for i, d in enumerate(self.diccionario):
+            valores = [d.get(col, "") for col in columnas_tabla1]
+            tag = "par" if i % 2 == 0 else "impar"
+            self.tabla.insert("", "end", values=valores, tags=(tag,))
+
+        label_t2 = ctk.CTkLabel(fm_General, text="REPORTE DE PRODUCCIÓN Y COCINA", font=("Arial", 22, "bold"), text_color="#4281FF")
+        label_t2.pack(pady=(25, 5))
+
+        self.frame2 = ctk.CTkScrollableFrame(fm_General, border_width=2, height=400, border_color="#4281FF", fg_color="#2B2B2B", orientation="horizontal")
+        self.frame2.pack(fill="both", expand=True, padx=20, pady=10)
 
         columnas_tabla2 = [
-            "Dia",
-            "PlatillosIniciales",
-            "Estado de encarga ",
-            "Ale platillos",
-            "promedio de platillos por persona",
-            "total de platillos vendidos",
-            "Ale timpo",
-            "Tiempo de cosina por platillo",
-            "Minutos cosinados totales",
-            "Minutos por cosinero",
-            "tiempo de hocio de cada cosinero",
-            "Ale Distribucion",
-            "distribucion de los platillos",
-            "Platillos a cosinar",
-            "Platillos rechasados",
-            "Ganancias de todos los platillos",
-            "Gastos de insumos"
+            "Dia", "PlatillosIniciales", "Estado de encarga ", "Ale platillos",
+            "promedio de platillos por persona", "total de platillos vendidos", "Ale timpo",
+            "Tiempo de cosina por platillo", "Minutos cosinados totales", "Minutos por cosinero",
+            "tiempo de hocio de cada cosinero", "Ale Distribucion", "distribucion de los platillos",
+            "Platillos a cosinar", "Platillos rechasados", "Ganancias de todos los platillos", "Gastos de insumos"
         ]
-        self.tabla2 = ttk.Treeview(self.frameMontecarlo2, columns=columnas_tabla2, show="headings")
-        for valor in columnas_tabla2:
-            self.tabla2.heading(valor, text=f"{valor}")
-            self.tabla2.column(valor, width=250, anchor="center")
+
+        self.tabla2 = ttk.Treeview(self.frame2, columns=columnas_tabla2, show="headings")
+        for col in columnas_tabla2:
+            self.tabla2.heading(col, text=col.upper())
+            self.tabla2.column(col, width=250, anchor="center")
+
         self.tabla2.pack(fill="both", expand=True)
 
-        for d in self.diccionario:
-            valores = [d.get(col, "") for col in columnas_tabla1]
-            self.tabla.insert("", "end", values=valores)
-
-        for d2 in self.diccionario2:
+        for i, d2 in enumerate(self.diccionario2):
             valores2 = [d2.get(col, "") for col in columnas_tabla2]
-            self.tabla2.insert("", "end", values=valores2)
+            tag = "par" if i % 2 == 0 else "impar"
+            self.tabla2.insert("", "end", values=valores2, tags=(tag,))
+
+        label_t3 = ctk.CTkLabel(fm_General, text="RESUMEN DE MÉTRICAS", font=("Arial", 22, "bold"), text_color="#4281FF")
+        label_t3.pack(pady=(25, 5))
+
+        self.frame3 = ctk.CTkFrame(fm_General, fg_color="#2B2B2B", border_width=2, border_color="#4281FF")
+        self.frame3.pack(fill="x", padx=20, pady=10)
+
+        columnas_tabla3 = ["Concepto", "Valor Final"]
+        self.tabla3 = ttk.Treeview(self.frame3, columns=columnas_tabla3, show="headings", height=6)
+
+        for col in columnas_tabla3:
+            self.tabla3.heading(col, text=col.upper())
+            if col == "Concepto":
+                self.tabla3.column(col, width=400, anchor="w")
+            else:
+                self.tabla3.column(col, width=400, anchor="center")
+
+        self.tabla3.pack(fill="both", expand=True, padx=5, pady=5)
+
+        for t in [self.tabla, self.tabla2, self.tabla3]:
+            t.tag_configure("par", background="#2B2B2B")
+            t.tag_configure("impar", background="#383838") #
+
+        for col in columnas_tabla3:
+            self.tabla3.heading(col, text=col)
+            self.tabla3.column(col, anchor="center", stretch=True)
+
+        self.tabla3.column("Concepto", width=400)
+        self.tabla3.column("Valor Final", width=200)
+
+        for i in self.tabla3.get_children():
+            self.tabla3.delete(i)
+
+        for k, v in concluciones.items():
+            valor_formateado = f"{v:.2f}" if isinstance(v, (int, float)) else v
+            self.tabla3.insert("", "end", values=(k, valor_formateado))
+
+        self.tabla3.pack(fill="both", expand=True)
+
 
         self.ventana_tablas.mainloop()
 
@@ -162,7 +207,7 @@ class mostrar_Tablasa():
 def CargarMedios():
     global flojo_diario, flujo_siario_prob, grupo, grupo_prob, tem_preparacion, tem_preparacion_prob, consumo, condumo_prob, suministro, \
         suministro_prob, even_rh, even_rh_prob, Evento_Ale_prob, Evento_Ale, hora_critica, hora_critica_prob, porcen_ora_critica, \
-        porcen_ora_critica_prob, categorai_platillos, categorai_platillos_prob, platillos_disponibles, cantidadMinimaDeStock, cantidadDelStockmaxiom
+        porcen_ora_critica_prob, categorai_platillos, categorai_platillos_prob, platillos_disponibles, cantidadMinimaDeStock, cantidadDelStockmaxiom, platilllosEmpesamos
 
 
     flojo_diario = [60, 100, 160, 200, 240]
@@ -180,7 +225,7 @@ def CargarMedios():
     suministro = [1, 2, 3, 4]
     suministro_prob = [60, 30, 5, 5]
 
-    even_rh = ["nada", "renuncia", "despedido", "renunacia multiple"]
+    even_rh = ["nada", "renuncia", "despedido", "multiple"]
     even_rh_prob = [92, 3, 4, 1]
 
     Evento_Ale_prob = [80, 10, 5, 5]
@@ -253,7 +298,7 @@ def validaciones(Dias_a_Simular) -> float:
     global suministro_prob, even_rh_prob, Evento_Ale_prob, porcen_ora_critica_prob, hora_critica_prob
     global flojo_diario
 
-    CargarMedios()
+    # CargarMedios()
 
     listas_a_validar = [
         flujo_siario_prob, grupo_prob, tem_preparacion_prob, condumo_prob,
@@ -267,44 +312,48 @@ def validaciones(Dias_a_Simular) -> float:
             return False
 
     if len(flojo_diario) != len(flujo_siario_prob):
-        print("Error en los datos")
+        print("Error en los datos 1")
         return
 
     if len(grupo) != len(grupo_prob):
-        print("Error en los datos")
+        print("Error en los datos 2")
         return
 
     if len(tem_preparacion) != len(tem_preparacion_prob):
-        print("Error en los datos")
+        print("Error en los datos 3")
         return
 
     if len(consumo) != len(condumo_prob):
-        print("Error en los datos")
+        print("Error en los datos 4")
         return
 
     if len(suministro) != len(suministro_prob):
-        print("Error en los datos")
+        print("Error en los datos 5")
         return
 
     if len(even_rh) != len(even_rh_prob):
-        print("Error en los datos")
+        print("Error en los datos 6")
         return
 
     if len(Evento_Ale) != len(Evento_Ale_prob):
-        print("Error en los datos")
+        print(Evento_Ale)
+        print(Evento_Ale_prob)
+        print("Error en los datos 7")
         return
 
     if len(porcen_ora_critica) != len(porcen_ora_critica_prob):
-        print("Error en los datos")
+        print("Error en los datos 8")
         return
 
 
     if len(hora_critica) != len(hora_critica_prob):
-        print("Error en los datos")
+        print(hora_critica)
+        print(hora_critica_prob)
+        print("Error en los datos 9")
         return
 
     if len(categorai_platillos) != len(categorai_platillos_prob):
-        print("Error en los datos")
+        print("Error en los datos 10")
         return
 
 
@@ -355,6 +404,11 @@ def validaciones(Dias_a_Simular) -> float:
     gastos_totales = 0
 
     lista_de_platillos_vendidos = []
+    dias_simulados = 0
+    lista_de_maximas_apariciones = []
+    clientes_totales_perdidos = 0
+    platillos_perdidos_totales = 0
+    personas_totales_de_llegada = 0
 
 
     for _ in range(Dias_a_Simular):
@@ -373,6 +427,7 @@ def validaciones(Dias_a_Simular) -> float:
         personas = int(personas)
         personas_totales_en_el_dia = personas
         print("canditad de personas en el dia: ", personas)
+        personas_totales_de_llegada += personas
         print("Platillos con lo que se inicia: ", platillos_lista)
 
         estado_de_la_encarga_mostrar = ""
@@ -405,6 +460,8 @@ def validaciones(Dias_a_Simular) -> float:
             print("personas perdidas ", personas_perdidas)
             print("personas atendidas ", personas)
 
+            clientes_totales_perdidos += personas_perdidas
+
         # print("Fin del dia")
         criticas, random8 = provavilidar(hora_critica, hora_critica_prob)
         existencia_de_hora_critica = ""
@@ -430,12 +487,14 @@ def validaciones(Dias_a_Simular) -> float:
                 personas_perdidas_pico = exceso_mesas * grupo_Porcent
 
                 print(f"personas perdidas por hora crítica {personas_perdidas_pico}")
+                clientes_totales_perdidos += personas_perdidas_pico
 
                 personas -= personas_perdidas_pico
                 personas = max(0, personas)
             else:
                 print("NO ser perdio gente")
-                existencia_de_hora_critica = "NO"
+        else:
+            existencia_de_hora_critica = "No"
 
         platillos_por_persona, random_3 = provavilidar(consumo, condumo_prob)
         print(f"el promedio de platos por persona fue de: {platillos_por_persona}")
@@ -461,6 +520,12 @@ def validaciones(Dias_a_Simular) -> float:
             platillos_totales_sumatoria.append(math.ceil(total_de_platillos * (distribucion_platillos[i]/100)))
 
         print(f"Lista platillos totales: {platillos_totales_sumatoria}")
+
+        indice_maximo = max(range(len(platillos_totales_sumatoria)), key=platillos_totales_sumatoria.__getitem__)
+
+        lista_de_maximas_apariciones.append(indice_maximo)
+
+        # print(platillos_totales_sumatoria)
 
         platillosRechasados = 0
         ganancias_totales_dia = 0
@@ -489,6 +554,8 @@ def validaciones(Dias_a_Simular) -> float:
 
 
         print(f"platillos rechazados: {platillosRechasados}")
+
+        platillos_perdidos_totales += platillosRechasados
 
         Platillos_vendidos_totales = sum(platillos_totales_sumatoria) - platillosRechasados
 
@@ -575,6 +642,8 @@ def validaciones(Dias_a_Simular) -> float:
         ganancias_totales += ganancias
         gastos_totales += GastosTotal
 
+        dias_simulados += 1
+
         diccionario = {
             "Dia": _ + 1,
             "Ale personas": random_1,
@@ -620,17 +689,32 @@ def validaciones(Dias_a_Simular) -> float:
             "Ganancias de todos los platillos": ganancias,
             "Gastos de insumos": gastos_insumos
         }
-
-
         listaDiccionarios1.append(diccionario)
         listaDiccionarios2.append(diccionario2)
 
 
+    platillo_mas_consumido = lista_de_maximas_apariciones
+
+    conteo = {}
+    for n in lista_de_maximas_apariciones:
+        conteo[n] = conteo.get(n, 0) + 1
+
+    platillo_mas_consumido = max(conteo, key=conteo.get)
+
+    eficienciaCosina =  round(((personas_totales_de_llegada - clientes_totales_perdidos) / personas_totales_de_llegada) * 100, 2)
+
+
     concluciones = {
-        "Promedio de platillos por dia": (sum(Platillos_vendidos_totales) / len(Platillos_vendidos_totales)),
+        "Dias simulados: ": dias_simulados,
+        "Promedio de platillos por dia": (sum(lista_de_platillos_vendidos) / len(lista_de_platillos_vendidos)),
+        "platillo mas consumido": platillos_disponibles[platillo_mas_consumido],
+        "personas totales atendidas": personas_totales_de_llegada,
+        "personas perdidas o rechazados": clientes_totales_perdidos,
+        "Eficiencia de la cosina": f"{eficienciaCosina}%",
+        "platillos perdidos": platillos_perdidos_totales,
         "Invercion total": gastos_totales,
         "Ganancias": ganancias_totales,
-        "Ganancias totales": ganancias - gastos_totales
+        "Ganancias totales": ganancias_totales - gastos_totales
     }
 
     print("DIccionario 1 \n")
@@ -639,9 +723,13 @@ def validaciones(Dias_a_Simular) -> float:
     print(listaDiccionarios2)
 
 
-    mostrar_Tablasa(listaDiccionarios1, listaDiccionarios2)
+    mostrar_Tablasa(listaDiccionarios1, listaDiccionarios2, concluciones)
 
-validaciones(10)
+
+
+    CargarMedios()
+
+# validaciones(50)
 
 
 
@@ -649,17 +737,19 @@ validaciones(10)
 
 class cocina:
     def __init__(self):
+        CargarMedios()
         self.ventana = ctk.CTkToplevel()
         self.ventana.title("COSINA - RESTAURANTE")
 
         try: self.ventana.state("zoomed")
         except: self.ventana.attributes("-zoomed", True)
 
-        color_fondo = "#5D4037"
-        color_hover = "#3E2723"
-        color_texto = "#FFFFFF"
-        color_Extra = "#8C8680"
-        color_contorno_azul = "#FFFFFF"
+        color_fondo = "#242424"          # Gris oscuro para los Frames internos
+        color_hover = "#1A1A1D"          # Fondo principal (el negro de la imagen)
+        color_texto = "#FFFFFF"          # Blanco puro para visibilidad
+        color_Extra = "#FFA726"          # Naranja para los botones (como en la imagen)
+        color_contorno_azul = "#4281FF"
+
 
         self.ventana.configure(fg_color=color_hover)
 
@@ -727,6 +817,12 @@ class cocina:
 
         self.pagoServicios = ctk.CTkEntry(self.datosFijos, font=("Arial", 13), width=ancho_entry, height=alto_entry)
         self.pagoServicios.grid(row=1, column=6, padx=pad_col, pady=(2, 10))
+
+        label71 = ctk.CTkLabel(self.datosFijos, text="dias a simular", font=("Arial", 13), text_color=color_texto, wraplength=ancho_entry)
+        label71.grid(row=0, column=7, padx=pad_col, pady=(10, 2), sticky="ew")
+
+        self.Dias_simular = ctk.CTkEntry(self.datosFijos, font=("Arial", 13), width=ancho_entry, height=alto_entry)
+        self.Dias_simular.grid(row=1, column=7, padx=pad_col, pady=(2, 10))
 
 
         self.datosPlatillos = ctk.CTkFrame(
@@ -894,6 +990,13 @@ class cocina:
         self.textHorasCriticasprob.grid(row=5, column=3, padx=pad_col, pady=(2, 10))
 
 
+        label32 = ctk.CTkLabel(self.datosBariables, text="Hay hora critica:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label32.grid(row=4, column=4, padx=pad_col, pady=(10, 2), sticky="ew")
+
+        self.texHayhoracritica = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.texHayhoracritica.grid(row=5, column=4, padx=pad_col, pady=(2, 10))
+
+
         self.Botonsitos = ctk.CTkFrame(
             self.frame_scroll,
             fg_color=color_fondo,
@@ -948,6 +1051,15 @@ class cocina:
             command=lambda: self.cargarValoresmedios()
         )
         self.md.grid(row=0, column=4, padx=20, pady=20)
+
+        self.disparar = ctk.CTkButton(
+            self.Botonsitos, text="Simular",
+            width=ancho_btn, height=alto_btn,
+            fg_color=color_Extra, hover_color=color_hover,
+            text_color=color_texto, font=("Arial", 14, "bold"),
+            command=lambda: self.piloto()
+        )
+        self.disparar.grid(row=0, column=6, padx=20, pady=20)
 
         self.cargarElementosEninterface()
 
@@ -1074,6 +1186,14 @@ class cocina:
         for elemento in porcen_ora_critica_prob:
             self.textHorasCriticasprob.insert("end", str(elemento) + "\n")
 
+
+        # texto_crudo = self.texHayhoracritica.get("1.0", "end")
+        # hora_critica_prob = [int(x) for x in texto_crudo.split()]
+
+        self.texHayhoracritica.delete("1.0", "end")
+        for elemento in hora_critica_prob:
+            self.texHayhoracritica.insert("end", str(elemento) + "\n")
+
     def extraervalores(self):
         print("Si llega")
 
@@ -1085,8 +1205,11 @@ class cocina:
         texto_crudo = self.text_FlujodePersonasPorDia.get("1.0", "end")
         flojo_diario = [float(x) for x in texto_crudo.split()]
 
-        texto_crudo = self.text_comsumoPorPersona_prob.get("1.0", "end")
-        flujo_siario_prob = [int(x) for x in texto_crudo.split()]
+        texto_crudo = self.text_FlujodePersonasPorDia_prob.get("1.0", "end")
+        flujo_siario_prob = [float(x) for x in texto_crudo.split()]
+
+        # texto_crudo = self.text_comsumoPorPersona_prob.get("1.0", "end")
+        # flujo_siario_prob = [int(x) for x in texto_crudo.split()]
 
         texto_crudo = self.text_TamaniodelGrupo.get("1.0", "end")
         grupo = [int(x) for x in texto_crudo.split()]
@@ -1098,6 +1221,7 @@ class cocina:
         tem_preparacion = [int(x) for x in texto_crudo.split()]
 
         #pulir
+        #
         texto_crudo = self.tex_preapracion_platillo_prob.get("1.0", "end")
         tem_preparacion_prob = [int(x) for x in texto_crudo.split()]
 
@@ -1118,23 +1242,24 @@ class cocina:
         even_rh = [x for x in texto_crudo.split()]
 
         texto_crudo = self.text_eventoRh_prob.get("1.0", "end")
-        even_rh_prob = [int(x) for x in texto_crudo.split()]
+        even_rh_prob = [float(x) for x in texto_crudo.split()]
 
 
-
-        texto_crudo = self.text_eventoAle_prob.get("1.0", "end")
+        # error
+        texto_crudo = self.text_eventoAle_prob.get("1.0", "end-1c")
         Evento_Ale_prob = [int(x) for x in texto_crudo.split()]
 
-        texto_crudo = self.text_eventoAle.get("1.0", "end")
-        Evento_Ale = [x for x in texto_crudo.split()]
+        texto_crudo = self.text_eventoAle.get("1.0", "end-1c")
+        Evento_Ale = [x.strip() for x in texto_crudo.splitlines() if x.strip()]
 
 
 
         texto_crudo = self.textHorasCriticas.get("1.0", "end")
-        hora_critica = [int(x) for x in texto_crudo.split()]
+        porcen_ora_critica = [int(x) for x in texto_crudo.split()]
 
+        # error textHorasCriticasprob
         texto_crudo = self.textHorasCriticasprob.get("1.0", "end")
-        hora_critica_prob = [int(x) for x in texto_crudo.split()]
+        porcen_ora_critica_prob = [int(x) for x in texto_crudo.split()]
 
 
         # texto_crudo = self..get("1.0", "end")
@@ -1164,12 +1289,16 @@ class cocina:
         texto_crudo = self.txt_cantidadStock.get("1.0", "end")
         platilllosEmpesamos = [int(x) for x in texto_crudo.split()]
 
-
         texto_crudo = self.txt_cantidadStock_min.get("1.0", "end")
         cantidadMinimaDeStock = [int(x) for x in texto_crudo.split()]
 
         texto_crudo = self.txt_cantidadStock.get("1.0", "end")
         cantidadDelStockmaxiom = [int(x) for x in texto_crudo.split()]
+
+        # texHayhoracritica
+
+        texto_crudo = self.texHayhoracritica.get("1.0", "end")
+        hora_critica_prob = [int(x) for x in texto_crudo.split()]
 
         global cantidad_de_mesas, cantidad_de_cosineros, sueldo_cosineros, horas_habiles, personal, sueldo_personal, pago_servicios, platillos_lista, \
             ganancias_por_platillo, ganancias_netas
@@ -1197,7 +1326,11 @@ class cocina:
 
         self.cargarElementosEninterface()
 
+
+        # aniadir hora critica
+
     def Bacias(self):
+        hora_critica_prob.clear()
         flojo_diario.clear()
         flujo_siario_prob.clear()
 
@@ -1252,69 +1385,19 @@ class cocina:
         self.cargarElementosEninterface()
 
     def cargarValoresmedios(self):
-        global flojo_diario, flujo_siario_prob, grupo, grupo_prob, tem_preparacion, tem_preparacion_prob, consumo, condumo_prob, suministro, \
-            suministro_prob, even_rh, even_rh_prob, Evento_Ale_prob, Evento_Ale, hora_critica, hora_critica_prob, porcen_ora_critica, \
-            porcen_ora_critica_prob, categorai_platillos, categorai_platillos_prob, platillos_disponibles, cantidadMinimaDeStock, cantidadDelStockmaxiom
-
-        global cantidad_de_mesas, cantidad_de_cosineros, sueldo_cosineros, horas_habiles, personal, sueldo_personal, pago_servicios, platillos_lista, \
-            ganancias_por_platillo, ganancias_netas
-
-        flojo_diario = [60, 100, 160, 200, 240]
-        flujo_siario_prob = [10, 25, 40, 20, 5]
-
-        grupo = [2, 4, 6, 7, 8]
-        grupo_prob = [10, 40, 30, 15, 5]
-
-        tem_preparacion = [5, 10, 20, 30]
-        tem_preparacion_prob = [20, 55, 15, 10]
-
-        consumo = [1, 2, 3]
-        condumo_prob = [20, 60, 20]
-
-        suministro = [1, 2, 4, 5]
-        suministro_prob = [60, 25, 10, 5]
-
-        even_rh = ["nada", "renuncia", "despedido", "renunacia multiple"]
-        even_rh_prob = [92, 3, 4, 1]
-
-        Evento_Ale_prob = [80, 10, 5, 5]
-        Evento_Ale = ["Nada", "Merma o accidente menor", "Falla en equipo", "Devolucion de platillo"]
-
-        hora_critica = [0, 1]
-        hora_critica_prob = [90, 10]
-
-        porcen_ora_critica = [30, 40, 50]
-        porcen_ora_critica_prob = [40, 30, 30]
-
-        categorai_platillos = [[70, 20, 10], [60, 25, 15], [50, 30, 20]]
-        categorai_platillos_prob = [60, 30, 10]
-
-
-        # otros datos
-        platillos_disponibles = ["normal", "caro", "exotico"]
-        platilllosEmpesamos = [400, 200, 40]
-
-        cantidadMinimaDeStock = [200, 70, 10]
-        cantidadDelStockmaxiom = [400, 300, 50]
-
-        platillos_lista = platilllosEmpesamos[:]
-        ganancias_por_platillo = [150, 600, 900]
-        ganancias_netas = [100, 300, 350]
-
-        cantidad_de_mesas = 15
-        cantidad_de_cosineros = 8
-        sueldo_cosineros = 15000
-        horas_habiles = 8
-        personal = 10
-        sueldo_personal = 8000
-
-        pago_servicios = 2000
+        CargarMedios()
 
         print("Si carga")
 
         self.cargarElementosEninterface()
 
     def piloto(self):
-        validaciones()
+        dias = int(self.Dias_simular.get())
+        validaciones(dias)
 
-        self.ventana.mainloop()
+
+
+
+if __name__ == "__main__":
+    app = cocina()
+    app.ventana.mainloop()
