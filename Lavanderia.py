@@ -1,5 +1,10 @@
 
-#* Ya muestra los valores en la tabla (falta cheacar que si se actualizan los datos, si se muestren correctamente. Adeamas faltaria poner un bloqueo si la probabilidad no llega a 1)
+#! faltaria poner un bloqueo si la probabilidad no llega a 1 y si no es cuerente)
+
+#! tambien falta que si solo se pone un numero en los valores no de error 
+
+#! falta cuanto dinero gastas, cuanto dinero ganas en los entrys 
+
 
 from customtkinter import *
 import customtkinter as ctk
@@ -86,10 +91,46 @@ class Lavanderia:
         self.btn_simular = CTkButton(self.Monte_carlo, text= "simular", font= ("Arial", 25), command= self.Creacion_tabla)
         self.btn_simular.pack(pady=10)
         
+        
+        #caniidad de dias a simular
+        self.cant_dias = CTkEntry(self.Monte_carlo, placeholder_text= "Cantidad de dias", width= 205, font= ("Arial", 25))
+        self.cant_dias.pack(after= self.btn_simular , pady= 10)
+        
+        
         # Para que la tabla no se salga de la pantalla
         
         self.scroll_frame = CTkScrollableFrame(self.Monte_carlo)
         self.scroll_frame.pack(expand=True, fill="both", padx=10, pady=10)
+        
+        
+        #valores abajo de la tabla
+        
+        self.frame_resultados = CTkFrame(self.Monte_carlo)
+        self.frame_resultados.pack(pady=20)
+        
+        #promedio de lavado 
+        
+        self.tit_prom_lavado = CTkLabel(self.frame_resultados, text= "Promedio de lavado", font= ("Arial", 25 ))
+        self.tit_prom_lavado.grid(row=0, column=0, padx=10, pady=10)
+        
+        self.prom_lavado = CTkEntry(self.frame_resultados, width= 130, font=("Arial", 25 ))
+        self.prom_lavado.grid(row=0, column=1, padx=10, pady=10)
+        
+        #cuanto es la perdida (gastos)
+        
+        self.tit_gastos = CTkLabel(self.frame_resultados, text= "Perdidas", font= ("Arial", 25))
+        self.tit_gastos.grid(row=0, column=2, padx=10, pady=10)
+        
+        self.gastos = CTkEntry(self.frame_resultados, width= 130, font=("Arial", 25 ))
+        self.gastos.grid(row=0, column=3, padx=10, pady=10)
+        
+        # #cuanto es la ganacia 
+        
+        self.tit_ganancias = CTkLabel(self.frame_resultados, text= "Ganancias", font= ("Arial", 25))
+        self.tit_ganancias.grid(row=0, column=4, padx=10, pady=10)
+        
+        self.ganancias = CTkEntry(self.frame_resultados, width= 130, font=("Arial", 25 ))
+        self.ganancias.grid(row=0, column=5, padx=10, pady=10)
         
         #-------------------------------------------------------------------------------------------------------------------------------------------------
         
@@ -793,7 +834,11 @@ class Lavanderia:
         
         try:
             
-            self.filas_tabla_monte_carlo = 10
+            if not self.cant_dias.get():
+                messagebox.showerror("ERROR", "Establesca los dias a simular")
+                return
+            
+            self.filas_tabla_monte_carlo = int(self.cant_dias.get())
             
         except Exception:
                 messagebox.showerror("INVALIDACION","Datos invalidos", parent= self.Interfaz)
@@ -987,7 +1032,7 @@ class Lavanderia:
                     
                     valor_correcto = fila[0]
                     
-                    resultados_tabla_2.append(valor_correcto)
+                    resultados_tabla_2.append((valor_correcto))
                     
                     break
                 
@@ -1055,7 +1100,7 @@ class Lavanderia:
                     
                     valor_correcto = fila[0]
                     
-                    self.resultados_tabla_5.append(valor_correcto)
+                    self.resultados_tabla_5.append(int(valor_correcto))
                     
                     break
                 
@@ -1069,6 +1114,14 @@ class Lavanderia:
                 
                 self.Tabla.insert(indice_5 + 1, columna_tabla_5, valor_5)
                 
+        #promedio de tiempo de ciclo 
+            
+        cant = len(self.resultados_tabla_5)
+        suma = sum(self.resultados_tabla_5)
+        prom = int(suma / cant)
+        
+        self.prom_lavado.delete(0, END)
+        self.prom_lavado.insert(0, str(prom))
         
         self.Probabilidades_Estados_maquinas()
     
