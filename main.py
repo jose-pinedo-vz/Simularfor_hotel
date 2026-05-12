@@ -17,7 +17,7 @@ class main:
 
 
 
-        self.menu = ctk.CTkFrame(self.principal, width=400, corner_radius=0, fg_color="#D7CCC8")
+        self.menu = ctk.CTkScrollableFrame(self.principal, width=400, corner_radius=0, fg_color="#D7CCC8")
         self.menu.pack(side="left", fill="y")
 
         w, h = 400, 60
