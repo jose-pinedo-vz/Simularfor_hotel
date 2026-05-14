@@ -11,7 +11,8 @@ class main:
         self.ingresos = 0
         self.egresos = 0
         self.total = 0
-
+        self.diasTotales = 0
+        
         try: self.principal.state("zoomed")
         except: self.principal.attributes("-zoomed", True)
 
@@ -25,7 +26,7 @@ class main:
         color_hover = "#3E2723"
         color_texto = "#FFFFFF"
         color_Extra = "#8C8680"
-
+        
         self.recepcion = ctk.CTkButton(self.menu, text="Recepcion", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.recepcion.pack(padx=10, pady=10)
 
@@ -59,8 +60,6 @@ class main:
         self.Habitaciones = ctk.CTkButton(self.menu, text="Habitaciones", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.Habitaciones.pack(padx=10, pady=10)
 
-        self.Marketing = ctk.CTkButton(self.menu, text="Marketing", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
-        self.Marketing.pack(padx=10, pady=10)
 
         self.contenido = ctk.CTkFrame(self.principal, fg_color="transparent")
         self.contenido.pack(fill="both", expand=True)
@@ -205,14 +204,14 @@ class main:
     def ExtrearFechas(self):
         """
             Tomando los valores que se encuetran en un entri de arriba se encargara de separar
-            anios, meses y dias, de esta forma noc quedamos unciamente con dias fijos
+            años, meses y dias, de esta forma noc quedamos unciamente con dias fijos
         """
         try:
             textoCurudo = self.Dias.get("0.0", "end").split()
-            anios = int(textoCurudo[1])
+            años = int(textoCurudo[1])
             meses = int(textoCurudo[3])
             dias = int(textoCurudo[5])
-            diasTotales = (anios * 365) + (meses * 30) + dias
+            self.diasTotales = (años * 365) + (meses * 30) + dias
 
             print(f"dias a simular: {diasTotales}")
             print("Se Va")
