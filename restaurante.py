@@ -110,7 +110,7 @@ class mostrar_Tablasa():
 
         style.map("Treeview", background=[("selected", "#4281FF")])
 
-        label_t1 = ctk.CTkLabel(fm_General, text="RESULTADOS DE SIMULACIÓN", font=("Arial", 22, "bold"), text_color="#4281FF")
+        label_t1 = ctk.CTkLabel(fm_General, text="RESULTADOS GENERALES", font=("Arial", 22, "bold"), text_color="#4281FF")
         label_t1.pack(pady=(20, 5))
 
         self.frame1 = ctk.CTkScrollableFrame(fm_General, border_width=2, height=400, border_color="#4281FF", fg_color="#2B2B2B", orientation="horizontal")
@@ -136,7 +136,7 @@ class mostrar_Tablasa():
             tag = "par" if i % 2 == 0 else "impar"
             self.tabla.insert("", "end", values=valores, tags=(tag,))
 
-        label_t2 = ctk.CTkLabel(fm_General, text="REPORTE DE PRODUCCIÓN Y COCINA", font=("Arial", 22, "bold"), text_color="#4281FF")
+        label_t2 = ctk.CTkLabel(fm_General, text="RESULTADOS DE PLATILLOS", font=("Arial", 22, "bold"), text_color="#4281FF")
         label_t2.pack(pady=(25, 5))
 
         self.frame2 = ctk.CTkScrollableFrame(fm_General, border_width=2, height=400, border_color="#4281FF", fg_color="#2B2B2B", orientation="horizontal")
@@ -162,14 +162,18 @@ class mostrar_Tablasa():
             tag = "par" if i % 2 == 0 else "impar"
             self.tabla2.insert("", "end", values=valores2, tags=(tag,))
 
-        label_t3 = ctk.CTkLabel(fm_General, text="RESUMEN DE MÉTRICAS", font=("Arial", 22, "bold"), text_color="#4281FF")
+        label_t3 = ctk.CTkLabel(fm_General, text="CONCLUCIONES", font=("Arial", 22, "bold"), text_color="#4281FF")
         label_t3.pack(pady=(25, 5))
 
         self.frame3 = ctk.CTkFrame(fm_General, fg_color="#2B2B2B", border_width=2, border_color="#4281FF")
         self.frame3.pack(fill="x", padx=20, pady=10)
+        # tamanio de las letras
+        #
+        style = ttk.Style()
+        style.configure("TablaConceptos.Treeview", font=("Arial", 12))
 
         columnas_tabla3 = ["Concepto", "Valor Final"]
-        self.tabla3 = ttk.Treeview(self.frame3, columns=columnas_tabla3, show="headings", height=6)
+        self.tabla3 = ttk.Treeview(self.frame3, columns=columnas_tabla3, show="headings", height=10, style="TablaConceptos.Treeview")
 
         for col in columnas_tabla3:
             self.tabla3.heading(col, text=col.upper())
@@ -839,11 +843,11 @@ class cocina:
         self.nombreplatillos = ctk.CTkTextbox(self.datosPlatillos, font=("Arial", 13), width=ancho_txt, height=alto_txt)
         self.nombreplatillos.grid(row=1, column=0, padx=pad_col, pady=(2, 10))
 
-        label9 = ctk.CTkLabel(self.datosPlatillos, text="Distribución de su venta:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
-        label9.grid(row=0, column=1, padx=pad_col, pady=(10, 2), sticky="ew")
+        # label9 = ctk.CTkLabel(self.datosPlatillos, text="Distribución de su venta:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        # label9.grid(row=0, column=1, padx=pad_col, pady=(10, 2), sticky="ew")
 
-        self.distribucionPlatillos = ctk.CTkTextbox(self.datosPlatillos, font=("Arial", 13), width=ancho_txt, height=alto_txt)
-        self.distribucionPlatillos.grid(row=1, column=1, padx=pad_col, pady=(2, 10))
+        # self.distribucionPlatillos = ctk.CTkTextbox(self.datosPlatillos, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        # self.distribucionPlatillos.grid(row=1, column=1, padx=pad_col, pady=(2, 10))
 
         label10 = ctk.CTkLabel(self.datosPlatillos, text="Porcentaje de platillos:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
         label10.grid(row=0, column=2, padx=pad_col, pady=(10, 2), sticky="ew")
