@@ -1,11 +1,10 @@
 import customtkinter as ctk
 from PIL import Image, ImageOps
 
-from Generador import main
 
 import os
 
-class main:
+class Generador:
     def __init__(self):
         self.principal = ctk.CTk()
         self.principal.title("HOTEL")
@@ -180,13 +179,15 @@ class main:
             border_color="#8C8680",
             border_width=2,
             font=("Consolas", 18, "bold"),
-            command=lambda: llamarGenerador()
+            command=lambda: self.llamarGenerador()
         )
         self.boton2.grid(row=7, column=0, pady=10)
 
     def llamarGenerador(self):
-        # main.InterfazPrincipal()
-        pass
+        print("Llega")
+        from GeneradorDeNumeroAleatorios import main
+        main.llamarVentanaAleatorios()
+
 
 
     def redimensionar_fondo(self, event):
@@ -259,5 +260,5 @@ class main:
 
 
 if __name__ == "__main__":
-    app = main()
+    app = Generador()
     app.principal.mainloop()

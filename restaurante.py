@@ -63,11 +63,14 @@ import customtkinter as ctk
 # pago_servicios = 2000
 
 class mostrar_Tablasa():
-    def __init__(self, diccionario, diccionario2, concluciones, insidencaisDelDiario, insidencias_rh_diccionario):
+    def __init__(self, diccionario_resumen, diccionario, diccionario2, concluciones, insidencaisDelDiario, insidencias_rh_diccionario, GananciasTotales_lista, gastosTotales_lista):
+        self.diccionario_resumen = diccionario_resumen
         self.diccionario = diccionario
         self.diccionario2 = diccionario2
         self.insidencias_del_diario = insidencaisDelDiario
         self.insidencias_rh_diccionario = insidencias_rh_diccionario
+        self.GananciasTotales_lista = GananciasTotales_lista
+        self.gastosTotales_lista = gastosTotales_lista
 
         self.ventana_tablas = ctk.CTkToplevel()
         self.ventana_tablas.title("RESULTADOS")
@@ -114,6 +117,54 @@ class mostrar_Tablasa():
         )
 
         style.map("Treeview", background=[("selected", "#1A1A1D")])
+
+        label_t0_5 = ctk.CTkLabel(fm_General, text="RESUMEN", font=("Arial", 22, "bold"),text_color="#3E2723")
+        label_t0_5.pack(pady=(20, 5))
+
+        self.frame0_5 = ctk.CTkScrollableFrame(fm_General, border_width=2, height=400, border_color="#1A1A1D", fg_color="#2B2B2B", orientation="horizontal")
+        self.frame0_5.pack(fill="both", expand=True, padx=20, pady=10)
+
+
+        print("Resumen diccionario")
+        print(self.diccionario_resumen)
+
+        columnas_tabla0_5 = [
+            "Día",
+            "Total de personas atendidas",
+            "Total de platillos cocinados",
+            "Cantidad de minutos cocinados",
+            "Ocio por cocinero",
+            "¿Hubo hora crítica?",
+            "Ganancias brutas",
+            "Gastos de insumos"
+        ]
+        self.tabla0_5 = ttk.Treeview(self.frame0_5, columns=columnas_tabla0_5, show="headings")
+
+        for col in columnas_tabla0_5:
+            self.tabla0_5.heading(col, text=col.upper())
+            self.tabla0_5.column(col, width=250, anchor="center")
+
+        self.tabla0_5.pack(fill="both", expand=True)
+
+
+        # correjir
+
+        for i, d in enumerate(self.diccionario_resumen):
+            valores = []
+            for col in columnas_tabla0_5:
+                dato = d.get(col)
+                valores.append(dato)
+
+            if i % 2 == 0:
+                tag = "par"
+            else:
+               tag = "impar"
+            self.tabla0_5.insert("", "end", values=valores, tags=(tag,))
+
+
+
+        # label_t2 = ctk.CTkLabel(fm_General, text="RESULTADOS DE PLATILLOS", font=("Arial", 22, "bold"), text_color="#3E2723")
+        # label_t2.pack(pady=(25, 5))
 
         label_t1 = ctk.CTkLabel(fm_General, text="RESULTADOS GENERALES", font=("Arial", 22, "bold"),text_color="#3E2723")
         label_t1.pack(pady=(20, 5))
@@ -214,29 +265,35 @@ class mostrar_Tablasa():
         self.tabla3.heading("Concepto", text="CONCEPTO")
         self.tabla3.heading("Valor Final", text="VALOR FINAL")
 
-        self.tabla3.column("Concepto", width=400, anchor="w")
+        self.tabla3.column("Concepto", width=200, anchor="w")
         self.tabla3.column("Valor Final", width=200, anchor="center", stretch=True)
 
         self.tabla3.pack(fill="both", expand=True, padx=5, pady=5)
 
 
         # correjir
-        for t in [self.tabla, self.tabla2, self.tabla3]:
+        for t in [self.tabla, self.tabla2, self.tabla3, self.tabla0_5]:
             t.tag_configure("par", background="#D7CCC8")
             t.tag_configure("impar", background="#FFFFFF") #
 
-        self.tabla3.heading("Concepto", text="CONCEPTO")
-        self.tabla3.heading("Valor Final", text="VALOR FINAL")
+        # self.tabla3.heading("Concepto", text="CONCEPTO")
+        # self.tabla3.heading("Valor Final", text="VALOR FINAL")
 
-        self.tabla3.column("Concepto", width=400, anchor="w")
-        self.tabla3.column("Valor Final", width=200, anchor="center", stretch=True)
+        # self.tabla3.column("Concepto", width=200, anchor="w")
+        # self.tabla3.column("Valor Final", width=200, anchor="center", stretch=True)
 
         for i in self.tabla3.get_children():
             self.tabla3.delete(i)
 
+        # for k, v in concluciones.items():
+        #     valor_formateado = f"{v:.2f}" if isinstance(v, (int, float)) else v
+        #     self.tabla3.insert("", "end", values=(k, valor_formateado))
+
         for k, v in concluciones.items():
-            valor_formateado = f"{v:.2f}" if isinstance(v, (int, float)) else v
-            self.tabla3.insert("", "end", values=(k, valor_formateado))
+            if isinstance(v, (int, float)):
+                v = f"{v:.2f}"
+
+            self.tabla3.insert("", "end", values=(k, v))
 
         self.tabla3.pack(fill="both", expand=True)
 
@@ -249,6 +306,9 @@ class mostrar_Tablasa():
 
         self.insidenciaRh = ctk.CTkButton(self.frame4, text="Grafica de insidencias de Rh", command=lambda: self.GraficaEventosEh())
         self.insidenciaRh.grid(row=0, column=1, pady=20, padx=10)
+
+        self.insidenciaRh = ctk.CTkButton(self.frame4, text="Comportamiento de gastos y ganancias", command=lambda: self.GraficarGanancias())
+        self.insidenciaRh.grid(row=0, column=2, pady=20, padx=10)
 
     def GraficaInsidencais(self):
         # print(self.insidencias_del_diario)
@@ -278,7 +338,26 @@ class mostrar_Tablasa():
         plt.suptitle("Registro de insidencias en el personal")
         plt.tight_layout()
         plt.show()
+    def GraficarGanancias(self):
 
+        lisat_dias = list(range(1, len(self.GananciasTotales_lista) + 1))
+
+       # Importante: No uses plt.bar, usa plt.plot
+       # 'g-' crea una línea sólida verde, 'r-' una línea sólida roja
+        plt.plot(lisat_dias, self.GananciasTotales_lista, 'g-', label="Ganancias", linewidth=2)
+        plt.plot(lisat_dias, self.gastosTotales_lista, 'r-', label="Costos", linewidth=2)
+
+       # Esto obliga a Matplotlib a mostrar todos los días en el eje X
+        plt.xticks(lisat_dias)
+
+        plt.title("Comparativa Diaria: Ganancias vs Costos")
+        plt.xlabel("Día")
+        plt.ylabel("Efectivo ($)")
+        plt.legend()
+        plt.grid(True, linestyle='--') # Agrega rejilla para ver mejor los cruces
+
+        plt.tight_layout()
+        plt.show()
 
 
 
@@ -494,6 +573,10 @@ def validaciones(Dias_a_Simular) -> float:
     insidencaisDelDiario = []
     insidencaisDelDiarioRh = []
 
+    GananciasTotales_lista = []
+    gastosTotales_lista = []
+    diccionario_resumen = []
+
 
     for _ in range(Dias_a_Simular):
         print("dia: ", _ + 1)
@@ -592,8 +675,8 @@ def validaciones(Dias_a_Simular) -> float:
         horas_cosina_totales = temp_cosina_promedio * total_de_platillos
         print(f"Total de minutos cosinando: {horas_cosina_totales}")
 
-        minutos_por_cosinero = horas_cosina_totales / cantidad_de_cosineros
-        print(f"cada mesero devera de trabajar {minutos_por_cosinero} minutos al dia")
+        minutos_por_cocinero = horas_cosina_totales / cantidad_de_cosineros
+        print(f"cada mesero devera de trabajar {minutos_por_cocinero} minutos al dia")
 
         distribucion_platillos, random_5 = provavilidar(categorai_platillos, categorai_platillos_prob)
         print(f"distribucion de los platillos {distribucion_platillos}")
@@ -768,8 +851,8 @@ def validaciones(Dias_a_Simular) -> float:
             "Aleatorio Tiempo": random_4,
             "Tiempo de cocina por platillo": temp_cosina_promedio,
             "Minutos cocinados totales": horas_cosina_totales,
-            "Minutos por cocinero": minutos_por_cosinero,
-            "Tiempo de ocio por cocinero": round((horas_habiles - (minutos_por_cosinero / 60)), 2),
+            "Minutos por cocinero": minutos_por_cocinero,
+            "Tiempo de ocio por cocinero": round((horas_habiles - (minutos_por_cocinero / 60)), 2),
             "Aleatorio Distribución": random_5,
             "Distribución de los platillos": distribucion_platillos,
             "Platillos a cocinar": platillos_totales_sumatoria,
@@ -777,8 +860,25 @@ def validaciones(Dias_a_Simular) -> float:
             "Ganancias brutas": ganancias,
             "Gastos de insumos": gastos_insumos
         }
+
+        diccionario0_5 = {
+            "Día": _ + 1,
+            "Total de personas atendidas": personas,
+            "Total de platillos cocinados": sum(platillos_totales_sumatoria) - platillosRechasados,
+            "Cantidad de minutos cocinados": minutos_por_cocinero,
+            "Ocio por cocinero": round((horas_habiles - (minutos_por_cocinero / 60)), 2),
+            "¿Hubo hora crítica?": existencia_de_hora_critica,
+            "Ganancias brutas": ganancias,
+            "Gastos de insumos": gastos_insumos
+        }
+
         listaDiccionarios1.append(diccionario)
         listaDiccionarios2.append(diccionario2)
+        diccionario_resumen.append(diccionario0_5)
+
+        GananciasTotales_lista.append(ganancias)
+        gastosTotales_lista.append(GastosTotal)
+
 
 
     platillo_mas_consumido = lista_de_maximas_apariciones
@@ -805,6 +905,7 @@ def validaciones(Dias_a_Simular) -> float:
         "Utilidad neta final: ": ganancias_totales - gastos_totales
     }
 
+
     # print("DIccionario 1 \n")
     # print(listaDiccionarios1)
     # print("Diccionario 2 \n")
@@ -819,21 +920,17 @@ def validaciones(Dias_a_Simular) -> float:
     for insidencia in Evento_Ale:
         cantidad = insidencaisDelDiario.count(insidencia)
         insidencias_diccionario[insidencia] = cantidad
-
-    print(insidencias_diccionario)
-
+    # print(insidencias_diccionario)
     insidencias_rh_diccionario = {}
-
     for rh in even_rh:
         cantidad = insidencaisDelDiarioRh.count(rh)
         insidencias_rh_diccionario[rh] = cantidad
-
 
     print("Evento rh")
     print(insidencias_rh_diccionario)
 
 
-    mostrar_Tablasa(listaDiccionarios1, listaDiccionarios2, concluciones, insidencias_diccionario, insidencias_rh_diccionario)
+    mostrar_Tablasa(diccionario_resumen, listaDiccionarios1, listaDiccionarios2, concluciones, insidencias_diccionario, insidencias_rh_diccionario, GananciasTotales_lista, gastosTotales_lista)
 
 
 
