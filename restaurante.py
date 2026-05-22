@@ -173,7 +173,7 @@ class mostrar_Tablasa():
         self.frame1.pack(fill="both", expand=True, padx=20, pady=10)
 
         columnas_tabla1 = [
-            "Día", "Aleatorio Personas", "Personas en el día", "Aleatorio Grupos", "Personas por grupo",
+            "Día", "Mes", "Aleatorio Personas", "Personas en el día", "Aleatorio Grupos", "Personas por grupo",
             "Cantidad de mesas", "Mesas ocupadas por hora", "Personas perdidas",
             "Personas atendidas", "Aleatorio Crítica", "¿Hubo hora crítica?", "Porcentaje de hora crítica",
             "Perdidas en hora pico", "Personas atendidas en total", "Aleatorio Evento",
@@ -407,7 +407,7 @@ def CargarMedios():
     cantidadDelStockmaxiom = [600, 400, 100]
 
     global cantidad_de_mesas, cantidad_de_cosineros, sueldo_cosineros, horas_habiles, personal, sueldo_personal, pago_servicios, platillos_lista, \
-        ganancias_por_platillo, ganancias_netas
+        ganancias_por_platillo, ganancias_netas, penalisacino_por_personas_perdidas, penalisacion_por_platillos_perdidos
 
     platillos_lista = platilllosEmpesamos[:]
     ganancias_por_platillo = [50, 150, 300]
@@ -422,7 +422,10 @@ def CargarMedios():
 
     pago_servicios = 2000
 
-    print("Si carga")
+    penalisacino_por_personas_perdidas = 100
+    penalisacion_por_platillos_perdidos = 50
+
+    # print("Si carga")
 
 
 def validar(lista) -> bool:
@@ -445,9 +448,11 @@ def rangos(lista) -> list:
     return lista_acumulada
 
 contador = 0
-
+import GeneraRandom
 def provavilidar(lista1, lista2):
-    rand = random.random()
+    global contador
+    contador += 1
+    rand = GeneraRandom.aleatorio(contador)
     for i in range(len(lista2) - 1):
         if lista2[i] <= rand < lista2[i+1]:
             return lista1[i], rand
@@ -577,9 +582,49 @@ def validaciones(Dias_a_Simular) -> float:
     gastosTotales_lista = []
     diccionario_resumen = []
 
+    lista_promedio_personas_por_grupo = []
+    lista_promedio_de_hocio_por_cocinero = []
+
+    dias_del_anio = 0
+
+    lista_meses = [
+    "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    ]
+
+    rangos_meses = [
+        (1, 31),   
+        (32, 59),   
+        (60, 90),   
+        (91, 120),  
+        (121, 151), 
+        (152, 181), 
+        (182, 212), 
+        (213, 243), 
+        (244, 273), 
+        (274, 304), 
+        (305, 334), 
+        (335, 365)  
+    ]
+
+    ganancias_mensuales = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    personas_mensuales = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
 
     for _ in range(Dias_a_Simular):
         print("dia: ", _ + 1)
+
+        dias_del_anio += 1
+        if dias_del_anio == 366:
+            dias_del_anio = 1
+
+        mes_actual = ""
+
+        for indice, (inicio, fin) in enumerate(rangos_meses):
+            if inicio <= dias_del_anio and dias_del_anio <= fin:
+                mes_actual = lista_meses[indice]
+
+
         flojo_diario = flojo_diario_auxilia[:]
         if inicio_fin_semana <= (_ + 1) and (_ + 1) <= inicio_fin_semana + 2:
             print("Fin de semana")
@@ -813,10 +858,14 @@ def validaciones(Dias_a_Simular) -> float:
 
         dias_simulados += 1
 
+        lista_promedio_personas_por_grupo.append(grupo_Porcent)
+        lista_promedio_de_hocio_por_cocinero.append(round((horas_habiles - (minutos_por_cocinero / 60)), 2))
+
 
         # lista
         diccionario = {
             "Día": _ + 1,
+            "Mes": mes_actual,
             "Aleatorio Personas": random_1,
             "Personas en el día": personas_totales_en_el_dia,
             "Aleatorio Grupos": rnadom_2,
@@ -852,7 +901,7 @@ def validaciones(Dias_a_Simular) -> float:
             "Tiempo de cocina por platillo": temp_cosina_promedio,
             "Minutos cocinados totales": horas_cosina_totales,
             "Minutos por cocinero": minutos_por_cocinero,
-            "Tiempo de ocio por cocinero": round((horas_habiles - (minutos_por_cocinero / 60)), 2),
+            "Tiempo de ocio por cocinero": f"{round((horas_habiles - (minutos_por_cocinero / 60)), 2)} h",
             "Aleatorio Distribución": random_5,
             "Distribución de los platillos": distribucion_platillos,
             "Platillos a cocinar": platillos_totales_sumatoria,
@@ -891,18 +940,34 @@ def validaciones(Dias_a_Simular) -> float:
 
     eficienciaCosina =  round(((personas_totales_de_llegada - clientes_totales_perdidos) / personas_totales_de_llegada) * 100, 2)
 
+    # calculo de empleados ideales
+    ocio_promedio_cocinero = sum(lista_promedio_de_hocio_por_cocinero) / len(lista_promedio_de_hocio_por_cocinero)
+    horas_reales_cocinadas = cantidad_de_cosineros * (horas_habiles - ocio_promedio_cocinero)
+    empleados_ideales = math.ceil(horas_reales_cocinadas / horas_habiles)
+
+
+    #penalisaciones
+    penalisacionPersonas = clientes_totales_perdidos * penalisacino_por_personas_perdidas
+    penalisacionPlatillos = platillos_perdidos_totales * penalisacion_por_platillos_perdidos
+
 
     concluciones = {
         "Días simulados: ": dias_simulados,
         "Promedio de platillos por día: ": (sum(lista_de_platillos_vendidos) / len(lista_de_platillos_vendidos)),
         "Platillo más consumido: ": platillos_disponibles[platillo_mas_consumido],
         "Personas totales atendidas: ": personas_totales_de_llegada,
+        "Promedio de personas por dia: ": (personas_totales_de_llegada) / dias_simulados,
+        "Promedio de personas en los grupos: ": (sum(lista_promedio_personas_por_grupo) / len(lista_promedio_personas_por_grupo)),
         "Personas perdidas o rechazadas: ": clientes_totales_perdidos,
+        "Penalisacion por personas: ": penalisacionPersonas,
         "Eficiencia de la cocina: ": f"{eficienciaCosina}%",
         "Platillos perdidos: ": platillos_perdidos_totales,
+        "Penalisacion por platillos: ": penalisacionPlatillos,
+        "Ocio promedio por cocinero: ": (sum(lista_promedio_de_hocio_por_cocinero) / len(lista_promedio_de_hocio_por_cocinero)),
+        "Cantidad idea de empleados: ": empleados_ideales,
         "Inversión total: ": gastos_totales,
         "Ganancias brutas: ": ganancias_totales,
-        "Utilidad neta final: ": ganancias_totales - gastos_totales
+        "Utilidad neta: ": ganancias_totales - gastos_totales
     }
 
 
@@ -1030,6 +1095,18 @@ class cocina:
 
         self.Dias_simular = ctk.CTkEntry(self.datosFijos, font=("Arial", 13), width=ancho_entry, height=alto_entry)
         self.Dias_simular.grid(row=1, column=7, padx=pad_col, pady=(2, 10))
+
+        label72 = ctk.CTkLabel(self.datosFijos, text="Penalisacin por personas", font=("Arial", 13), text_color=color_texto, wraplength=ancho_entry)
+        label72.grid(row=2, column=0, padx=pad_col, pady=(10, 2), sticky="ew")
+
+        self.penalisacion_personas= ctk.CTkEntry(self.datosFijos, font=("Arial", 13), width=ancho_entry, height=alto_entry)
+        self.penalisacion_personas.grid(row=3, column=0, padx=pad_col, pady=(2, 10))
+
+        label72 = ctk.CTkLabel(self.datosFijos, text="Penalisacin por platillos", font=("Arial", 13), text_color=color_texto, wraplength=ancho_entry)
+        label72.grid(row=2, column=1, padx=pad_col, pady=(10, 2), sticky="ew")
+
+        self.penalisacion_platillos = ctk.CTkEntry(self.datosFijos, font=("Arial", 13), width=ancho_entry, height=alto_entry)
+        self.penalisacion_platillos.grid(row=3, column=1, padx=pad_col, pady=(2, 10))
 
 
         self.datosPlatillos = ctk.CTkFrame(
@@ -1293,6 +1370,16 @@ class cocina:
         self.pagoServicios.delete(0, "end")
         self.pagoServicios.insert(0, str(pago_servicios))
 
+        # penalisacino_por_personas_perdidas = 100
+        # penalisacion_por_platillos_perdidos = 50
+
+        self.penalisacion_personas.delete(0, "end")
+        self.penalisacion_personas.insert(0, str(penalisacino_por_personas_perdidas))
+
+        self.penalisacion_platillos.delete(0, "end")
+        self.penalisacion_platillos.insert(0, str(penalisacion_por_platillos_perdidos))
+
+
         # parte 2
         self.nombreplatillos.delete("1.0", "end")
         print("Experimentos: ", platillos_disponibles)
@@ -1402,11 +1489,21 @@ class cocina:
             self.texHayhoracritica.insert("end", str(elemento) + "\n")
 
     def extraervalores(self):
-        print("Si llega")
+        # print("Si llega")
 
         global flojo_diario, flujo_siario_prob, grupo, grupo_prob, tem_preparacion, tem_preparacion_prob, consumo, condumo_prob, suministro, \
             suministro_prob, even_rh, even_rh_prob, Evento_Ale_prob, Evento_Ale, hora_critica, hora_critica_prob, porcen_ora_critica, \
-            porcen_ora_critica_prob, categorai_platillos, categorai_platillos_prob, platillos_disponibles, cantidadMinimaDeStock, cantidadDelStockmaxiom
+            porcen_ora_critica_prob, categorai_platillos, categorai_platillos_prob, platillos_disponibles, cantidadMinimaDeStock, cantidadDelStockmaxiom, \
+            penalisacino_por_personas_perdidas, penalisacion_por_platillos_perdidos
+    
+        penalisacino_por_personas_perdidas = float(self.penalisacion_personas.get())
+        penalisacion_por_platillos_perdidos = float(self.penalisacion_platillos.get())
+
+        # self.penalisacion_personas.delete(0, "end")
+        # self.penalisacion_personas.insert(0, str(penalisacino_por_personas_perdidas))
+
+        # self.penalisacion_platillos.delete(0, "end")
+        # self.penalisacion_platillos.insert(0, str(penalisacion_por_platillos_perdidos))
 
 
         texto_crudo = self.text_FlujodePersonasPorDia.get("1.0", "end")
