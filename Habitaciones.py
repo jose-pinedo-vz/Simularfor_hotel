@@ -6,6 +6,10 @@ ADEMAS VER QUE ME ESTA CONTESTANTO ESA SIMULACIÓN ¿Que preguntas me contesta e
 # Cual es la habitacion o las habitaciones mas usadas
 # Esta simulacion me debe de dar opciones, para la toma de desiciones
 
+"""Se pretende simular: cada uno de los procesos que queremos simular en cada modulo"""
+
+#AGREGAR 5 INSUMOS MINIMO, PARA GENERAR COSTOS
+
 
 import customtkinter as ctk
 from CTkTable import CTkTable
@@ -48,10 +52,45 @@ class Habitaciones:
                                   [500, 0.10],
                                   [1000, 0.05]]
         
+        self.datos_daños=[["Sin daños", 0.75, 0],
+                          ["Sábana dañada", 0.10, 300],
+                          ["Toalla dañada", 0.08, 150],
+                          ["TV dañada", 0.04, 400],
+                          ["Foco", 0.03, 100]]
+        
+        self.datos_limpieza_individual=[[20, 0.20],
+                                        [30, 0.50],
+                                        [40, 0.30]]
+
+        self.datos_limpieza_doble=[[30, 0.30],
+                                   [45, 0.40],
+                                   [60, 0.30]]
+
+        self.datos_limpieza_suite=[[60, 0.20],
+                                   [90, 0.50],
+                                   [120, 0.30]]
+        
+        self.datos_personas=[[1, 0.35],
+                             [2, 0.40],
+                             [3, 0.15],
+                             [4, 0.07],
+                             [5, 0.03]]
+        
+        self.datos_decision=[["Aceptar superior", 0.30],
+                               ["Dividir grupo", 0.25],
+                               ["Esperar", 0.10],
+                               ["Cancelar", 0.35]]
+                                
         self.reiniciar_llegadas=False
         self.reiniciar_tipo=False
         self.reiniciar_estancia=False
         self.reiniciar_mantenimiento=False
+        self.reiniciar_daños=False
+        self.reiniciar_limpieza_individual=False
+        self.reiniciar_limpieza_doble=False
+        self.reiniciar_limpieza_suite=False
+        self.reiniciar_personas=False
+        self.reiniciar_decision=False
 
        # SCROLL
         self.frame_scroll=ctk.CTkScrollableFrame(self.ventana)
@@ -61,61 +100,113 @@ class Habitaciones:
         titulo=ctk.CTkLabel(self.frame_scroll, text="Simulación de habitaciones", text_color=COLOR_TEXTO, font=("Arial", 28, "bold", "italic"))
         titulo.pack(pady=20)
 
-        # FRAME DATOS
+        # FRAME PRINCIPAL DATOS
         self.frame_datos=ctk.CTkFrame(self.frame_scroll, border_width=2, border_color=COLOR_CONTORNO)
         self.frame_datos.pack(fill="x", padx=20, pady=20)
 
         ancho_entry=180
         alto_entry=40
 
-        ctk.CTkLabel(self.frame_datos, text="Habitaciones individuales:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=0, column=0, padx=20, pady=(20, 5))
-        self.entry_individuales=ctk.CTkEntry(self.frame_datos, width=ancho_entry, height=alto_entry)
-        self.entry_individuales.grid(row=1, column=0, padx=20, pady=(0, 20))
+
+        self.frame_hotel=ctk.CTkFrame(self.frame_datos)
+        self.frame_hotel.pack(fill="x", padx=15, pady=15)
+        titulo_hotel=ctk.CTkLabel(self.frame_hotel, text="CONFIGURACIÓN DEL HOTEL", text_color=COLOR_TEXTO, font=("Arial", 20, "bold"))
+        titulo_hotel.grid(row=0, column=0, columnspan=3, pady=15)
+
+        ctk.CTkLabel(self.frame_hotel, text="Habitaciones individuales:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=2, column=0, padx=20, pady=(20, 5))
+        self.entry_individuales=ctk.CTkEntry(self.frame_hotel, width=ancho_entry, height=alto_entry)
+        self.entry_individuales.grid(row=3, column=0, padx=20, pady=(0, 20))
         self.entry_individuales.insert(0, "10")
 
-        ctk.CTkLabel(self.frame_datos, text="Habitaciones dobles:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=0, column=1, padx=20, pady=(20, 5))
-        self.entry_dobles=ctk.CTkEntry(self.frame_datos, width=ancho_entry, height=alto_entry)
-        self.entry_dobles.grid(row=1, column=1, padx=20, pady=(0, 20))
+        ctk.CTkLabel(self.frame_hotel, text="Habitaciones dobles:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=2, column=1, padx=20, pady=(20, 5))
+        self.entry_dobles=ctk.CTkEntry(self.frame_hotel, width=ancho_entry, height=alto_entry)
+        self.entry_dobles.grid(row=3, column=1, padx=20, pady=(0, 20))
         self.entry_dobles.insert(0, "8")
 
-        ctk.CTkLabel(self.frame_datos, text="Habitaciones suite:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=0, column=2, padx=20, pady=(20, 5))
-        self.entry_suites=ctk.CTkEntry(self.frame_datos, width=ancho_entry, height=alto_entry)
-        self.entry_suites.grid(row=1, column=2, padx=20, pady=(0, 20))
+        ctk.CTkLabel(self.frame_hotel, text="Habitaciones suite:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=2, column=2, padx=20, pady=(20, 5))
+        self.entry_suites=ctk.CTkEntry(self.frame_hotel, width=ancho_entry, height=alto_entry)
+        self.entry_suites.grid(row=3, column=2, padx=20, pady=(0, 20))
         self.entry_suites.insert(0, "5")
 
-        ctk.CTkLabel(self.frame_datos, text="Costo operativo diario:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=2, column=0, padx=20, pady=(10, 5))
-        self.entry_operativo=ctk.CTkEntry(self.frame_datos, width=ancho_entry, height=alto_entry)
+        ctk.CTkLabel(self.frame_hotel, text="Capacidad Individual:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=4, column=0, padx=20, pady=(10,5))
+        self.entry_cap_individual=ctk.CTkEntry(self.frame_hotel, width=ancho_entry, height=alto_entry)
+        self.entry_cap_individual.grid(row=5, column=0, padx=20, pady=(0,20))
+        self.entry_cap_individual.insert(0, "1")
+
+        ctk.CTkLabel(self.frame_hotel, text="Capacidad Doble:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=4, column=1, padx=20, pady=(10,5))
+        self.entry_cap_doble=ctk.CTkEntry(self.frame_hotel, width=ancho_entry, height=alto_entry)
+        self.entry_cap_doble.grid(row=5, column=1, padx=20, pady=(0,20))
+        self.entry_cap_doble.insert(0, "2")
+
+        ctk.CTkLabel(self.frame_hotel, text="Capacidad Suite:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=4, column=2, padx=20, pady=(10,5))
+        self.entry_cap_suite=ctk.CTkEntry(self.frame_hotel, width=ancho_entry, height=alto_entry)
+        self.entry_cap_suite.grid(row=5, column=2, padx=20, pady=(0,20))
+        self.entry_cap_suite.insert(0, "5")
+        
+
+        self.frame_operacion=ctk.CTkFrame(self.frame_datos)
+        self.frame_operacion.pack(fill="x", padx=15, pady=15)
+        titulo_operacion=ctk.CTkLabel(self.frame_operacion, text="OPERACIÓN Y COSTOS", text_color=COLOR_TEXTO, font=("Arial", 20, "bold"))
+        titulo_operacion.grid(row=0, column=0, columnspan=3, pady=15)
+
+        ctk.CTkLabel(self.frame_operacion, text="Costo operativo diario:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=2, column=0, padx=20, pady=(10, 5))
+        self.entry_operativo=ctk.CTkEntry(self.frame_operacion, width=ancho_entry, height=alto_entry)
         self.entry_operativo.grid(row=3, column=0, padx=20, pady=(0, 20))
         self.entry_operativo.insert(0, "500")
 
-        ctk.CTkLabel(self.frame_datos, text="Costo de limpieza:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=2, column=1, padx=20, pady=(10, 5))
-        self.entry_limpieza=ctk.CTkEntry(self.frame_datos, width=ancho_entry, height=alto_entry)
-        self.entry_limpieza.grid(row=3, column=1, padx=20, pady=(0, 20))
-        self.entry_limpieza.insert(0, "100")
+        ctk.CTkLabel(self.frame_operacion, text="Limpieza Individual:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=2, column=1, padx=20, pady=(10,5))
+        self.entry_limpieza_individual=ctk.CTkEntry(self.frame_operacion, width=ancho_entry, height=alto_entry)
+        self.entry_limpieza_individual.grid(row=3, column=1, padx=20, pady=(0,20))
+        self.entry_limpieza_individual.insert(0, "80")
 
-        ctk.CTkLabel(self.frame_datos, text="Días a simular:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=2, column=2, padx=20, pady=(10, 5))
-        self.entry_dias=ctk.CTkEntry(self.frame_datos, width=ancho_entry, height=alto_entry)
-        self.entry_dias.grid(row=3, column=2, padx=20, pady=(0, 20))
+        ctk.CTkLabel(self.frame_operacion, text="Limpieza Doble:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=2, column=2, padx=20, pady=(10,5))
+        self.entry_limpieza_doble=ctk.CTkEntry(self.frame_operacion, width=ancho_entry, height=alto_entry)
+        self.entry_limpieza_doble.grid(row=3, column=2, padx=20, pady=(0,20))
+        self.entry_limpieza_doble.insert(0, "120")
+
+        ctk.CTkLabel(self.frame_operacion, text="Limpieza Suite:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=2, column=3, padx=20, pady=(10,5))
+        self.entry_limpieza_suite=ctk.CTkEntry(self.frame_operacion, width=ancho_entry, height=alto_entry)
+        self.entry_limpieza_suite.grid(row=3, column=3, padx=20, pady=(0,20))
+        self.entry_limpieza_suite.insert(0, "200")
+
+        ctk.CTkLabel(self.frame_operacion, text="Días a simular:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=2, column=4, padx=20, pady=(10, 5))
+        self.entry_dias=ctk.CTkEntry(self.frame_operacion, width=ancho_entry, height=alto_entry)
+        self.entry_dias.grid(row=3, column=4, padx=20, pady=(0, 20))
         self.entry_dias.insert(0, "20")
 
+        ctk.CTkLabel(self.frame_operacion, text="Personal de limpieza:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=4, column=0, padx=20, pady=(10,5))
+        self.entry_personal_limpieza=ctk.CTkEntry(self.frame_operacion, width=ancho_entry, height=alto_entry)
+        self.entry_personal_limpieza.grid(row=5, column=0, padx=20, pady=(0,20))
+        self.entry_personal_limpieza.insert(0, "4")
+
+
+        self.frame_precios=ctk.CTkFrame(self.frame_datos)
+        self.frame_precios.pack(fill="x", padx=15, pady=15)
+        titulo_precios=ctk.CTkLabel(self.frame_precios, text="PRECIOS DE HABITACIONES", text_color=COLOR_TEXTO, font=("Arial", 20, "bold"))
+        titulo_precios.grid(row=0, column=0, columnspan=3, pady=15)
+
         # PRECIOS
-        ctk.CTkLabel(self.frame_datos, text="Precio Individual:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=4, column=0, padx=20, pady=(10, 5))
-        self.entry_precio_individual=ctk.CTkEntry(self.frame_datos, width=ancho_entry, height=alto_entry)
+        ctk.CTkLabel(self.frame_precios, text="Precio Individual:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=4, column=0, padx=20, pady=(10, 5))
+        self.entry_precio_individual=ctk.CTkEntry(self.frame_precios, width=ancho_entry, height=alto_entry)
         self.entry_precio_individual.grid(row=5, column=0, padx=20, pady=(0, 20))
         self.entry_precio_individual.insert(0, "500")
 
-        ctk.CTkLabel(self.frame_datos, text="Precio Doble:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=4, column=1, padx=20, pady=(10, 5))
-        self.entry_precio_doble=ctk.CTkEntry(self.frame_datos, width=ancho_entry, height=alto_entry)
+        ctk.CTkLabel(self.frame_precios, text="Precio Doble:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=4, column=1, padx=20, pady=(10, 5))
+        self.entry_precio_doble=ctk.CTkEntry(self.frame_precios, width=ancho_entry, height=alto_entry)
         self.entry_precio_doble.grid(row=5, column=1, padx=20, pady=(0, 20))
         self.entry_precio_doble.insert(0, "800")
 
-        ctk.CTkLabel(self.frame_datos, text="Precio Suite:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=4, column=2, padx=20, pady=(10, 5))
-        self.entry_precio_suite=ctk.CTkEntry(self.frame_datos, width=ancho_entry, height=alto_entry)
+        ctk.CTkLabel(self.frame_precios, text="Precio Suite:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=4, column=2, padx=20, pady=(10, 5))
+        self.entry_precio_suite=ctk.CTkEntry(self.frame_precios, width=ancho_entry, height=alto_entry)
         self.entry_precio_suite.grid(row=5, column=2, padx=20, pady=(0, 20))
         self.entry_precio_suite.insert(0, "1500")
 
-        self.btn_simular=ctk.CTkButton(self.frame_datos, text="Simular", width=ancho_entry, height=alto_entry, fg_color="#D6C49E", text_color="#000000", command=self.simular)
-        self.btn_simular.grid(row=3, column=3, padx=20, pady=(0, 20))
+
+        # BOTON SIMULAR
+        self.frame_simular=ctk.CTkFrame(self.frame_scroll)
+        self.frame_simular.pack(fill="x", padx=20, pady=20)
+        self.btn_simular=ctk.CTkButton(self.frame_simular, text="SIMULAR HOTEL", width=300, height=50, fg_color="#D6C49E", text_color="#000000", font=("Arial", 18, "bold"), command=self.simular)
+        self.btn_simular.pack(pady=20)
 
         # KPIS
         self.frame_kpis=ctk.CTkFrame(self.frame_scroll, border_width=2, border_color=COLOR_CONTORNO)
@@ -135,9 +226,9 @@ class Habitaciones:
         self.frame_botones.pack(fill="x", padx=20, pady=20)
 
         botones=[("Limpiar", self.limpiar),
-                 ("Valores Bajos", self.valores_bajos),
-                 ("Valores Medios", self.valores_medios),
-                 ("Valores Altos", self.valores_altos)]
+                 ("Sistema estresado", self.sistema_estresado),
+                 ("Sistema equilibrado", self.sistema_equilibrado),
+                 ("Siatema con oseo", self.sistema_oseo)]
         
         for i, (texto, comando) in enumerate(botones):
             boton=ctk.CTkButton(self.frame_botones, text=texto, width=180, height=40, fg_color="#FFBF42", text_color="#000000", command=comando)
@@ -155,26 +246,28 @@ class Habitaciones:
 
         self.crear_tabla("Llegadas por día", "Clientes", self.datos_llegadas, 0)
 
-        self.crear_tabla("Tipo de habitación", "Tipo", self.datos_tipo, 1)
+        self.crear_tabla("Llegadas en grupo", "Personas", self.datos_personas, 1)
 
-        self.crear_tabla("Duración de estancia", "Noches", self.datos_estancia, 2)
-        self.crear_tabla("Mantenimiento extra", "Costo", self.datos_mantenimiento, 3)
+        self.crear_tabla("Tipo de habitación", "Tipo", self.datos_tipo, 2)
+
+        self.crear_tabla("Duración de estancia", "Noches", self.datos_estancia, 3)
+
+        self.crear_tabla("Decisión del cliente", "Decisión", self.datos_decision, 4)
+
+        self.crear_tabla("Daños en habitación", "Daño", self.datos_daños, 5)
+
+        self.crear_tabla("Mantenimiento extra", "Costo", self.datos_mantenimiento, 6)
+
+        self.crear_tabla("Tiempo limpieza Individual", "Minutos I", self.datos_limpieza_individual, 7)
+
+        self.crear_tabla("Tiempo limpieza Doble", "Minutos D", self.datos_limpieza_doble, 8)
+
+        self.crear_tabla("Tiempo limpieza Suite", "Minutos S", self.datos_limpieza_suite, 9)
 
         # RESULTADOS
         self.frame_resultados=ctk.CTkFrame(self.frame_scroll, border_width=2, border_color=COLOR_CONTORNO)
         self.frame_resultados.pack(fill="both", expand=True, padx=20, pady=20)
 
-        '''titulo_resultados=ctk.CTkLabel(self.frame_resultados, text="RESULTADOS DE LA SIMULACIÓN", text_color=COLOR_TEXTO, font=("Arial", 20, "bold"))
-        titulo_resultados.pack(pady=20)
-
-        tabla_resultados=[["Día", "Llegadas", "Habitaciones", "Ingresos", "Costos", "Ganancia"],
-                          ["", "", "", "", "", ""],
-                          ["", "", "", "", "", ""],
-                          ["", "", "", "", "", ""],
-                          ["", "", "", "", "", ""]]
-
-        self.tabla_simulacion=CTkTable(self.frame_resultados, values=tabla_resultados)
-        self.tabla_simulacion.pack(padx=20, pady=20)'''
         self.ventana.mainloop()
 
     def limpiar(self):
@@ -182,7 +275,9 @@ class Habitaciones:
         self.entry_dobles.delete(0, "end")
         self.entry_suites.delete(0, "end")
         self.entry_operativo.delete(0, "end")
-        self.entry_limpieza.delete(0, "end")
+        self.entry_limpieza_individual.delete(0, "end")
+        self.entry_limpieza_doble.delete(0, "end")
+        self.entry_limpieza_suite.delete(0, "end")
         self.entry_dias.delete(0, "end")
         self.entry_precio_individual.delete(0, "end")
         self.entry_precio_doble.delete(0, "end")
@@ -199,7 +294,7 @@ class Habitaciones:
 
         messagebox.showinfo("Correcto", "Datos limpiados")
 
-    def valores_bajos(self):
+    def sistema_estresado(self):
         self.entry_individuales.delete(0, "end")
         self.entry_individuales.insert(0, "5")
 
@@ -212,8 +307,14 @@ class Habitaciones:
         self.entry_operativo.delete(0, "end")
         self.entry_operativo.insert(0, "200")
 
-        self.entry_limpieza.delete(0, "end")
-        self.entry_limpieza.insert(0, "50")
+        self.entry_limpieza_individual.delete(0, "end")
+        self.entry_limpieza_individual.insert(0, "50")
+
+        self.entry_limpieza_doble.delete(0, "end")
+        self.entry_limpieza_doble.insert(0, "80")
+
+        self.entry_limpieza_suite.delete(0, "end")
+        self.entry_limpieza_suite.insert(0, "120")
 
         self.entry_dias.delete(0, "end")
         self.entry_dias.insert(0, "10")
@@ -227,7 +328,7 @@ class Habitaciones:
         self.entry_precio_suite.delete(0, "end")
         self.entry_precio_suite.insert(0, "1200")
     
-    def valores_medios(self):
+    def sistema_equilibrado(self):
         self.entry_individuales.delete(0, "end")
         self.entry_individuales.insert(0, "10")
 
@@ -240,8 +341,14 @@ class Habitaciones:
         self.entry_operativo.delete(0, "end")
         self.entry_operativo.insert(0, "400")
 
-        self.entry_limpieza.delete(0, "end")
-        self.entry_limpieza.insert(0, "100")
+        self.entry_limpieza_individual.delete(0, "end")
+        self.entry_limpieza_individual.insert(0, "100")
+
+        self.entry_limpieza_doble.delete(0, "end")
+        self.entry_limpieza_doble.insert(0, "150")
+
+        self.entry_limpieza_suite.delete(0, "end")
+        self.entry_limpieza_suite.insert(0, "200")
 
         self.entry_dias.delete(0, "end")
         self.entry_dias.insert(0, "20")
@@ -255,7 +362,7 @@ class Habitaciones:
         self.entry_precio_suite.delete(0, "end")
         self.entry_precio_suite.insert(0, "1500")
     
-    def valores_altos(self):
+    def sistema_oseo(self):
         self.entry_individuales.delete(0, "end")
         self.entry_individuales.insert(0, "25")
 
@@ -268,8 +375,14 @@ class Habitaciones:
         self.entry_operativo.delete(0, "end")
         self.entry_operativo.insert(0, "600")
 
-        self.entry_limpieza.delete(0, "end")
-        self.entry_limpieza.insert(0, "250")
+        self.entry_limpieza_individual.delete(0, "end")
+        self.entry_limpieza_individual.insert(0, "120")
+
+        self.entry_limpieza_doble.delete(0, "end")
+        self.entry_limpieza_doble.insert(0, "200")
+
+        self.entry_limpieza_suite.delete(0, "end")
+        self.entry_limpieza_suite.insert(0, "250")
 
         self.entry_dias.delete(0, "end")
         self.entry_dias.insert(0, "50")
@@ -294,7 +407,16 @@ class Habitaciones:
         entrada2=ctk.CTkEntry(frame, width=150, placeholder_text="Probabilidad")
         entrada2.pack(pady=5)
 
-        boton=ctk.CTkButton(frame, text="Agregar", command=lambda: self.agregar_dato(entrada1, entrada2, datos, encabezado, frame))
+        if encabezado=="Daño":
+            entrada3=ctk.CTkEntry(frame, width=150, placeholder_text="Costo")
+            entrada3.pack(pady=5)
+
+        if encabezado=="Daño":
+            boton=ctk.CTkButton(frame, text="Agregar", command=lambda: self.agregar_daño(entrada1, entrada2, entrada3, datos, frame))
+
+        else:
+            boton=ctk.CTkButton(frame, text="Agregar", command=lambda: self.agregar_dato(entrada1, entrada2, datos, encabezado, frame))
+
         boton.pack(pady=10)
 
         tabla=CTkTable(frame, values=self.calcular_tabla(datos, encabezado))
@@ -309,12 +431,34 @@ class Habitaciones:
         elif encabezado=="Noches":
             self.tabla_estancia=tabla
 
-        else:
+        elif encabezado=="Costo":
             self.tabla_mantenimiento=tabla
+
+        elif encabezado=="Daño":
+            self.tabla_daños=tabla
+
+        elif encabezado=="Personas":
+            self.tabla_personas=tabla
+
+        elif encabezado=="Decisión":
+            self.tabla_decision=tabla
+
+        elif encabezado=="Minutos I":
+            self.tabla_limpieza_individual=tabla
+
+        elif encabezado=="Minutos D":
+            self.tabla_limpieza_doble=tabla
+
+        elif encabezado=="Minutos S":
+            self.tabla_limpieza_suite=tabla
 
     # CALCULAR TABLA
     def calcular_tabla(self, datos, encabezado):
-        tabla=[[encabezado, "Probabilidad", "Prob. Acumulada", "Rango"]]
+        if encabezado=="Daño":
+            tabla=[[encabezado, "Probabilidad", "Prob. Acumulada", "Rango", "Costo"]]
+
+        else:
+            tabla=[[encabezado, "Probabilidad", "Prob. Acumulada", "Rango"]]
 
         acumulada=0
         for i, fila in enumerate(datos):
@@ -328,7 +472,12 @@ class Habitaciones:
             else:
                 rango=(f"{inicio + 0.0001:.4f} - {acumulada:.4f}")
 
-            tabla.append([valor, f"{prob:.4f}", f"{acumulada:.4f}", rango])
+            if encabezado=="Daño":
+                costo=fila[2]
+                tabla.append([valor, f"{prob:.4f}", f"{acumulada:.4f}", rango, f"${costo}"])
+
+            else:
+                tabla.append([valor, f"{prob:.4f}", f"{acumulada:.4f}", rango])
 
         return tabla
 
@@ -360,16 +509,16 @@ class Habitaciones:
             if suma==1:
                 if encabezado=="Clientes":
                     if self.reiniciar_llegadas==False:
-                        messagebox.showwarning("Advertencia", "La tabla ya suma 1\n" "Si agregas otro dato se reiniciará")
+                        messagebox.showwarning("Advertencia", "La tabla ya suma 1\nSi agregas otro dato se reiniciará")
                         self.reiniciar_llegadas=True
                         return
                     else:
                         datos.clear()
                         self.reiniciar_llegadas=False
-                
+
                 elif encabezado=="Tipo":
                     if self.reiniciar_tipo==False:
-                        messagebox.showwarning("Advertencia", "La tabla ya suma 1\n" "Si agregas otro dato se reiniciará")
+                        messagebox.showwarning("Advertencia", "La tabla ya suma 1\nSi agregas otro dato se reiniciará")
                         self.reiniciar_tipo=True
                         return
                     else:
@@ -384,6 +533,33 @@ class Habitaciones:
                     else:
                         datos.clear()
                         self.reiniciar_estancia=False
+
+                elif encabezado=="Daño":
+                    if self.reiniciar_daños==False:
+                        messagebox.showwarning("Advertencia", "La tabla ya suma 1\nSi agregas otro dato se reiniciará")
+                        self.reiniciar_daños=True
+                        return
+                    else:
+                        datos.clear()
+                        self.reiniciar_daños=False
+
+                elif encabezado=="Personas":
+                    if self.reiniciar_personas==False:
+                        messagebox.showwarning("Advertencia", "La tabla ya suma 1\nSi agregas otro dato se reiniciará")
+                        self.reiniciar_personas=True
+                        return
+                    else:
+                        datos.clear()
+                        self.reiniciar_personas=False
+
+                elif encabezado=="Decisión":
+                    if self.reiniciar_decision==False:
+                        messagebox.showwarning("Advertencia", "La tabla ya suma 1\nSi agregas otro dato se reiniciará")
+                        self.reiniciar_decision=True
+                        return
+                    else:
+                        datos.clear()
+                        self.reiniciar_decision=False
 
                 else:
                     if self.reiniciar_mantenimiento==False:
@@ -425,8 +601,26 @@ class Habitaciones:
             elif encabezado=="Noches":
                 self.tabla_estancia.destroy()
 
-            else:
+            elif encabezado=="Costo":
                 self.tabla_mantenimiento.destroy()
+
+            elif encabezado=="Daño":
+                self.tabla_daños.destroy()
+
+            elif encabezado=="Personas":
+                self.tabla_personas.destroy()
+
+            elif encabezado=="Decisión":
+                self.tabla_decision.destroy()
+
+            elif encabezado=="Minutos I":
+                self.tabla_limpieza_individual.destroy()
+
+            elif encabezado=="Minutos D":
+                self.tabla_limpieza_doble.destroy()
+
+            elif encabezado=="Minutos S":
+                self.tabla_limpieza_suite.destroy()
 
             nueva_tabla=CTkTable(frame, values=self.calcular_tabla(datos, encabezado))
             nueva_tabla.pack(padx=10, pady=10)
@@ -440,8 +634,26 @@ class Habitaciones:
             elif encabezado=="Noches":
                 self.tabla_estancia=nueva_tabla
 
-            else:
+            elif encabezado=="Costo":
                 self.tabla_mantenimiento=nueva_tabla
+
+            elif encabezado=="Daño":
+                self.tabla_daños=nueva_tabla
+
+            elif encabezado=="Personas":
+                self.tabla_personas=nueva_tabla
+
+            elif encabezado=="Decisión":
+                self.tabla_decision=nueva_tabla
+
+            elif encabezado=="Minutos I":
+                self.tabla_limpieza_individual=nueva_tabla
+
+            elif encabezado=="Minutos D":
+                self.tabla_limpieza_doble=nueva_tabla
+
+            elif encabezado=="Minutos S":
+                self.tabla_limpieza_suite=nueva_tabla
 
             entrada1.delete(0, "end")
             entrada2.delete(0, "end")
@@ -454,6 +666,67 @@ class Habitaciones:
 
         except Exception as error:
             messagebox.showerror("Error", str(error))
+
+    def agregar_daño(self, entrada1, entrada2, entrada3, datos, frame):
+        try:
+            daño=entrada1.get().strip()
+            prob=float(entrada2.get().strip())
+            costo=float(entrada3.get().strip())
+
+            if daño=="":
+                messagebox.showerror("Error", "Daño vacío")
+                return
+
+            suma=0
+            for fila in datos:
+                suma+=fila[1]
+
+            suma=round(suma, 4)
+
+            if suma==1:
+                if self.reiniciar_daños==False:
+                    messagebox.showwarning("Advertencia", "La tabla ya suma 1\nSi agregas otro dato se reiniciará")
+                    self.reiniciar_daños=True
+                    return
+
+                else:
+                    datos.clear()
+                    self.reiniciar_daños=False
+
+            for fila in datos:
+                if fila[0]==daño:
+                    messagebox.showerror("Error", "Ese daño ya existe")
+                    return
+
+            datos.append([daño, prob, costo])
+
+            nueva_suma=0
+            for fila in datos:
+                nueva_suma+=fila[1]
+
+            nueva_suma=round(nueva_suma, 4)
+
+            if nueva_suma>1:
+                datos.pop()
+                messagebox.showerror("Error", "La suma de probabilidades no puede superar 1")
+                return
+
+            self.tabla_daños.destroy()
+
+            nueva_tabla=CTkTable(frame, values=self.calcular_tabla(datos, "Daño"))
+            nueva_tabla.pack(padx=10, pady=10)
+
+            self.tabla_daños=nueva_tabla
+
+            entrada1.delete(0, "end")
+            entrada2.delete(0, "end")
+            entrada3.delete(0, "end")
+
+            if nueva_suma==1:
+                messagebox.showinfo("Correcto", "La tabla ya suma 1")
+
+        except:
+            messagebox.showerror("Error", "Datos inválidos")
     
     # CREAR HOTEL
     def crear_hotel(self):
@@ -462,76 +735,113 @@ class Habitaciones:
             dobles=int(self.entry_dobles.get())
             suites=int(self.entry_suites.get())
 
+            if individuales < 0 or dobles < 0 or suites < 0:
+                messagebox.showerror("Error", "Las habitaciones no pueden ser negativas")
+                return False
+
+            if individuales + dobles + suites == 0:
+                messagebox.showerror("Error", "Debe existir al menos una habitación")
+                return False
+            
+            if self.entry_cap_individual.get().strip()=="":
+                messagebox.showerror("Error", "Capacidad individual vacía")
+                return False
+
+            if self.entry_cap_doble.get().strip()=="":
+                messagebox.showerror("Error", "Capacidad doble vacía")
+                return False
+
+            if self.entry_cap_suite.get().strip()=="":
+                messagebox.showerror("Error", "Capacidad suite vacía")
+                return False
+
+            self.capacidad={"Individual": int(self.entry_cap_individual.get()),
+                            "Doble": int(self.entry_cap_doble.get()),
+                            "Suite": int(self.entry_cap_suite.get())}
+
             self.habitaciones_individuales={}
             self.habitaciones_dobles={}
             self.habitaciones_suite={}
-            # INDIVIDUALES
+
+            #INDIVIDUALES
             for i in range(1, individuales + 1):
                 nombre="I" + str(i)
-                self.habitaciones_individuales[nombre]=0
+                self.habitaciones_individuales[nombre]={"ocupada_hasta":0,
+                                                        "limpieza_hasta":0,
+                                                        "mantenimiento_hasta":0}
 
-            # DOBLES
+            #DOBLES
             for i in range(1, dobles + 1):
                 nombre="D" + str(i)
-                self.habitaciones_dobles[nombre]=0
+                self.habitaciones_dobles[nombre]={"ocupada_hasta":0,
+                                                  "limpieza_hasta":0,
+                                                  "mantenimiento_hasta":0}
 
-            # SUITES
+            #SUITES
             for i in range(1, suites + 1):
                 nombre="S" + str(i)
-                self.habitaciones_suite[nombre]=0
+                self.habitaciones_suite[nombre]={"ocupada_hasta":0,
+                                                 "limpieza_hasta":0,
+                                                 "mantenimiento_hasta":0}
 
-            # CLIENTES
+            #CLIENTES
             self.clientes=[]
+
+            #USO DE HABITACIONES
+            self.uso_habitaciones={}
+
+            return True
 
         except:
             messagebox.showerror("Error", "No se pudo crear el hotel")
 
-    # ASIGNAR HABITACIÓN
+    #ASIGNAR HABITACIÓN
     def asignar_habitacion(self, tipo, dia_actual, noches):
-        # INDIVIDUAL
+        # INDIVIDUALES
         if tipo=="Individual":
             for habitacion in self.habitaciones_individuales:
-                salida=self.habitaciones_individuales[habitacion]
-                if salida<dia_actual or salida==0:
-                    self.habitaciones_individuales[habitacion]=dia_actual + noches
+                datos=self.habitaciones_individuales[habitacion]
+                if datos["ocupada_hasta"]<dia_actual or datos["ocupada_hasta"]==0:
+                    datos["ocupada_hasta"]=dia_actual + noches
                     return habitacion
 
-        # DOBLE
+        # DOBLES
         elif tipo=="Doble":
             for habitacion in self.habitaciones_dobles:
-                salida=self.habitaciones_dobles[habitacion]
-                if salida<dia_actual or salida==0:
-                    self.habitaciones_dobles[habitacion]=dia_actual + noches
+                datos=self.habitaciones_dobles[habitacion]
+                if datos["ocupada_hasta"]<dia_actual or datos["ocupada_hasta"]==0:
+                    datos["ocupada_hasta"]=dia_actual + noches
                     return habitacion
 
-        # SUITE
+        # SUITES
         elif tipo=="Suite":
             for habitacion in self.habitaciones_suite:
-                salida=self.habitaciones_suite[habitacion]
-                if salida<dia_actual or salida==0:
-                    self.habitaciones_suite[habitacion]=dia_actual + noches
+                datos=self.habitaciones_suite[habitacion]
+                if datos["ocupada_hasta"]<dia_actual or datos["ocupada_hasta"]==0:
+                    datos["ocupada_hasta"]=dia_actual + noches
                     return habitacion
+
         return None
 
-    # LIBERAR HABITACIONES
+    #LIBERAR HABITACIONES
     def liberar_habitaciones(self, dia_actual):
         # INDIVIDUALES
         for habitacion in self.habitaciones_individuales:
-            salida=self.habitaciones_individuales[habitacion]
-            if salida<=dia_actual:
-                self.habitaciones_individuales[habitacion]=0
+            datos=self.habitaciones_individuales[habitacion]
+            if datos["ocupada_hasta"]<=dia_actual:
+                datos["ocupada_hasta"]=0
 
         # DOBLES
         for habitacion in self.habitaciones_dobles:
-            salida=self.habitaciones_dobles[habitacion]
-            if salida<=dia_actual:
-                self.habitaciones_dobles[habitacion]=0
+            datos=self.habitaciones_dobles[habitacion]
+            if datos["ocupada_hasta"]<=dia_actual:
+                datos["ocupada_hasta"]=0
 
         # SUITES
         for habitacion in self.habitaciones_suite:
-            salida=self.habitaciones_suite[habitacion]
-            if salida<=dia_actual:
-                self.habitaciones_suite[habitacion]=0
+            datos=self.habitaciones_suite[habitacion]
+            if datos["ocupada_hasta"]<=dia_actual:
+                datos["ocupada_hasta"]=0
 
     # CONTAR OCUPADAS
     def contar_ocupadas(self, dia_actual):
@@ -541,20 +851,20 @@ class Habitaciones:
 
         # INDIVIDUALES
         for habitacion in self.habitaciones_individuales:
-            salida=self.habitaciones_individuales[habitacion]
-            if salida>=dia_actual:
+            datos=self.habitaciones_individuales[habitacion]
+            if datos["ocupada_hasta"]>dia_actual:
                 ocupadas_individual=ocupadas_individual + 1
 
         # DOBLES
         for habitacion in self.habitaciones_dobles:
-            salida=self.habitaciones_dobles[habitacion]
-            if salida>=dia_actual:
+            datos=self.habitaciones_dobles[habitacion]
+            if datos["ocupada_hasta"]>dia_actual:
                 ocupadas_dobles=ocupadas_dobles + 1
 
         # SUITES
         for habitacion in self.habitaciones_suite:
-            salida=self.habitaciones_suite[habitacion]
-            if salida>=dia_actual:
+            datos=self.habitaciones_suite[habitacion]
+            if datos["ocupada_hasta"]>dia_actual:
                 ocupadas_suite=ocupadas_suite + 1
 
         return ocupadas_individual, ocupadas_dobles, ocupadas_suite
@@ -567,36 +877,61 @@ class Habitaciones:
 
         # INDIVIDUALES
         for habitacion in self.habitaciones_individuales:
-            salida=self.habitaciones_individuales[habitacion]
-            if salida<dia_actual or salida==0:
+            datos=self.habitaciones_individuales[habitacion]
+            if datos["ocupada_hasta"]<dia_actual or datos["ocupada_hasta"]==0:
                 disponibles_individual=disponibles_individual + 1
 
         # DOBLES
         for habitacion in self.habitaciones_dobles:
-            salida=self.habitaciones_dobles[habitacion]
-            if salida<dia_actual or salida==0:
+            datos=self.habitaciones_dobles[habitacion]
+            if datos["ocupada_hasta"]<dia_actual or datos["ocupada_hasta"]==0:
                 disponibles_dobles=disponibles_dobles + 1
 
         # SUITES
         for habitacion in self.habitaciones_suite:
-            salida=self.habitaciones_suite[habitacion]
-            if salida<dia_actual or salida==0:
+            datos=self.habitaciones_suite[habitacion]
+            if datos["ocupada_hasta"]<dia_actual or datos["ocupada_hasta"]==0:
                 disponibles_suite=disponibles_suite + 1
 
         return disponibles_individual, disponibles_dobles, disponibles_suite
     
+    # CONTAR SALIDAS
+    def contar_salidas(self, dia_actual):
+        salidas=0
+
+        # INDIVIDUALES
+        for habitacion in self.habitaciones_individuales:
+            datos=self.habitaciones_individuales[habitacion]
+            if datos["ocupada_hasta"]==dia_actual:
+                salidas=salidas + 1
+
+        # DOBLES
+        for habitacion in self.habitaciones_dobles:
+            datos=self.habitaciones_dobles[habitacion]
+            if datos["ocupada_hasta"]==dia_actual:
+                salidas=salidas + 1
+                
+        # SUITES
+        for habitacion in self.habitaciones_suite:
+            datos=self.habitaciones_suite[habitacion]
+            if datos["ocupada_hasta"]==dia_actual:
+                salidas=salidas + 1
+        return salidas
+        
     # BUSCAR RESULTADO
     def buscar_resultado(self, numero, datos):
-        acumulada=0
-        for valor, probabilidad in datos:
-            acumulada=acumulada + probabilidad
-            if numero<=acumulada:
+        acumulada = 0
+        for fila in datos:
+            valor = fila[0]
+            probabilidad = fila[1]
+            acumulada += probabilidad
+            if numero <= acumulada:
                 return valor
             
     # LEER ALEATORIOS
     def leer_aleatorios(self):
         aleatorios=[]
-        archivo=open("Aleatorios.txt", "r")
+        archivo=open("aleatorios.txt", "r")
         for linea in archivo:
             linea=linea.strip()
             if linea!="":
@@ -604,59 +939,61 @@ class Habitaciones:
                 if numero>=0 and numero<=1:
                     aleatorios.append(numero)
         archivo.close()
-        '''
-        for i in range(10000):
-            alea=round(random.random(), 4)
-            aleatorios.append(alea)'''
-        random.shuffle(aleatorios)
+
         return aleatorios
-
-    # CONTAR SALIDAS
-    def contar_salidas(self, dia_actual):
-        salidas=0
-
-        # INDIVIDUALES
-        for habitacion in self.habitaciones_individuales:
-            salida=self.habitaciones_individuales[habitacion]
-            if salida==dia_actual:
-                salidas=salidas + 1
-
-        # DOBLES
-        for habitacion in self.habitaciones_dobles:
-            salida=self.habitaciones_dobles[habitacion]
-            if salida==dia_actual:
-                salidas=salidas + 1
-
-        # SUITES
-        for habitacion in self.habitaciones_suite:
-            salida=self.habitaciones_suite[habitacion]
-            if salida==dia_actual:
-                salidas=salidas + 1
-
-        return salidas
 
     # VALIDAR TABLAS
     def validar_tablas(self):
         suma_llegadas=0
         for fila in self.datos_llegadas:
-            suma_llegadas=suma_llegadas + fila[1]
+            suma_llegadas+=fila[1]
 
         suma_tipo=0
         for fila in self.datos_tipo:
-            suma_tipo=suma_tipo + fila[1]
+            suma_tipo+=fila[1]
         
         suma_estancia=0
         for fila in self.datos_estancia:
-            suma_estancia=suma_estancia + fila[1]
+            suma_estancia+=fila[1]
 
         suma_mantenimiento=0
         for fila in self.datos_mantenimiento:
-            suma_mantenimiento=suma_mantenimiento + fila[1]
+            suma_mantenimiento+=fila[1]
+
+        suma_personas=0
+        for fila in self.datos_personas:
+            suma_personas+=fila[1]
+
+        suma_decision=0
+        for fila in self.datos_decision:
+            suma_decision+=fila[1]
+
+        suma_limpieza_i=0
+        for fila in self.datos_limpieza_individual:
+            suma_limpieza_i+=fila[1]
+
+        suma_limpieza_d=0
+        for fila in self.datos_limpieza_doble:
+            suma_limpieza_d+=fila[1]
+
+        suma_limpieza_s=0
+        for fila in self.datos_limpieza_suite:
+            suma_limpieza_s+=fila[1]
+
+        suma_daños=0
+        for fila in self.datos_daños:
+            suma_daños+=fila[1]
 
         suma_llegadas=round(suma_llegadas, 4)
         suma_tipo=round(suma_tipo, 4)
         suma_estancia=round(suma_estancia, 4)
         suma_mantenimiento=round(suma_mantenimiento, 4)
+        suma_personas=round(suma_personas, 4)
+        suma_decision=round(suma_decision, 4)
+        suma_limpieza_i=round(suma_limpieza_i, 4)
+        suma_limpieza_d=round(suma_limpieza_d, 4)
+        suma_limpieza_s=round(suma_limpieza_s, 4)
+        suma_daños=round(suma_daños, 4)
 
         if suma_llegadas!=1:
             messagebox.showerror("Error", "La tabla de llegadas debe sumar 1")
@@ -673,6 +1010,30 @@ class Habitaciones:
         if suma_mantenimiento!=1:
             messagebox.showerror("Error", "La tabla de mantenimiento debe sumar 1")
             return False
+        
+        if suma_personas!=1:
+            messagebox.showerror("Error", "Tabla personas debe sumar 1")
+            return False
+        
+        if suma_decision!=1:
+            messagebox.showerror("Error", "Tabla de desicion debe sumar 1")
+            return False
+        
+        if suma_limpieza_i!=1:
+            messagebox.showerror("Error", "Tabla de tiempo limpieza individual debe sumar 1")
+            return False
+        
+        if suma_limpieza_d!=1:
+            messagebox.showerror("Error", "Tabla de tiempo limpieza doble debe sumar 1")
+            return False
+        
+        if suma_limpieza_s!=1:
+            messagebox.showerror("Error", "Tabla de tiempo de limpieza suite debe sumar 1")
+            return False
+        
+        if suma_daños!=1:
+            messagebox.showerror("Error", "Tabla de daños debe sumar 1")
+            return False
 
         return True
 
@@ -684,19 +1045,26 @@ class Habitaciones:
                 return
 
             # CREAR HOTEL
-            self.crear_hotel()
+            if self.crear_hotel()==False:
+                return
 
             # ENTRADAS
             dias=int(self.entry_dias.get())
             costo_operativo=float(self.entry_operativo.get())
-            limpieza=float(self.entry_limpieza.get())
+            limpieza_individual=float(self.entry_limpieza_individual.get())
+            limpieza_doble=float(self.entry_limpieza_doble.get())
+            limpieza_suite=float(self.entry_limpieza_suite.get())
+            personal=int(self.entry_personal_limpieza.get())
             
             if dias<=0:
                 messagebox.showerror("Error", "Los días deben ser mayores a 0")
                 return
 
-            if costo_operativo<0 or limpieza<0:
+            if costo_operativo<0 or limpieza_individual<0 or limpieza_doble<0 or limpieza_suite<0:
                 messagebox.showerror("Error", "Los costos no pueden ser negativos")
+                return
+            if personal<=0:
+                messagebox.showerror("Error", "El personal debe ser mayor a 0")
                 return
 
             # PRECIOS
@@ -714,7 +1082,7 @@ class Habitaciones:
 
             # ALEATORIOS
             aleatorios=self.leer_aleatorios()
-            if len(aleatorios)<(dias * 10):
+            if len(aleatorios)<(dias * 50):
                 messagebox.showerror("Error", "No hay suficientes números aleatorios")
                 return
 
@@ -722,11 +1090,11 @@ class Habitaciones:
             # TABLAS
             tabla_llegadas=[["Día", "Aleatorio", "Llegadas"]]
 
-            tabla_clientes=[["Día", "Cliente", "Aleatorio Tipo", "Tipo", "Habitación", "Estado", "Aleatorio Estancia", "Noches", "Salida"]]
-
+            tabla_clientes=[["Día", "Cliente", "Personas", "Aleatorio Tipo", "Tipo", "Habitación", "Estado", "Aleatorio Estancia", "Noches", "Salida"]]
+            
             tabla_ocupacion=[["Día", "Ocupadas I", "Ocupadas D", "Ocupadas S", "Disponibles I", "Disponibles D", "Disponibles S", "% Ocupación"]]
 
-            tabla_costos=[["Día", "Salidas", "Costo Limpieza", "Aleatorio Mantenimiento", "Mantenimiento Extra", "Costo Total"]]
+            tabla_costos=[["Día", "Salidas", "Costo Limpieza", "Costo Daños", "Aleatorio Mantenimiento", "Mantenimiento Extra", "Costo Total"]]
 
             tabla_finanzas=[["Día", "Ingresos", "Costos", "Ganancia"]]
 
@@ -744,15 +1112,67 @@ class Habitaciones:
             total_habitaciones=(len(self.habitaciones_individuales) + len(self.habitaciones_dobles) + len(self.habitaciones_suite))
 
             suma_ocupacion=0
+            habitaciones_disponibles_totales=0
+            demanda_tipos = {"Individual":0,
+                             "Doble":0,
+                             "Suite":0}
+            
+            suma_disponibles_i=0
+            suma_disponibles_d=0
+            suma_disponibles_s=0
+            
+            ocupacion_i_total=0
+            ocupacion_d_total=0
+            ocupacion_s_total=0
+
+            tiempo_limpieza_total=0
 
             # DÍAS
             for dia in range(1, dias + 1):
-
                 # SALIDAS
                 salidas=self.contar_salidas(dia)
 
                 # COSTO LIMPIEZA
-                costo_limpieza=salidas * limpieza
+                costo_limpieza=0
+                costo_daños=0
+
+                for cliente in self.clientes:
+                    if cliente["Salida"]==dia:
+                        habitacion=cliente["Habitacion"]
+                        if habitacion.startswith("I"):
+                            alea_tiempo=aleatorios[indice]
+                            indice+=1
+                            tiempo=self.buscar_resultado(alea_tiempo, self.datos_limpieza_individual)
+
+                        elif habitacion.startswith("D"):
+                            alea_tiempo=aleatorios[indice]
+                            indice+=1
+                            tiempo=self.buscar_resultado(alea_tiempo, self.datos_limpieza_doble)
+
+                        else:
+                            alea_tiempo=aleatorios[indice]
+                            indice+=1
+                            tiempo=self.buscar_resultado(alea_tiempo, self.datos_limpieza_suite)
+
+                        tiempo_limpieza_total+=tiempo
+
+                        #DAÑOs EN CADA SALIDA
+                        alea_daño=aleatorios[indice]
+                        indice+=1
+                        daño=self.buscar_resultado(alea_daño, self.datos_daños)
+                        for fila in self.datos_daños:
+                            if fila[0]==daño:
+                                costo_daños+=fila[2]
+                            else:
+                                costo_daños+=0
+
+                        habitacion=cliente["Habitacion"]
+                        if habitacion.startswith("I"):
+                            costo_limpieza+=limpieza_individual
+                        elif habitacion.startswith("D"):
+                            costo_limpieza+=limpieza_doble
+                        elif habitacion.startswith("S"):
+                            costo_limpieza+=limpieza_suite
 
                 # LIBERAR HABITACIONES
                 self.liberar_habitaciones(dia)
@@ -767,6 +1187,7 @@ class Habitaciones:
                 tabla_llegadas.append([dia, alea_llegadas, llegadas])
                                       
                 ingresos_dia=0
+                costo_insumos_dia = 0
                 # CLIENTES
                 for cliente in range(1, llegadas + 1):
                     clientes_totales=clientes_totales + 1
@@ -775,6 +1196,20 @@ class Habitaciones:
                     alea_tipo=aleatorios[indice]
                     indice=indice + 1
                     tipo=self.buscar_resultado(alea_tipo, self.datos_tipo)
+                    demanda_tipos[tipo] += 1
+
+                    alea_personas=aleatorios[indice]
+                    indice=indice + 1
+                    personas=self.buscar_resultado(alea_personas, self.datos_personas)
+
+                    # VALIDAR CAPACIDAD
+                    if personas>self.capacidad[tipo]:
+                        if tipo=="Individual":
+                            tipo="Doble"
+                            if personas > self.capacidad[tipo]:
+                                tipo="Suite"
+                        elif tipo=="Doble":
+                            tipo="Suite"
 
                     # ALEATORIO ESTANCIA
                     alea_estancia=aleatorios[indice]
@@ -784,18 +1219,48 @@ class Habitaciones:
                     # ASIGNAR HABITACIÓN
                     habitacion=self.asignar_habitacion(tipo, dia, noches)
                     if habitacion==None:
-                        habitacion="-"
+                        alea_decision = aleatorios[indice]
+                        indice += 1
+                        decision = self.buscar_resultado(alea_decision, self.datos_decision)
+
+                        if decision=="Aceptar superior":
+                            if tipo=="Individual":
+                                tipo_superior="Doble"
+
+                            elif tipo=="Doble":
+                                tipo_superior="Suite"
+
+                            else:
+                                tipo_superior=None
+
+                            if tipo_superior!=None:
+                                habitacion=self.asignar_habitacion(tipo_superior, dia, noches)
+
+                                if habitacion!=None:
+                                    tipo=tipo_superior
+
+                        if habitacion==None:
+                            habitacion="-"
 
                     # SI HAY HABITACIÓN
                     if habitacion!="-":
+                        if habitacion not in self.uso_habitaciones:
+                            self.uso_habitaciones[habitacion]=0
+
+                        self.uso_habitaciones[habitacion] += 1
+
                         estado="Aceptado"
                         salida=dia + noches
                         ingreso=precios[tipo] * noches
                         ingresos_dia=ingresos_dia + ingreso
+                        costo_insumos_dia+=0
                         self.clientes.append({"Cliente":cliente_global,
                                               "Habitacion":habitacion,
                                               "Entrada":dia,
-                                              "Salida":salida})
+                                              "Salida":salida,
+                                              "Personas":personas,
+                                              "Tipo":tipo,
+                                              "Noches":noches})
 
                     else:
                         estado="Rechazado"
@@ -809,7 +1274,7 @@ class Habitaciones:
                     else:
                         texto_salida="Día " + str(salida)
 
-                    tabla_clientes.append([dia, cliente_global, alea_tipo, tipo, habitacion, estado, alea_estancia, noches, texto_salida])
+                    tabla_clientes.append([dia, cliente_global, personas, alea_tipo, tipo, habitacion, estado, alea_estancia, noches, texto_salida])
                     cliente_global=cliente_global + 1
 
                 # MANTENIMIENTO ALEATORIO
@@ -819,19 +1284,26 @@ class Habitaciones:
                 mantenimiento_extra=self.buscar_resultado(alea_mantenimiento, self.datos_mantenimiento)
 
                 # COSTOS
-                costo_total=(costo_limpieza + costo_operativo + mantenimiento_extra)
+                costo_total=(costo_limpieza + costo_operativo + mantenimiento_extra + costo_daños + costo_insumos_dia)
 
                 # GANANCIA
                 ganancia=ingresos_dia - costo_total
                 ingresos_totales=ingresos_totales + ingresos_dia
-                costos_totales=costos_totales + costo_total
+                costos_totales+=costo_total
                 ganancias_totales=ganancias_totales + ganancia
 
                 # OCUPADAS
                 ocupadas_individual, ocupadas_dobles, ocupadas_suite=self.contar_ocupadas(dia)
+                ocupacion_i_total += ocupadas_individual
+                ocupacion_d_total += ocupadas_dobles
+                ocupacion_s_total += ocupadas_suite
 
                 # DISPONIBLES
                 disponibles_individual, disponibles_dobles, disponibles_suite=self.contar_disponibles(dia)
+                suma_disponibles_i+=disponibles_individual
+                suma_disponibles_d+=disponibles_dobles
+                suma_disponibles_s+=disponibles_suite
+                habitaciones_disponibles_totales+=(disponibles_individual + disponibles_dobles + disponibles_suite)
 
                 # TOTAL OCUPADAS
                 total_ocupadas=(ocupadas_individual + ocupadas_dobles + ocupadas_suite)
@@ -845,13 +1317,61 @@ class Habitaciones:
                 tabla_ocupacion.append([dia, ocupadas_individual, ocupadas_dobles, ocupadas_suite, disponibles_individual, disponibles_dobles, disponibles_suite, f"{porcentaje_ocupacion:.2f}%"])
 
                 # TABLA COSTOS
-                tabla_costos.append([dia, salidas, f"${costo_limpieza:,.2f}", alea_mantenimiento, f"${mantenimiento_extra:,.2f}", f"${costo_total:,.2f}"])
-
+                tabla_costos.append([dia, salidas, f"${costo_limpieza:,.2f}", f"${costo_daños:,.2f}", alea_mantenimiento, f"${mantenimiento_extra:,.2f}", f"${costo_total:,.2f}"])
                 # TABLA FINANZAS
                 tabla_finanzas.append([dia, f"${ingresos_dia:,.2f}", f"${costo_total:,.2f}", f"${ganancia:,.2f}"])
 
             # PROMEDIO OCUPACIÓN
             promedio_ocupacion=suma_ocupacion / dias
+            analisis=[]
+            
+            if len(self.uso_habitaciones)>0:
+                habitacion_mas_usada=max(self.uso_habitaciones, key=self.uso_habitaciones.get)
+                uso_maximo=self.uso_habitaciones[habitacion_mas_usada]
+
+            else:
+                habitacion_mas_usada="Ninguna"
+                uso_maximo=0
+
+            #DISPONIBILIDAD GENERAL
+            probabilidad_disponibilidad=(habitaciones_disponibles_totales /(total_habitaciones * dias)) * 100
+
+            #DISPONIBILIDAD INDIVIDUAL
+            if len(self.habitaciones_individuales)>0:
+                probabilidad_individual=(suma_disponibles_i / (len(self.habitaciones_individuales) * dias)) * 100
+            else:
+                probabilidad_individual=0
+            #DISPONIBILIDAD DOBLE
+            if len(self.habitaciones_dobles)>0:
+                probabilidad_doble=(suma_disponibles_d / (len(self.habitaciones_dobles) * dias)) * 100
+            else:
+                probabilidad_doble=0
+            #DISPONIBILIDAD SUITE
+            if len(self.habitaciones_suite)>0:
+                probabilidad_suite=(suma_disponibles_s / (len(self.habitaciones_suite) * dias)) * 100
+            else:
+                probabilidad_suite=0
+
+            #OCUPACIÓN INDIVIDUAL
+            if len(self.habitaciones_individuales)>0:
+                porcentaje_i=(ocupacion_i_total / (len(self.habitaciones_individuales) * dias)) * 100
+            else:
+                porcentaje_i=0
+            #OCUPACIÓN DOBLE
+            if len(self.habitaciones_dobles)>0:
+                porcentaje_d=(ocupacion_d_total / (len(self.habitaciones_dobles) * dias)) * 100
+            else:
+                porcentaje_d=0
+            #OCUPACIÓN SUITE
+            if len(self.habitaciones_suite)>0:
+                porcentaje_s=(ocupacion_s_total / (len(self.habitaciones_suite) * dias)) * 100
+            else:
+                porcentaje_s=0
+
+            #TIEMPO DE LIMPIEZA
+            capacidad_limpieza=personal * 480 * dias
+            if tiempo_limpieza_total > capacidad_limpieza:
+                tabla_resumen.append(["Limpieza", "Personal insuficiente"])
 
             # TABLA RESUMEN
             tabla_resumen.append(["Clientes Totales", clientes_totales])
@@ -860,7 +1380,60 @@ class Habitaciones:
             tabla_resumen.append(["Ingresos Totales", f"${ingresos_totales:,.4f}"])
             tabla_resumen.append(["Costos Totales", f"${costos_totales:,.4f}"])
             tabla_resumen.append(["Ganancia Total", f"${ganancias_totales:,.4f}"])
+            tabla_resumen.append(["Habitación más usada", f"{habitacion_mas_usada} ({uso_maximo} veces)"])
+            tabla_resumen.append(["Probabilidad disponibilidad general", f"{probabilidad_disponibilidad:.2f}%"])
+            tabla_resumen.append(["Disponibilidad Individual", f"{probabilidad_individual:.2f}%"])
+            tabla_resumen.append(["Disponibilidad Doble", f"{probabilidad_doble:.2f}%"])
+            tabla_resumen.append(["Disponibilidad Suite", f"{probabilidad_suite:.2f}%"])
+            tabla_resumen.append(["Demanda Individual", demanda_tipos["Individual"]])
+            tabla_resumen.append(["Demanda Doble", demanda_tipos["Doble"]])
+            tabla_resumen.append(["Demanda Suite", demanda_tipos["Suite"]])
+            tabla_resumen.append(["Uso Individual", f"{porcentaje_i:.2f}%"])
+            tabla_resumen.append(["Uso Doble", f"{porcentaje_d:.2f}%"])
+            tabla_resumen.append(["Uso Suite", f"{porcentaje_s:.2f}%"])
 
+            #SATURACIÓN
+            analisis.append("\nSaturación")
+            if promedio_ocupacion > 85:
+                analisis.append("El hotel está muy saturado. Se recomienda ampliar habitaciones.")
+
+            elif promedio_ocupacion>=60 and promedio_ocupacion <= 85:
+                analisis.append("El hotel trabaja en un rango equilibrado.")
+
+            else:
+                analisis.append("Existe mucho ocio en habitaciones. Se recomienda reducir capacidad o aumentar publicidad.")
+
+            #CLIENTES RECHAZADOS
+            analisis.append("\nRechazo de clientes")
+            if clientes_rechazados > 20:
+                analisis.append("Se estan perdiendo muchos clientes")
+
+            elif clientes_rechazados > 0:
+                analisis.append("Existen rechazos ocasionales")
+
+            #GANANCIAS
+            analisis.append("\nGanancias")
+            if ganancias_totales < 0:
+                analisis.append("El hotel esta operando con perdidas")
+
+            elif ganancias_totales < ingresos_totales * 0.15:
+                analisis.append("La ganancia es baja respecto a los ingresos")
+
+            else:
+                analisis.append("La operacion del hotel es rentable")
+
+            #DISPONIBILIDAD
+            analisis.append("\nDisponibilidad general")
+            if probabilidad_disponibilidad < 15:
+                analisis.append("La disponibilidad es critica")
+
+            elif probabilidad_disponibilidad > 70:
+                analisis.append("Hay exceso de habitaciones sin uso")
+
+            tabla_resumen.append(["Sección", "Analisis"])
+            for texto in analisis:
+                tabla_resumen.append(["Análisis", texto])
+                
             # KPIS
             self.lbl_ingresos.configure(text=f"Ingresos Totales: ${ingresos_totales:,.2f}")
 
@@ -910,9 +1483,6 @@ class Habitaciones:
 
             # MENSAJE
             messagebox.showinfo("Correcto", "Simulación realizada")
-
-        except ValueError:
-            messagebox.showerror("Error", "Ingresa valores válidos")
 
         except FileNotFoundError:
             messagebox.showerror("Error", "No se encontró el archivo Aleatorios.txt")
