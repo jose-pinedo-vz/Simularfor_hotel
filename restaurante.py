@@ -63,7 +63,11 @@ import customtkinter as ctk
 # pago_servicios = 2000
 
 class mostrar_Tablasa():
-    def __init__(self, diccionario_resumen, diccionario, diccionario2, concluciones, insidencaisDelDiario, insidencias_rh_diccionario, GananciasTotales_lista, gastosTotales_lista):
+    def __init__(self, diccionario_resumen, diccionario, diccionario2, concluciones, insidencaisDelDiario, insidencias_rh_diccionario, GananciasTotales_lista, gastosTotales_lista, lista_meses, ganancias_mensuales, personas_mensuales, lista_eventos, lisat_provavilidad, lista_provavilidad_acumulada, lista_rango):
+        self.lista_mesea = lista_meses
+        self.ganancias_mensuales = ganancias_mensuales
+        self.personas_mensuales = personas_mensuales
+
         self.diccionario_resumen = diccionario_resumen
         self.diccionario = diccionario
         self.diccionario2 = diccionario2
@@ -71,6 +75,12 @@ class mostrar_Tablasa():
         self.insidencias_rh_diccionario = insidencias_rh_diccionario
         self.GananciasTotales_lista = GananciasTotales_lista
         self.gastosTotales_lista = gastosTotales_lista
+
+
+        self.lista_eventos = lista_eventos
+        self.lisat_provavilidad = lisat_provavilidad
+        self.lista_provavilidad_acumulada = lista_provavilidad_acumulada
+        self.lista_rango = lista_rango
 
         self.ventana_tablas = ctk.CTkToplevel()
         self.ventana_tablas.title("RESULTADOS")
@@ -253,11 +263,11 @@ class mostrar_Tablasa():
             background="#D7CCC8",
             foreground="black",
             fieldbackground="#D7CCC8",
-            rowheight=35
+            rowheight=50
         )
 
         columnas_tabla3 = ["Concepto", "Valor Final"]
-        self.tabla3 = ttk.Treeview(self.frame3, columns=columnas_tabla3, show="headings", height=10, style="TablaConceptos.Treeview")
+        self.tabla3 = ttk.Treeview(self.frame3, columns=columnas_tabla3, show="headings", height=30, style="TablaConceptos.Treeview")
 
 
         # correjir
@@ -276,18 +286,10 @@ class mostrar_Tablasa():
             t.tag_configure("par", background="#D7CCC8")
             t.tag_configure("impar", background="#FFFFFF") #
 
-        # self.tabla3.heading("Concepto", text="CONCEPTO")
-        # self.tabla3.heading("Valor Final", text="VALOR FINAL")
-
-        # self.tabla3.column("Concepto", width=200, anchor="w")
-        # self.tabla3.column("Valor Final", width=200, anchor="center", stretch=True)
 
         for i in self.tabla3.get_children():
             self.tabla3.delete(i)
 
-        # for k, v in concluciones.items():
-        #     valor_formateado = f"{v:.2f}" if isinstance(v, (int, float)) else v
-        #     self.tabla3.insert("", "end", values=(k, valor_formateado))
 
         for k, v in concluciones.items():
             if isinstance(v, (int, float)):
@@ -309,6 +311,124 @@ class mostrar_Tablasa():
 
         self.insidenciaRh = ctk.CTkButton(self.frame4, text="Comportamiento de gastos y ganancias", command=lambda: self.GraficarGanancias())
         self.insidenciaRh.grid(row=0, column=2, pady=20, padx=10)
+
+        self.graficarpersoans = ctk.CTkButton(self.frame4, text="Compararcion de personas por mes", command=lambda: self.graficas_personas_meses())
+        self.graficarpersoans.grid(row=0,column=3,padx=20,pady=20)
+
+        self.gafracarGanancias=ctk.CTkButton(self.frame4, text="Comparacion de ganacias por mes", command=lambda: self.graficar_ganancias_meses())
+        self.gafracarGanancias.grid(row=0,column=4,padx=20,pady=20)
+
+
+
+        # mostrar valores basicos de la simulacion -----------------------------------------------------------
+        self.frame5 = ctk.CTkFrame(fm_General, fg_color="#D7CCC8", border_width=2, border_color="#1A1A1D")
+        self.frame5.pack(fill="x", padx=20, pady=10)
+
+        ctk.CTkLabel(self.frame5, text="Flujo de personas por dia:", font=("Arial", 15, "bold"), text_color="#3E2723").pack(padx=10,pady=10)
+
+        columnas_tabla = ["Evento", "Provavilidad", "Provavilidad acumulada", "rango"]
+        self.tabla4 = ttk.Treeview(self.frame5, columns=columnas_tabla, show="headings", height=5, style="TablaConceptos.Treeview")
+
+        for col in columnas_tabla:
+            self.tabla4.heading(col, text=col.upper())
+            self.tabla4.column(col, width=250, anchor="center")
+
+        self.tabla4.pack(fill="both", expand=True, padx=10,pady=10)
+
+        evento = self.lista_eventos[0]
+        prob = self.lisat_provavilidad[0]
+        rango = self.lista_rango[0]
+
+        rango2 = []
+        for i in range(1, len(rango)):
+            rango2.append(f"{rango[i-1]} - {rango[i]}")
+
+        for i in range(len(evento)):
+            self.tabla4.insert("", "end", values=(evento[i], prob[i], rango[i + 1], rango2[i]))
+
+
+        # 2 -------------------
+
+        ctk.CTkLabel(self.frame5, text="Promedio de grupo:", font=("Arial", 15, "bold"), text_color="#3E2723").pack(padx=10,pady=10)
+
+        columnas_tabla = ["Evento", "Provavilidad", "Provavilidad acumulada", "rango"]
+        self.tabla5 = ttk.Treeview(self.frame5, columns=columnas_tabla, show="headings", height=5, style="TablaConceptos.Treeview")
+
+        for col in columnas_tabla:
+            self.tabla5.heading(col, text=col.upper())
+            self.tabla5.column(col, width=250, anchor="center")
+
+        self.tabla5.pack(fill="both", expand=True, padx=10,pady=10)
+
+        evento = self.lista_eventos[1]
+        prob = self.lisat_provavilidad[1]
+        rango = self.lista_rango[1]
+
+        rango2 = []
+        for i in range(1, len(rango)):
+            rango2.append(f"{rango[i-1]} - {rango[i]}")
+
+        for i in range(len(evento)):
+            self.tabla5.insert("", "end", values=(evento[i], prob[i], rango[i + 1], rango2[i]))
+
+
+        # 3 -------------------
+
+        ctk.CTkLabel(self.frame5, text="Promedio de grupo:", font=("Arial", 15, "bold"), text_color="#3E2723").pack(padx=10,pady=10)
+
+        columnas_tabla = ["Evento", "Provavilidad", "Provavilidad acumulada", "rango"]
+        self.tabla6 = ttk.Treeview(self.frame5, columns=columnas_tabla, show="headings", height=5, style="TablaConceptos.Treeview")
+
+        for col in columnas_tabla:
+            self.tabla6.heading(col, text=col.upper())
+            self.tabla6.column(col, width=250, anchor="center")
+
+        self.tabla6.pack(fill="both", expand=True, padx=10,pady=10)
+
+        evento = self.lista_eventos[2]
+        prob = self.lisat_provavilidad[2]
+        rango = self.lista_rango[3]
+
+        rango2 = []
+        for i in range(1, len(rango)):
+            rango2.append(f"{rango[i-1]} - {rango[i]}")
+
+        try:
+            for i in range(len(evento)):
+                self.tabla6.insert("", "end", values=(evento[i], prob[i], rango[i + 1], rango2[i]))
+        except:
+            pass
+
+        # mas ===============
+        self.tablas_automatizadas = []
+        listaTitulos = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+        for i in range(3, 10):
+            ctk.CTkLabel(self.frame5, text=listaTitulos[i], font=("Arial", 15, "bold"), text_color="#3E2723").pack(padx=10, pady=10)
+
+            columnas_tabla = ["Evento", "Provavilidad", "Provavilidad acumulada", "rango"]
+
+            tabla_temporal = ttk.Treeview(self.frame5, columns=columnas_tabla, show="headings", height=5, style="TablaConceptos.Treeview")
+
+            for col in columnas_tabla:
+                tabla_temporal.heading(col, text=col.upper())
+                tabla_temporal.column(col, width=250, anchor="center")
+
+            tabla_temporal.pack(fill="both", expand=True, padx=10, pady=10)
+
+            evento = self.lista_eventos[i]
+            prob = self.lisat_provavilidad[i]
+            rango = self.lista_rango[i]
+            
+            rango2 = [f"{rango[j-1]} - {rango[j]}" for j in range(1, len(rango))]
+
+            for j in range(len(evento)):
+                tabla_temporal.insert("", "end", values=(evento[j], prob[j], rango[j + 1], rango2[j]))
+
+
+            self.tablas_automatizadas.append(tabla_temporal)
+
+
+
 
     def GraficaInsidencais(self):
         # print(self.insidencias_del_diario)
@@ -342,20 +462,33 @@ class mostrar_Tablasa():
 
         lisat_dias = list(range(1, len(self.GananciasTotales_lista) + 1))
 
-       # Importante: No uses plt.bar, usa plt.plot
-       # 'g-' crea una línea sólida verde, 'r-' una línea sólida roja
         plt.plot(lisat_dias, self.GananciasTotales_lista, 'g-', label="Ganancias", linewidth=2)
         plt.plot(lisat_dias, self.gastosTotales_lista, 'r-', label="Costos", linewidth=2)
-
-       # Esto obliga a Matplotlib a mostrar todos los días en el eje X
         plt.xticks(lisat_dias)
 
-        plt.title("Comparativa Diaria: Ganancias vs Costos")
+        plt.title("Ganancias vs Costos")
         plt.xlabel("Día")
         plt.ylabel("Efectivo ($)")
         plt.legend()
-        plt.grid(True, linestyle='--') # Agrega rejilla para ver mejor los cruces
+        plt.grid(True, linestyle='--')
 
+        plt.tight_layout()
+        plt.show()
+    
+    def graficas_personas_meses(self):
+        # self.lista_mesea = lista_meses
+        # self.ganancias_mensuales = ganancias_mensuales
+        # self.personas_mensuales = personas_mensuales
+
+        plt.bar(self.lista_mesea, self.personas_mensuales)
+        plt.suptitle("Registro de personas por mes")
+        plt.tight_layout()
+        plt.show()
+
+    def graficar_ganancias_meses(self):
+        gananciasnetas = round(sum(self.ganancias_mensuales), 2)
+        plt.bar(self.lista_mesea,self.ganancias_mensuales)
+        plt.suptitle(f"Registro de ganancias por mes {gananciasnetas}")
         plt.tight_layout()
         plt.show()
 
@@ -367,7 +500,7 @@ class mostrar_Tablasa():
 def CargarMedios():
     global flojo_diario, flujo_siario_prob, grupo, grupo_prob, tem_preparacion, tem_preparacion_prob, consumo, condumo_prob, suministro, \
         suministro_prob, even_rh, even_rh_prob, Evento_Ale_prob, Evento_Ale, hora_critica, hora_critica_prob, porcen_ora_critica, \
-        porcen_ora_critica_prob, categorai_platillos, categorai_platillos_prob, platillos_disponibles, cantidadMinimaDeStock, cantidadDelStockmaxiom, platilllosEmpesamos
+        porcen_ora_critica_prob, categorai_platillos, categorai_platillos_prob, platillos_disponibles, cantidadMinimaDeStock, cantidadDelStockmaxiom, platilllosEmpesamos, Listamultiplciadores
 
 
     flojo_diario = [60, 100, 160, 200, 240]
@@ -428,6 +561,9 @@ def CargarMedios():
     # print("Si carga")
 
 
+    Listamultiplciadores = [1, 1, 1, 1, 1, 1, 1, 1,1, 1, 1, 1]
+
+
 def validar(lista) -> bool:
     # print(lista)
     if sum(lista) == 100:
@@ -465,16 +601,37 @@ def validaciones(Dias_a_Simular) -> float:
 
     # CargarMedios()
 
+    lista_eventos = []
+    lisat_provavilidad = []
+    lista_provavilidad_acumulada = []
+    lista_rango = []
+
     listas_a_validar = [
         flujo_siario_prob, grupo_prob, tem_preparacion_prob, condumo_prob,
         suministro_prob, even_rh_prob, Evento_Ale_prob,
         porcen_ora_critica_prob, hora_critica_prob, categorai_platillos_prob
     ]
 
+    lisat_provavilidad.append(flujo_siario_prob)
+    lisat_provavilidad.append(grupo_prob)
+    lisat_provavilidad.append(tem_preparacion_prob)
+    lisat_provavilidad.append(condumo_prob)
+    lisat_provavilidad.append(suministro_prob)
+    lisat_provavilidad.append(even_rh_prob)
+    lisat_provavilidad.append(Evento_Ale_prob)
+    lisat_provavilidad.append(porcen_ora_critica_prob)
+    lisat_provavilidad.append(hora_critica_prob)
+    lisat_provavilidad.append(categorai_platillos_prob)
+
+
+
+
+
     for p in listas_a_validar:
         if not validar(p):
             print(f"Error: Una de las listas de probabilidad no suma 100%")
             return False
+
 
     if len(flojo_diario) != len(flujo_siario_prob):
         print("Error en los datos 1")
@@ -501,8 +658,6 @@ def validaciones(Dias_a_Simular) -> float:
         return
 
     if len(Evento_Ale) != len(Evento_Ale_prob):
-        print(Evento_Ale)
-        print(Evento_Ale_prob)
         print("Error en los datos 7")
         return
 
@@ -512,14 +667,23 @@ def validaciones(Dias_a_Simular) -> float:
 
 
     if len(hora_critica) != len(hora_critica_prob):
-        print(hora_critica)
-        print(hora_critica_prob)
         print("Error en los datos 9")
         return
 
     if len(categorai_platillos) != len(categorai_platillos_prob):
         print("Error en los datos 10")
         return
+    
+    lista_eventos.append(flojo_diario)
+    lista_eventos.append(grupo)
+    lista_eventos.append(tem_preparacion)
+    lista_eventos.append(consumo)
+    lista_eventos.append(suministro)
+    lista_eventos.append(even_rh)
+    lista_eventos.append(Evento_Ale)
+    lista_eventos.append(porcen_ora_critica)
+    lista_eventos.append(hora_critica)
+    lista_eventos.append(categorai_platillos)
 
 
     # paso la lista a decimal
@@ -534,6 +698,18 @@ def validaciones(Dias_a_Simular) -> float:
     transformarListas(hora_critica_prob)
     transformarListas(categorai_platillos_prob)
 
+    lista_provavilidad_acumulada.append(flujo_siario_prob)
+    lista_provavilidad_acumulada.append(grupo_prob)
+    lista_provavilidad_acumulada.append(tem_preparacion_prob)
+    lista_provavilidad_acumulada.append(condumo_prob)
+    lista_provavilidad_acumulada.append(suministro_prob)
+    lista_provavilidad_acumulada.append(even_rh_prob)
+    lista_provavilidad_acumulada.append(Evento_Ale_prob)
+    lista_provavilidad_acumulada.append(porcen_ora_critica_prob)
+    lista_provavilidad_acumulada.append(hora_critica_prob)
+    lista_provavilidad_acumulada.append(categorai_platillos_prob)
+
+
     # creo los rangos
     flujo_siario_prob = rangos(flujo_siario_prob)
     grupo_prob = rangos(grupo_prob)
@@ -545,6 +721,18 @@ def validaciones(Dias_a_Simular) -> float:
     porcen_ora_critica_prob = rangos(porcen_ora_critica_prob)
     hora_critica_prob = rangos(hora_critica_prob)
     categorai_platillos_prob = rangos(categorai_platillos_prob)
+
+
+    lista_rango.append(flujo_siario_prob)
+    lista_rango.append(grupo_prob)
+    lista_rango.append(tem_preparacion_prob)
+    lista_rango.append(condumo_prob)
+    lista_rango.append(suministro_prob)
+    lista_rango.append(even_rh_prob)
+    lista_rango.append(Evento_Ale_prob)
+    lista_rango.append(porcen_ora_critica_prob)
+    lista_rango.append(hora_critica_prob)
+    lista_rango.append(categorai_platillos_prob)
 
     print("los datos estan correctos")
 
@@ -609,6 +797,11 @@ def validaciones(Dias_a_Simular) -> float:
 
     ganancias_mensuales = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     personas_mensuales = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    personas_por_mes = 0
+    ganancias_por_mes = 0
+    mes_antorios = "Enero"
+    contador_de_meses=0
+
 
 
     for _ in range(Dias_a_Simular):
@@ -620,9 +813,19 @@ def validaciones(Dias_a_Simular) -> float:
 
         mes_actual = ""
 
+        
+
+        
         for indice, (inicio, fin) in enumerate(rangos_meses):
             if inicio <= dias_del_anio and dias_del_anio <= fin:
-                mes_actual = lista_meses[indice]
+                multiplicador = Listamultiplciadores[indice]
+
+        
+        print("el multiplicador es de  1")
+
+        
+
+        
 
 
         flojo_diario = flojo_diario_auxilia[:]
@@ -637,6 +840,7 @@ def validaciones(Dias_a_Simular) -> float:
 
         personas, random_1 = provavilidar(flojo_diario,  flujo_siario_prob)
         personas = int(personas)
+        personas = multiplicador * personas
         personas_totales_en_el_dia = personas
         print("canditad de personas en el dia: ", personas)
         personas_totales_de_llegada += personas
@@ -862,6 +1066,14 @@ def validaciones(Dias_a_Simular) -> float:
         lista_promedio_de_hocio_por_cocinero.append(round((horas_habiles - (minutos_por_cocinero / 60)), 2))
 
 
+
+        for indice, (inicio, fin) in enumerate(rangos_meses):
+            if inicio <= dias_del_anio and dias_del_anio <= fin:
+                mes_actual = lista_meses[indice]
+                ganancias_mensuales[indice]+=round(Ganancias_totales, 2)
+                personas_mensuales[indice]+=personas
+
+
         # lista
         diccionario = {
             "Día": _ + 1,
@@ -930,6 +1142,10 @@ def validaciones(Dias_a_Simular) -> float:
 
 
 
+        
+
+
+
     platillo_mas_consumido = lista_de_maximas_apariciones
 
     conteo = {}
@@ -950,6 +1166,21 @@ def validaciones(Dias_a_Simular) -> float:
     penalisacionPersonas = clientes_totales_perdidos * penalisacino_por_personas_perdidas
     penalisacionPlatillos = platillos_perdidos_totales * penalisacion_por_platillos_perdidos
 
+    # calcular mes con mas trafico de personas
+
+    maxPersonas = personas_mensuales[0]
+    mes = "Enero"
+    for i in range(1, len(personas_mensuales)):
+        if personas_mensuales[i] > maxPersonas:
+            maxPersonas = personas_mensuales[i]
+            mes = lista_meses[i]
+
+    maxPersonas2 = personas_mensuales[0]
+    mes2 = "Enero"
+    for i in range(1, len(personas_mensuales)):
+        if personas_mensuales[i] < maxPersonas2:
+            maxPersonas2 = personas_mensuales[i]
+            mes2 = lista_meses[i]
 
     concluciones = {
         "Días simulados: ": dias_simulados,
@@ -965,6 +1196,8 @@ def validaciones(Dias_a_Simular) -> float:
         "Penalisacion por platillos: ": penalisacionPlatillos,
         "Ocio promedio por cocinero: ": (sum(lista_promedio_de_hocio_por_cocinero) / len(lista_promedio_de_hocio_por_cocinero)),
         "Cantidad idea de empleados: ": empleados_ideales,
+        "Mes con mas clientes": f"{mes} con {maxPersonas} personas",
+        "Mes con menos clientes": f"{mes2} con {maxPersonas2} personas",
         "Inversión total: ": gastos_totales,
         "Ganancias brutas: ": ganancias_totales,
         "Utilidad neta: ": ganancias_totales - gastos_totales
@@ -994,8 +1227,23 @@ def validaciones(Dias_a_Simular) -> float:
     print("Evento rh")
     print(insidencias_rh_diccionario)
 
+    print(lista_meses)
+    print(ganancias_mensuales)
+    print(personas_mensuales)
 
-    mostrar_Tablasa(diccionario_resumen, listaDiccionarios1, listaDiccionarios2, concluciones, insidencias_diccionario, insidencias_rh_diccionario, GananciasTotales_lista, gastosTotales_lista)
+    # lista_eventos = []
+    # lisat_provavilidad = []
+    # lista_provavilidad_acumulada = []
+    # lista_rango = []
+
+
+    mostrar_Tablasa(diccionario_resumen, listaDiccionarios1, listaDiccionarios2, concluciones, insidencias_diccionario, insidencias_rh_diccionario, GananciasTotales_lista, gastosTotales_lista, lista_meses, ganancias_mensuales, personas_mensuales, lista_eventos, lisat_provavilidad, lista_provavilidad_acumulada, lista_rango)
+
+
+    
+
+
+    
 
 
 
@@ -1123,11 +1371,6 @@ class cocina:
         self.nombreplatillos = ctk.CTkTextbox(self.datosPlatillos, font=("Arial", 13), width=ancho_txt, height=alto_txt)
         self.nombreplatillos.grid(row=1, column=0, padx=pad_col, pady=(2, 10))
 
-        # label9 = ctk.CTkLabel(self.datosPlatillos, text="Distribución de su venta:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
-        # label9.grid(row=0, column=1, padx=pad_col, pady=(10, 2), sticky="ew")
-
-        # self.distribucionPlatillos = ctk.CTkTextbox(self.datosPlatillos, font=("Arial", 13), width=ancho_txt, height=alto_txt)
-        # self.distribucionPlatillos.grid(row=1, column=1, padx=pad_col, pady=(2, 10))
 
         label10 = ctk.CTkLabel(self.datosPlatillos, text="Porcentaje de platillos:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
         label10.grid(row=0, column=2, padx=pad_col, pady=(10, 2), sticky="ew")
@@ -1279,6 +1522,49 @@ class cocina:
 
         self.texHayhoracritica = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
         self.texHayhoracritica.grid(row=5, column=4, padx=pad_col, pady=(2, 10))
+
+        self.datosmeses = ctk.CTkFrame(
+            self.frame_scroll,
+            fg_color=color_fondo,
+            border_width=2,
+            border_color=color_contorno_azul
+        )
+        self.datosmeses.pack(pady=10, padx=10, fill="x")
+
+        lista_meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"]
+
+
+        for i, mes in enumerate(lista_meses):
+            ctk.CTkLabel(self.datosmeses, text=f"{mes}", text_color=color_texto).grid(row=i,column=0,padx=20,pady=20)
+
+
+
+        self.ent_enero = ctk.CTkEntry(self.datosmeses)
+        self.ent_enero.grid(row=0,column=1,padx=20,pady=20)
+        self.ent_febredo = ctk.CTkEntry(self.datosmeses)
+        self.ent_febredo.grid(row=1,column=1,padx=20,pady=20)
+        self.ent_marzo= ctk.CTkEntry(self.datosmeses)
+        self.ent_marzo.grid(row=2,column=1,padx=20,pady=20)
+        self.ent_abril = ctk.CTkEntry(self.datosmeses)
+        self.ent_abril.grid(row=3,column=1,padx=20,pady=20)
+        self.ent_mayo = ctk.CTkEntry(self.datosmeses)
+        self.ent_mayo.grid(row=4,column=1,padx=20,pady=20)
+        self.ent_junio = ctk.CTkEntry(self.datosmeses)
+        self.ent_junio.grid(row=5,column=1,padx=20,pady=20)
+        self.ent_julio = ctk.CTkEntry(self.datosmeses)
+        self.ent_julio.grid(row=6,column=1,padx=20,pady=20)
+        self.ent_agosto = ctk.CTkEntry(self.datosmeses)
+        self.ent_agosto.grid(row=7,column=1,padx=20,pady=20)
+        self.ent_septiembre = ctk.CTkEntry(self.datosmeses)
+        self.ent_septiembre.grid(row=8,column=1,padx=20,pady=20)
+        self.ent_ocutubre = ctk.CTkEntry(self.datosmeses)
+        self.ent_ocutubre.grid(row=9,column=1,padx=20,pady=20)
+        self.ent_Nobiembre = ctk.CTkEntry(self.datosmeses)
+        self.ent_Nobiembre.grid(row=10,column=1,padx=20,pady=20)
+        self.ent_Dicimebre= ctk.CTkEntry(self.datosmeses)
+        self.ent_Dicimebre.grid(row=11,column=1,padx=20,pady=20)
+
+
 
 
         self.Botonsitos = ctk.CTkFrame(
@@ -1488,13 +1774,46 @@ class cocina:
         for elemento in hora_critica_prob:
             self.texHayhoracritica.insert("end", str(elemento) + "\n")
 
+
+        self.ent_enero.delete(0, "end")
+        self.ent_febredo.delete(0, "end")
+        self.ent_marzo.delete(0, "end")
+        self.ent_abril.delete(0, "end")
+        self.ent_mayo.delete(0, "end")
+        self.ent_junio.delete(0, "end")
+        self.ent_julio.delete(0, "end")
+        self.ent_agosto.delete(0, "end")
+        self.ent_septiembre.delete(0, "end")
+        self.ent_ocutubre.delete(0, "end")
+        self.ent_Nobiembre.delete(0, "end")
+        self.ent_Dicimebre.delete(0, "end")
+
+        global Listamultiplciadores
+
+        self.ent_enero.insert(0, Listamultiplciadores[0])
+        self.ent_febredo.insert(0, Listamultiplciadores[1])
+        self.ent_marzo.insert(0, Listamultiplciadores[2])
+        self.ent_abril.insert(0, Listamultiplciadores[3])
+        self.ent_mayo.insert(0, Listamultiplciadores[4])
+        self.ent_junio.insert(0, Listamultiplciadores[5])
+        self.ent_julio.insert(0, Listamultiplciadores[6])
+        self.ent_agosto.insert(0, Listamultiplciadores[7])
+        self.ent_septiembre.insert(0, Listamultiplciadores[8])
+        self.ent_ocutubre.insert(0, Listamultiplciadores[9])
+        self.ent_Nobiembre.insert(0, Listamultiplciadores[10])
+        self.ent_Dicimebre.insert(0, Listamultiplciadores[11])
+
+
+
+        # Listamultiplciadores 
+
     def extraervalores(self):
         # print("Si llega")
 
         global flojo_diario, flujo_siario_prob, grupo, grupo_prob, tem_preparacion, tem_preparacion_prob, consumo, condumo_prob, suministro, \
             suministro_prob, even_rh, even_rh_prob, Evento_Ale_prob, Evento_Ale, hora_critica, hora_critica_prob, porcen_ora_critica, \
             porcen_ora_critica_prob, categorai_platillos, categorai_platillos_prob, platillos_disponibles, cantidadMinimaDeStock, cantidadDelStockmaxiom, \
-            penalisacino_por_personas_perdidas, penalisacion_por_platillos_perdidos
+            penalisacino_por_personas_perdidas, penalisacion_por_platillos_perdidos, Listamultiplciadores
     
         penalisacino_por_personas_perdidas = float(self.penalisacion_personas.get())
         penalisacion_por_platillos_perdidos = float(self.penalisacion_platillos.get())
@@ -1605,7 +1924,7 @@ class cocina:
         hora_critica_prob = [int(x) for x in texto_crudo.split()]
 
         global cantidad_de_mesas, cantidad_de_cosineros, sueldo_cosineros, horas_habiles, personal, sueldo_personal, pago_servicios, platillos_lista, \
-            ganancias_por_platillo, ganancias_netas
+            ganancias_por_platillo, ganancias_netas, Listamultiplciadores
 
         platillos_lista = platilllosEmpesamos[:]
 
@@ -1625,6 +1944,24 @@ class cocina:
         sueldo_personal = float(self.sueldoPersonal.get())
 
         pago_servicios = float(self.pagoServicios.get())
+
+
+
+        Listamultiplciadores[0] = float(self.ent_enero.get())
+        Listamultiplciadores[1] = float(self.ent_febredo.get())
+        Listamultiplciadores[2] = float(self.ent_marzo.get())
+        Listamultiplciadores[3]= float(self.ent_abril.get())
+        Listamultiplciadores[4]=float(self.ent_mayo.get())
+        Listamultiplciadores[5]=float(self.ent_junio.get())
+        Listamultiplciadores[6]=float(self.ent_julio.get())
+        Listamultiplciadores[7]=float(self.ent_agosto.get())
+        Listamultiplciadores[8]=float(self.ent_septiembre.get())
+        Listamultiplciadores[9]=float(self.ent_ocutubre.get())
+        Listamultiplciadores[10]=float(self.ent_Nobiembre.get())
+        Listamultiplciadores[11]=float(self.ent_Dicimebre.get())
+
+
+        Listamultiplciadores
 
         print("Todo salio bien")
 
@@ -1675,6 +2012,8 @@ class cocina:
         platillos_lista.clear()
         ganancias_por_platillo.clear()
         ganancias_netas.clear()
+
+        Listamultiplciadores.clear()
 
         global cantidad_de_mesas, cantidad_de_cosineros, sueldo_cosineros, horas_habiles, personal, sueldo_personal, pago_servicios
 
