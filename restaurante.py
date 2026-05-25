@@ -374,7 +374,7 @@ class mostrar_Tablasa():
 
         # 3 -------------------
 
-        ctk.CTkLabel(self.frame5, text="Promedio de grupo:", font=("Arial", 15, "bold"), text_color="#3E2723").pack(padx=10,pady=10)
+        ctk.CTkLabel(self.frame5, text="Preparacion platillo:", font=("Arial", 15, "bold"), text_color="#3E2723").pack(padx=10,pady=10)
 
         columnas_tabla = ["Evento", "Provavilidad", "Provavilidad acumulada", "rango"]
         self.tabla6 = ttk.Treeview(self.frame5, columns=columnas_tabla, show="headings", height=5, style="TablaConceptos.Treeview")
@@ -387,7 +387,7 @@ class mostrar_Tablasa():
 
         evento = self.lista_eventos[2]
         prob = self.lisat_provavilidad[2]
-        rango = self.lista_rango[3]
+        rango = self.lista_rango[2]
 
         rango2 = []
         for i in range(1, len(rango)):
@@ -401,7 +401,7 @@ class mostrar_Tablasa():
 
         # mas ===============
         self.tablas_automatizadas = []
-        listaTitulos = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"]
+        listaTitulos = ["1", "2", "3", "Consumo por persona", "Suministro (Dias)", "Prob evento de RH:", "Evento aleatorios:", "Horas criticas:", "Hay hora critica:", "Porcentaje de platillos:"]
         for i in range(3, 10):
             ctk.CTkLabel(self.frame5, text=listaTitulos[i], font=("Arial", 15, "bold"), text_color="#3E2723").pack(padx=10, pady=10)
 
