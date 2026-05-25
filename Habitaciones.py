@@ -15,6 +15,7 @@ import customtkinter as ctk
 from CTkTable import CTkTable
 from tkinter import messagebox
 import random
+import os
 
 COLOR_FONDO = "#5D4037"
 COLOR_TEXTO = "#FFFFFF"
@@ -931,14 +932,25 @@ class Habitaciones:
     # LEER ALEATORIOS
     def leer_aleatorios(self):
         aleatorios=[]
-        archivo=open("aleatorios.txt", "r")
-        for linea in archivo:
-            linea=linea.strip()
-            if linea!="":
-                numero=round(float(linea), 4)
-                if numero>=0 and numero<=1:
-                    aleatorios.append(numero)
-        archivo.close()
+        ruta_base=os.path.dirname(os.path.abspath(__file__))
+
+        ruta_archivo=os.path.join(ruta_base, "GeneradorDeNumeroAleatorios", "Aleatorios.txt")
+        try:
+            with open(ruta_archivo, "r", encoding="utf-8") as archivo:
+                for linea in archivo:
+                    linea=linea.strip()
+                    if linea!="":
+                        try:
+                            numero=round(float(linea), 4)
+                            if 0<=numero<=1:
+                                aleatorios.append(numero)
+                        except ValueError:
+                            print("Dato inválido:", linea)
+        except FileNotFoundError:
+            messagebox.showerror("Error", "No se encontró el archivo")
+            messagebox.showerror("Ruta buscada", ruta_archivo)
+
+        print(ruta_archivo)
 
         return aleatorios
 
@@ -1086,7 +1098,8 @@ class Habitaciones:
                 messagebox.showerror("Error", "No hay suficientes números aleatorios")
                 return
 
-            indice=0
+            indice=random.randint(1, len(aleatorios))
+            print("indice", indice)
             # TABLAS
             tabla_llegadas=[["Día", "Aleatorio", "Llegadas"]]
 
