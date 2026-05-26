@@ -448,17 +448,17 @@ class Marketing:
     # LEER ALEATORIOS
     def leer_aleatorios(self):
         aleatorios=[]
-        '''archivo=open("Aleatorios.txt", "r")
+        archivo=open("aleatorios.txt", "r")
         for linea in archivo:
             linea=linea.strip()
             if linea!="":
                 numero=round(float(linea), 4)
                 if numero>=0 and numero<=1:
                     aleatorios.append(numero)
-        archivo.close()'''
-        for i in range(10000):
+        archivo.close()
+        '''for i in range(10000):
             alea=round(random.random(), 4)
-            aleatorios.append(alea)
+            aleatorios.append(alea)'''
         random.shuffle(aleatorios)
         return aleatorios
 
