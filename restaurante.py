@@ -435,7 +435,7 @@ class mostrar_Tablasa():
         x = []
         y = []
         for xi, yi in self.insidencias_del_diario.items():
-            x.append(xi)
+            x.append(f"{xi} ({yi})")
             y.append(yi)
 
         # print(x)
@@ -451,7 +451,7 @@ class mostrar_Tablasa():
         x = []
         y = []
         for xi, yi in self.insidencias_rh_diccionario.items():
-            x.append(xi)
+            x.append(f"{xi} ({yi})")
             y.append(yi)
 
         plt.bar(x, y)
@@ -534,10 +534,10 @@ def CargarMedios():
     categorai_platillos_prob = [60, 30, 10]
 
     platillos_disponibles = ["normal", "caro", "exotico"]
-    platilllosEmpesamos = [400, 200, 40]
+    platilllosEmpesamos = [600, 400, 100]
 
     cantidadMinimaDeStock = [400, 130, 40]
-    cantidadDelStockmaxiom = [600, 400, 100]
+    cantidadDelStockmaxiom = platilllosEmpesamos[:]
 
     global cantidad_de_mesas, cantidad_de_cosineros, sueldo_cosineros, horas_habiles, personal, sueldo_personal, pago_servicios, platillos_lista, \
         ganancias_por_platillo, ganancias_netas, penalisacino_por_personas_perdidas, penalisacion_por_platillos_perdidos
@@ -1182,6 +1182,13 @@ def validaciones(Dias_a_Simular) -> float:
             maxPersonas2 = personas_mensuales[i]
             mes2 = lista_meses[i]
 
+    MaxGanancias = ganancias_mensuales[0]
+    mes3 = "Enero"
+    for i in range(1, len(ganancias_mensuales)):
+        if ganancias_mensuales[i] > MaxGanancias:
+            MaxGanancias = ganancias_mensuales[i]
+            mes = lista_meses[i]
+
     concluciones = {
         "Días simulados: ": dias_simulados,
         "Promedio de platillos por día: ": (sum(lista_de_platillos_vendidos) / len(lista_de_platillos_vendidos)),
@@ -1198,9 +1205,10 @@ def validaciones(Dias_a_Simular) -> float:
         "Cantidad idea de empleados: ": empleados_ideales,
         "Mes con mas clientes": f"{mes} con {maxPersonas} personas",
         "Mes con menos clientes": f"{mes2} con {maxPersonas2} personas",
+        "Mes con mas ganancias:": f"{mes3} con {MaxGanancias} personas",
         "Inversión total: ": gastos_totales,
         "Ganancias brutas: ": ganancias_totales,
-        "Utilidad neta: ": ganancias_totales - gastos_totales
+        "Utilidad neta: ": ganancias_totales - gastos_totales - penalisacionPlatillos - penalisacionPersonas
     }
 
 
@@ -1916,7 +1924,7 @@ class cocina:
         cantidadMinimaDeStock = [int(x) for x in texto_crudo.split()]
 
         texto_crudo = self.txt_cantidadStock.get("1.0", "end")
-        cantidadDelStockmaxiom = [int(x) for x in texto_crudo.split()]
+        cantidadDelStockmaxiom = platilllosEmpesamos[:]
 
         # texHayhoracritica
 

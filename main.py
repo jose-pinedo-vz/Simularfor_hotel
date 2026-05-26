@@ -88,71 +88,71 @@ class Generador:
         # self.frame_widgets = ctk.CTkFrame(self.contenido, fg_color="transparent")
         # self.frame_widgets.place(relx=0.5, rely=0.5, anchor="center")  # centrado
 
-        self.caja_ingresos = ctk.CTkTextbox(
-            master=self.contenido,
-            width=500,
-            height=70,
-            fg_color="#F5F5DC",
-            text_color="#228B22",
-            border_color="#228B22",
-            border_width=10,
-            font=("Consolas", 20, "bold")
-        )
-        self.caja_ingresos.grid(row=0, column=0, pady=20, padx=20)
+        # self.caja_ingresos = ctk.CTkTextbox(
+        #     master=self.contenido,
+        #     width=500,
+        #     height=70,
+        #     fg_color="#F5F5DC",
+        #     text_color="#228B22",
+        #     border_color="#228B22",
+        #     border_width=10,
+        #     font=("Consolas", 20, "bold")
+        # )
+        # self.caja_ingresos.grid(row=0, column=0, pady=20, padx=20)
 
-        self.caja_ingresos.delete("0.0", "end")
-        self.caja_ingresos.insert("end", f"Ingresos: {self.ingresos}")\
+        # self.caja_ingresos.delete("0.0", "end")
+        # self.caja_ingresos.insert("end", f"Ingresos: {self.ingresos}")\
 
-        self.caja_Egresos = ctk.CTkTextbox(
-            master=self.contenido,
-            width=500,
-            height=70,
-            fg_color="#F5F5DC",
-            text_color="#B22222",
-            border_color="#B22222",
-            border_width=10,
-            font=("Consolas", 20, "bold")
-        )
-        self.caja_Egresos.grid(row=1, column=0, pady=20, padx=20)
+        # self.caja_Egresos = ctk.CTkTextbox(
+        #     master=self.contenido,
+        #     width=500,
+        #     height=70,
+        #     fg_color="#F5F5DC",
+        #     text_color="#B22222",
+        #     border_color="#B22222",
+        #     border_width=10,
+        #     font=("Consolas", 20, "bold")
+        # )
+        # self.caja_Egresos.grid(row=1, column=0, pady=20, padx=20)
 
-        self.caja_Egresos.delete("0.0", "end")
-        self.caja_Egresos.insert("end", f"Egresos: {self.egresos}")
+        # self.caja_Egresos.delete("0.0", "end")
+        # self.caja_Egresos.insert("end", f"Egresos: {self.egresos}")
 
-        self.caja_Totales = ctk.CTkTextbox(
-            master=self.contenido,
-            width=500,
-            height=70,
-            fg_color="#F5F5DC",
-            text_color="#DAA520",
-            border_color="#DAA520",
-            border_width=10,
-            font=("Consolas", 20, "bold")
-        )
-        self.caja_Totales.grid(row=2, column=0, pady=20, padx=20)
+        # self.caja_Totales = ctk.CTkTextbox(
+        #     master=self.contenido,
+        #     width=500,
+        #     height=70,
+        #     fg_color="#F5F5DC",
+        #     text_color="#DAA520",
+        #     border_color="#DAA520",
+        #     border_width=10,
+        #     font=("Consolas", 20, "bold")
+        # )
+        # self.caja_Totales.grid(row=2, column=0, pady=20, padx=20)
 
-        self.caja_Totales.delete("0.0", "end")
-        self.caja_Totales.insert("end", f"Totales: {self.total}")
+        # self.caja_Totales.delete("0.0", "end")
+        # self.caja_Totales.insert("end", f"Totales: {self.total}")
 
-        self.label = ctk.CTkLabel(self.contenido, text="")
-        self.label.grid(row=3, column=0, pady=20, padx=20)
+        # self.label = ctk.CTkLabel(self.contenido, text="")
+        # self.label.grid(row=3, column=0, pady=20, padx=20)
 
-        self.label = ctk.CTkLabel(self.contenido, text="")
-        self.label.grid(row=4, column=0, pady=20, padx=20)
+        # self.label = ctk.CTkLabel(self.contenido, text="")
+        # self.label.grid(row=4, column=0, pady=20, padx=20)
 
-        self.Dias = ctk.CTkTextbox(
-            master=self.contenido,
-            width=500,
-            height=70,
-            fg_color="#F5F5DC",
-            text_color="#8C8680",
-            border_color="#8C8680",
-            border_width=10,
-            font=("Consolas", 20, "bold")
-        )
-        self.Dias.grid(row=5, column=0, pady=20, padx=20)
+        # self.Dias = ctk.CTkTextbox(
+        #     master=self.contenido,
+        #     width=500,
+        #     height=70,
+        #     fg_color="#F5F5DC",
+        #     text_color="#8C8680",
+        #     border_color="#8C8680",
+        #     border_width=10,
+        #     font=("Consolas", 20, "bold")
+        # )
+        # self.Dias.grid(row=5, column=0, pady=20, padx=20)
 
-        self.Dias.delete("0.0", "end")
-        self.Dias.insert("end", f"A: 00 M: 00 D: 00")
+        # self.Dias.delete("0.0", "end")
+        # self.Dias.insert("end", f"A: 00 M: 00 D: 00")
 
         self.boton = ctk.CTkButton(
             self.contenido,
@@ -213,19 +213,19 @@ class Generador:
             Tomando los valores que se encuetran en un entri de arriba se encargara de separar
             años, meses y dias, de esta forma noc quedamos unciamente con dias fijos
         """
-        try:
-            textoCurudo = self.Dias.get("0.0", "end").split()
-            años = int(textoCurudo[1])
-            meses = int(textoCurudo[3])
-            dias = int(textoCurudo[5])
-            self.diasTotales = (años * 365) + (meses * 30) + dias
+        # try:
+        #     textoCurudo = self.Dias.get("0.0", "end").split()
+        #     años = int(textoCurudo[1])
+        #     meses = int(textoCurudo[3])
+        #     dias = int(textoCurudo[5])
+        #     self.diasTotales = (años * 365) + (meses * 30) + dias
 
-            print(f"dias a simular: {diasTotales}")
-            print("Se Va")
-            self.simulador(diasTotales)
-        except:
-            self.Dias.delete("0.0", "end")
-            self.Dias.insert("end", f"A: 00 M: 00 D: 00")
+        #     print(f"dias a simular: {diasTotales}")
+        #     print("Se Va")
+        #     self.simulador(diasTotales)
+        # except:
+        #     self.Dias.delete("0.0", "end")
+        #     self.Dias.insert("end", f"A: 00 M: 00 D: 00")
 
 
 
@@ -237,21 +237,21 @@ class Generador:
             resive el parametro dias que se le pasara a cada funcin con el objetivo de
             que esos sean los dias as imular
         """
-        import restaurante as rc
-        print("Se ejecuta restaurante")
-        print(dias)
-        self.egresos, self.ingresos = rc.validaciones(int(dias))
-        print("regresa")
-        self.total = 0
+        # import restaurante as rc
+        # print("Se ejecuta restaurante")
+        # print(dias)
+        # self.egresos, self.ingresos = rc.validaciones(int(dias))
+        # print("regresa")
+        # self.total = 0
 
-        self.caja_ingresos.delete("0.0", "end")
-        self.caja_ingresos.insert("end", f"Ingresos: {self.ingresos}")
-        self.caja_Egresos.delete("0.0", "end")
-        self.egresos = round((self.egresos), 2)
-        self.caja_Egresos.insert("end", f"Egresos: {self.egresos}")
-        self.caja_Totales.delete("0.0", "end")
-        total = round((self.ingresos - self.egresos), 2)
-        self.caja_Totales.insert("end", f"Totales: {total}")
+        # self.caja_ingresos.delete("0.0", "end")
+        # self.caja_ingresos.insert("end", f"Ingresos: {self.ingresos}")
+        # self.caja_Egresos.delete("0.0", "end")
+        # self.egresos = round((self.egresos), 2)
+        # self.caja_Egresos.insert("end", f"Egresos: {self.egresos}")
+        # self.caja_Totales.delete("0.0", "end")
+        # total = round((self.ingresos - self.egresos), 2)
+        # self.caja_Totales.insert("end", f"Totales: {total}")
 
 
 
