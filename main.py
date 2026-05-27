@@ -29,7 +29,7 @@ class Generador:
         self.recepcion = ctk.CTkButton(self.menu, text="Recepcion", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)#, command= self.llama_recepcion)
         self.recepcion.pack(padx=10, pady=10)
 
-        self.estacionamiento = ctk.CTkButton(self.menu, text="Estacionamiento", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
+        self.estacionamiento = ctk.CTkButton(self.menu, text="Estacionamiento", command= lambda: self.llamaestacionamiento() , width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.estacionamiento.pack(padx=10, pady=10)
 
         self.restaurante = ctk.CTkButton(self.menu, text="Restaurante", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto, command=lambda: self.llamaCosina())
@@ -221,6 +221,10 @@ class Generador:
     def llamamarketing(self):
         from Marketing import Marketing
         obj = Marketing()
+
+    def llamaestacionamiento(self):
+        from estacionamiento_valetparking import Interfaz_EVP
+        eyvp=Interfaz_EVP()
 
     def ExtrearFechas(self):
         """
