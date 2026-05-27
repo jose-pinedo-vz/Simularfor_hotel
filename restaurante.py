@@ -1,4 +1,3 @@
-import random
 import math
 import customtkinter as ctk
 from tkinter import ttk
@@ -187,7 +186,7 @@ class mostrar_Tablasa():
             "Cantidad de mesas", "Mesas ocupadas por hora", "Personas perdidas",
             "Personas atendidas", "Aleatorio Crítica", "¿Hubo hora crítica?", "Porcentaje de hora crítica",
             "Perdidas en hora pico", "Personas atendidas en total", "Aleatorio Evento",
-            "Evento del día", "Evento del personal", "Aleatorio RH", "Encargo a proveedores",
+            "Evento del día", "Evento del personal", "Aleatorio RH", "Encargo a proveedores", "Aleatorio proveedores",
             "Platillos encargados", "Ingresos", "Egresos", "Total"
         ]
 
@@ -831,15 +830,15 @@ def validaciones(Dias_a_Simular) -> float:
         
 
 
-        flojo_diario = flojo_diario_auxilia[:]
-        if inicio_fin_semana <= (_ + 1) and (_ + 1) <= inicio_fin_semana + 2:
-            print("Fin de semana")
-            for i in range(len(flojo_diario)):
-                flojo_diario[i] = flojo_diario[i] * 1.20
+        # flojo_diario = flojo_diario_auxilia[:]
+        # if inicio_fin_semana <= (_ + 1) and (_ + 1) <= inicio_fin_semana + 2:
+        #     print("Fin de semana")
+        #     for i in range(len(flojo_diario)):
+        #         flojo_diario[i] = flojo_diario[i] * 1.20
 
-        if (_ + 1) > inicio_fin_semana + 2:
-            print("Final del fin de semana")
-            inicio_fin_semana += 7
+        # if (_ + 1) > inicio_fin_semana + 2:
+        #     print("Final del fin de semana")
+        #     inicio_fin_semana += 7
 
         personas, random_1 = provavilidar(flojo_diario,  flujo_siario_prob)
         personas = int(personas)
@@ -1016,6 +1015,8 @@ def validaciones(Dias_a_Simular) -> float:
         print("Eventos con el personal: ", eventoRH)
         pedido_del_dia_para_diccionario = []
         encarga_provedroes = ""
+        random_7 = 0
+
         for i in range(len(distribucion_platillos)):
             if platillos_lista[i] <= cantidadMinimaDeStock[i] and estado_encarga == 0:
                 tiempo_de_llegada, random_7 = provavilidar(suministro, suministro_prob)
@@ -1099,6 +1100,7 @@ def validaciones(Dias_a_Simular) -> float:
             "Evento del personal": eventoRH,
             "Aleatorio RH": random_9,
             "Encargo a proveedores": encarga_provedroes,
+            "Aleatorio proveedores": random_7,
             "Platillos encargados": pedido_del_dia_para_diccionario,
             "Ingresos": ganancias,
             "Egresos": GastosTotal,
@@ -1192,6 +1194,25 @@ def validaciones(Dias_a_Simular) -> float:
             MaxGanancias = ganancias_mensuales[i]
             mes = lista_meses[i]
 
+    total_a_pagar_en_penalisaciones = 0
+    
+    for i, insidencia in enumerate(Evento_Ale):
+        cantidad = insidencaisDelDiario.count(insidencia)
+        print(f"La insedencia es {insidencia} cantidad de la misma {cantidad} total a pagar {Evento_Ale_penalisaciones[i] * cantidad}")
+        total_a_pagar_en_penalisaciones += Evento_Ale_penalisaciones[i] * cantidad
+
+    print()
+    print(even_rh)
+    for i, rh in enumerate(even_rh):
+        cantidad = insidencaisDelDiarioRh.count(rh)
+        print(f"La insedencia es {rh} cantidad de la misma {cantidad} total a pagar {even_rh_penalisaciones[i] * cantidad}")
+        total_a_pagar_en_penalisaciones += even_rh_penalisaciones[i] * cantidad
+    print("final")
+
+    print("El totla a pagar es de: ", total_a_pagar_en_penalisaciones)
+
+
+
     concluciones = {
         "Días simulados: ": dias_simulados,
         "Promedio de platillos por día: ": (sum(lista_de_platillos_vendidos) / len(lista_de_platillos_vendidos)),
@@ -1208,10 +1229,11 @@ def validaciones(Dias_a_Simular) -> float:
         "Cantidad idea de empleados: ": empleados_ideales,
         "Mes con mas clientes": f"{mes} con {maxPersonas} personas",
         "Mes con menos clientes": f"{mes2} con {maxPersonas2} personas",
-        "Mes con mas ganancias:": f"{mes3} con {MaxGanancias} personas",
+        "Mes con mas ganancias:": f"{mes3} con {round(MaxGanancias,2)} personas",
+        "Penalisacion de eventos aletorios y personal": total_a_pagar_en_penalisaciones,
         "Inversión total: ": gastos_totales,
         "Ganancias brutas: ": ganancias_totales,
-        "Utilidad neta: ": ganancias_totales - gastos_totales - penalisacionPlatillos - penalisacionPersonas
+        "Utilidad neta: ": ganancias_totales - gastos_totales - penalisacionPlatillos - penalisacionPersonas - total_a_pagar_en_penalisaciones
     }
 
 
@@ -1234,6 +1256,15 @@ def validaciones(Dias_a_Simular) -> float:
     for rh in even_rh:
         cantidad = insidencaisDelDiarioRh.count(rh)
         insidencias_rh_diccionario[rh] = cantidad
+
+    # for i, insidencia in enumerate(Evento_Ale):
+    #     cantidad = insidencaisDelDiario.count(insidencia)
+    #     print(f"La insedencia es {insidencia} cantidad de la misma {cantidad} total a pagar {Evento_Ale_penalisaciones[i] * cantidad}")
+
+
+    
+
+
 
     # print("Evento rh")
     # print(insidencias_rh_diccionario)
