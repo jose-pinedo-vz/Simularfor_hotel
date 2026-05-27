@@ -17,18 +17,14 @@ from tkinter import messagebox
 import customtkinter as ctk
 
 class InterfazPrincipal:
-    def Iniciar(self,n_aleatoreos,ventana_padre):
+    def Iniciar(self,ventana_padre):
         self.generados,self.comprobados=False,False
 
-        self.n_aleatoreos=n_aleatoreos
         self.VentanaP=ctk.CTkToplevel()
         self.VentanaP.title("Generador de aleatoreos")
         self.Fuente=""
         
-        ctk.CTkLabel(self.VentanaP,
-                     font=("arial",20,"bold"),
-                     text=f"Numeros a generar:\n{n_aleatoreos}"
-                     ).pack(pady=20, padx=20)
+    
         self.CuadradosMedios=ctk.CTkButton(self.VentanaP, text="Cuadrados medios",
                                              command=lambda: self.caudrados_medios())
         self.CuadradosMedios.pack(pady=20, padx=20)

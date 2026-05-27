@@ -13,7 +13,7 @@ class main:
         self.total = 0
         self.diasTotales = 0
         
-        try: self.principal.state("zoomed")
+        try: self.principal.after(200,lambda:self.principal.state('zoomed'))#con esto ya se pone en pantalla completa jose
         except: self.principal.attributes("-zoomed", True)
 
 
@@ -36,7 +36,13 @@ class main:
         self.restaurante = ctk.CTkButton(self.menu, text="Restaurante", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto, command=lambda: self.llamaCosina())
         self.restaurante.pack(padx=10, pady=10)
 
-        self.Artencionmedica = ctk.CTkButton(self.menu, text="Atencion medica", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
+        self.Artencionmedica = ctk.CTkButton(self.menu, 
+                                             text="Atencion medica", 
+                                             width=w, height=h, 
+                                             fg_color=color_fondo, 
+                                             hover_color=color_hover, 
+                                             text_color=color_texto,
+                                             command=lambda: self.Llama_area_medica())
         self.Artencionmedica.pack(padx=10, pady=10)
 
         self.Lavanderia = ctk.CTkButton(self.menu, text="Lavanderia", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
@@ -195,6 +201,11 @@ class main:
         # yamea al modelo de la cosina
         from restaurante import cocina
         obj = cocina()
+    
+    def Llama_area_medica(self):
+        from AtencionMedica_v3 import Area_Atencion_Medica
+        obj=Area_Atencion_Medica()
+        obj.Iniciar()
 
     def llamabar(self):
         # yamea al modelo de Bar
