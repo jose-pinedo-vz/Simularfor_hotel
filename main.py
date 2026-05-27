@@ -14,7 +14,7 @@ class Generador:
         self.total = 0
         self.diasTotales = 0
         
-        try: self.principal.after(200,lambda:self.principal.state('zoomed'))#con esto ya se pone en pantalla completa jose
+        try: self.principal.after(200,lambda:self.principal.state('zoomed'))
         except: self.principal.attributes("-zoomed", True)
 
         self.menu = ctk.CTkScrollableFrame(self.principal, width=400, corner_radius=0, fg_color="#D7CCC8")
