@@ -20,7 +20,7 @@ class Marketing:
             self.ventana.attributes("-zoomed", True)
 
         # DATOS
-        self.datos_leads=[[20, 0.30],
+        self.datos_vistas=[[20, 0.30],
                           [40, 0.50],
                           [60, 0.20]]
 
@@ -36,7 +36,7 @@ class Marketing:
                             [500, 0.50],
                             [800, 0.20]]
 
-        self.reiniciar_leads=False
+        self.reiniciar_vistas=False
         self.reiniciar_conversion=False
         self.reiniciar_campaña=False
         self.reiniciar_costos=False
@@ -98,16 +98,16 @@ class Marketing:
         self.frame_kpis=ctk.CTkFrame(self.frame_scroll, border_width=2, border_color=COLOR_CONTORNO)
         self.frame_kpis.pack(fill="x", padx=20, pady=20)
 
-        self.lbl_leads=ctk.CTkLabel(self.frame_kpis, text="Leads Totales: 0", text_color="#00FF99", font=("Arial", 18, "bold"))
-        self.lbl_leads.grid(row=0, column=0, padx=40, pady=30)
+        self.lbl_vistas=ctk.CTkLabel(self.frame_kpis, text="Vistas: 0", text_color="#00FF99", font=("Arial", 18, "bold"))
+        self.lbl_vistas.grid(row=0, column=0, padx=40, pady=30)
 
-        self.lbl_reservas=ctk.CTkLabel(self.frame_kpis, text="Reservas Totales: 0", text_color="#FFD700", font=("Arial", 18, "bold"))
+        self.lbl_reservas=ctk.CTkLabel(self.frame_kpis, text="Posibles reservaciones: 0", text_color="#FFD700", font=("Arial", 18, "bold"))
         self.lbl_reservas.grid(row=0, column=1, padx=40, pady=30)
 
-        self.lbl_ingresos=ctk.CTkLabel(self.frame_kpis, text="Ingresos Totales: $0", text_color="#00BFFF", font=("Arial", 18, "bold"))
+        self.lbl_ingresos=ctk.CTkLabel(self.frame_kpis, text="Posibles ingresos: $0", text_color="#00BFFF", font=("Arial", 18, "bold"))
         self.lbl_ingresos.grid(row=0, column=2, padx=40, pady=30)
 
-        self.lbl_ganancia=ctk.CTkLabel(self.frame_kpis, text="Ganancia Total: $0", text_color="#FF6666", font=("Arial", 18, "bold"))
+        self.lbl_ganancia=ctk.CTkLabel(self.frame_kpis, text="Posibles ganancias: $0", text_color="#FF6666", font=("Arial", 18, "bold"))
         self.lbl_ganancia.grid(row=0, column=3, padx=40, pady=30)
 
         # BOTONES
@@ -133,7 +133,7 @@ class Marketing:
         self.contenedor=ctk.CTkFrame(self.frame_probabilidades, fg_color="transparent")
         self.contenedor.pack(padx=20, pady=20)
 
-        self.crear_tabla("Generación de Leads", "Leads", self.datos_leads, 0)
+        self.crear_tabla("Generación vistas", "Vistas", self.datos_vistas, 0)
 
         self.crear_tabla("Tabla de Conversión",  "Conversión", self.datos_conversion, 1)
 
@@ -148,9 +148,9 @@ class Marketing:
         titulo_resultados=ctk.CTkLabel(self.frame_resultados, text="RESULTADOS DE LA SIMULACIÓN", text_color=COLOR_TEXTO, font=("Arial", 20, "bold"))
         titulo_resultados.pack(pady=20)
 
-        tabla=[[["Día", "Aleatorio", "Leads"]]]
+        tabla=[[["Día", "Aleatorio", "Vistas"]]]
 
-        self.tabla_inicio=CTkTable(self.frame_resultados, values=[["Día", "Leads", "Reservas"]])
+        self.tabla_inicio=CTkTable(self.frame_resultados, values=[["Día", "Vistas", "Posibles reservas"]])
         self.tabla_inicio.pack(pady=20)
 
         self.ventana.mainloop()
@@ -163,10 +163,10 @@ class Marketing:
         self.entry_personal.delete(0, "end")
         self.entry_dias.delete(0, "end")
 
-        self.lbl_leads.configure(text="Leads Totales: 0")
-        self.lbl_reservas.configure(text="Reservas Totales: 0")
-        self.lbl_ingresos.configure(text="Ingresos Totales: $0")
-        self.lbl_ganancia.configure(text="Ganancia Total: $0")
+        self.lbl_vistas.configure(text="Vistas: 0")
+        self.lbl_reservas.configure(text="Posibles reservas: 0")
+        self.lbl_ingresos.configure(text="Posibles ingresos: $0")
+        self.lbl_ganancia.configure(text="Posibles ganancias: $0")
 
         for widget in self.frame_resultados.winfo_children():
             widget.destroy()
@@ -243,8 +243,8 @@ class Marketing:
         tabla=CTkTable(frame, values=self.calcular_tabla(datos, encabezado))
         tabla.pack(padx=10, pady=10)
 
-        if encabezado=="Leads":
-            self.tabla_leads=tabla
+        if encabezado=="Vistas":
+            self.tabla_vistas=tabla
 
         elif encabezado=="Conversión":
             self.tabla_conversion=tabla
@@ -306,14 +306,14 @@ class Marketing:
 
             # ADVERTENCIA ANTES DE REINICIAR TABLA
             if suma==1:
-                if encabezado=="Leads":
-                    if self.reiniciar_leads==False:
+                if encabezado=="Vistas":
+                    if self.reiniciar_vistas==False:
                         messagebox.showwarning("Advertencia", "La tabla ya suma 1 Si agregas otro dato se reiniciará")
-                        self.reiniciar_leads=True
+                        self.reiniciar_vistas=True
                         return
                     else:
                         datos.clear()
-                        self.reiniciar_leads=False
+                        self.reiniciar_vistas=False
 
                 elif encabezado=="Conversión":
                     if self.reiniciar_conversion==False:
@@ -363,8 +363,8 @@ class Marketing:
             except:
                 pass
 
-            if encabezado=="Leads":
-                self.tabla_leads.destroy()
+            if encabezado=="Vistas":
+                self.tabla_vistas.destroy()
 
             elif encabezado=="Conversión":
                 self.tabla_conversion.destroy()
@@ -378,8 +378,8 @@ class Marketing:
             nueva_tabla=CTkTable(frame, values=self.calcular_tabla(datos, encabezado))
             nueva_tabla.pack(padx=10, pady=10)
 
-            if encabezado=="Leads":
-                self.tabla_leads=nueva_tabla
+            if encabezado=="Vistas":
+                self.tabla_vistas=nueva_tabla
 
             elif encabezado=="Conversión":
                 self.tabla_conversion=nueva_tabla
@@ -406,9 +406,9 @@ class Marketing:
                 return valor
 
     def validar_tablas(self):
-        suma_leads=0
-        for fila in self.datos_leads:
-            suma_leads=suma_leads + fila[1]
+        suma_vistas=0
+        for fila in self.datos_vistas:
+            suma_vistas=suma_vistas + fila[1]
 
         suma_conversion=0
         for fila in self.datos_conversion:
@@ -422,12 +422,12 @@ class Marketing:
         for fila in self.datos_costos:
             suma_costos=suma_costos + fila[1]
 
-        suma_leads=round(suma_leads, 4)
+        suma_vistas=round(suma_vistas, 4)
         suma_conversion=round(suma_conversion, 4)
         suma_campana=round(suma_campana, 4)
         suma_costos=round(suma_costos, 4)
 
-        if suma_leads!=1:
+        if suma_vistas!=1:
             messagebox.showerror("Error", "La tabla de leads debe sumar 1")
             return False
 
@@ -448,17 +448,17 @@ class Marketing:
     # LEER ALEATORIOS
     def leer_aleatorios(self):
         aleatorios=[]
-        '''archivo=open("Aleatorios.txt", "r")
+        archivo=open("aleatorios.txt", "r")
         for linea in archivo:
             linea=linea.strip()
             if linea!="":
                 numero=round(float(linea), 4)
                 if numero>=0 and numero<=1:
                     aleatorios.append(numero)
-        archivo.close()'''
-        for i in range(10000):
+        archivo.close()
+        '''for i in range(10000):
             alea=round(random.random(), 4)
-            aleatorios.append(alea)
+            aleatorios.append(alea)'''
         random.shuffle(aleatorios)
         return aleatorios
 
@@ -483,15 +483,15 @@ class Marketing:
             aleatorios=self.leer_aleatorios()
             indice=0
 
-            tabla_simulacion=[["Día", "Alea Leads", "Leads", "Alea Conversión", "% Conversión", "Reservas", "alea Canal", "Canal", "Precio", "Ingresos", "Alea Costo", "Costo Marketing", "Ganancia"]]
+            tabla_simulacion=[["Día", "Alea vistas", "vistas", "Alea Conversión", "% Conversión", "Reservas", "alea Canal", "Canal", "Precio", "Ingresos", "Alea Costo", "Costo Marketing", "Ganancia"]]
 
             tabla_resumen=[["Indicador", "Valor"]]
 
-            tabla_comportamiento=[["Día", "Leads", "Reservas", "Ingresos", "Costos", "Ganancia"]]
+            tabla_comportamiento=[["Día", "Vistas", "Reservas", "Ingresos", "Costos", "Ganancia"]]
 
             tabla_acumulada=[["Día", "Ganancia acumulada"]]
 
-            leads_totales=0
+            vistas_totales=0
             reservas_totales=0
             ingresos_totales=0
             costos_totales=0
@@ -504,9 +504,9 @@ class Marketing:
             dias_debiles=[]
 
             for dia in range(1, dias + 1):
-                alea_leads=aleatorios[indice]
+                alea_vistas=aleatorios[indice]
                 indice=indice + 1
-                leads=self.buscar_resultado(alea_leads, self.datos_leads)
+                vistas=self.buscar_resultado(alea_vistas, self.datos_vistas)
 
                 alea_conversion=aleatorios[indice]
                 indice=indice + 1
@@ -520,7 +520,7 @@ class Marketing:
                 indice=indice + 1
                 costo_marketing=self.buscar_resultado(alea_costo, self.datos_costos)
 
-                reservas=int(leads * (conversion / 100))
+                reservas=int(vistas * (conversion / 100))
 
                 ingresos=reservas * precio
 
@@ -530,16 +530,16 @@ class Marketing:
 
                 acumulada=acumulada + ganancia
 
-                leads_totales=leads_totales + leads
+                vistas_totales=vistas_totales + vistas
                 reservas_totales=reservas_totales + reservas
                 ingresos_totales=ingresos_totales + ingresos
                 costos_totales=costos_totales + costo_total
                 ganancia_total=ganancia_total + ganancia
                 conversion_total=conversion_total + conversion
 
-                tabla_simulacion.append([dia, alea_leads, leads, alea_conversion, str(conversion) + "%", reservas, alea_campana, campana, precio, ingresos, alea_costo, costo_marketing, ganancia])
+                tabla_simulacion.append([dia, alea_vistas, vistas, alea_conversion, str(conversion) + "%", reservas, alea_campana, campana, precio, ingresos, alea_costo, costo_marketing, ganancia])
 
-                tabla_comportamiento.append([dia, leads, reservas, ingresos, costo_total,ganancia])
+                tabla_comportamiento.append([dia, vistas, reservas, ingresos, costo_total,ganancia])
 
                 tabla_acumulada.append([dia, acumulada])
 
@@ -550,13 +550,13 @@ class Marketing:
 
             roi=ganancia_total / costos_totales
 
-            tabla_resumen.append(["Leads Totales", leads_totales])
+            tabla_resumen.append(["Vistas Totales", vistas_totales])
             tabla_resumen.append(["Reservas Totales", reservas_totales])
             tabla_resumen.append(["Conversión Promedio", f"{promedio_conversion:.2f}%"])
             tabla_resumen.append(["Ingresos Totales", f"${ingresos_totales:,.2f}"])
             tabla_resumen.append(["Costos Totales", f"${costos_totales:,.2f}"])
             tabla_resumen.append(["Ganancia Total", f"${ganancia_total:,.2f}"])
-            tabla_resumen.append(["ROI", f"{roi:.2f}"])
+            tabla_resumen.append(["Rentabilidad", f"{roi:.2f}"])
 
             # ORDENAR DÍAS RENTABLES
             for i in range(len(dias_rentables)):
@@ -574,10 +574,10 @@ class Marketing:
                         dias_debiles[i]=dias_debiles[j]
                         dias_debiles[j]=auxiliar
 
-            self.lbl_leads.configure(text=f"Leads Totales: {leads_totales}")
-            self.lbl_reservas.configure(text=f"Reservas Totales: {reservas_totales}")
-            self.lbl_ingresos.configure(text=f"Ingresos Totales: ${ingresos_totales:,.2f}")
-            self.lbl_ganancia.configure(text=f"Ganancia Total: ${ganancia_total:,.2f}")
+            self.lbl_vistas.configure(text=f"Vistas: {vistas_totales}")
+            self.lbl_reservas.configure(text=f"Posibles reservas: {reservas_totales}")
+            self.lbl_ingresos.configure(text=f"Posibles ingresos: ${ingresos_totales:,.2f}")
+            self.lbl_ganancia.configure(text=f"Posibles ganancias: ${ganancia_total:,.2f}")
 
             for widget in self.frame_resultados.winfo_children():
                 widget.destroy()
@@ -598,10 +598,6 @@ class Marketing:
             ctk.CTkLabel(self.frame_resultados, text="COMPORTAMIENTO POR DÍA", text_color=COLOR_TEXTO, font=("Arial", 18, "bold")).pack(pady=10)
             self.tabla_comportamiento=CTkTable(self.frame_resultados, values=tabla_comportamiento)
             self.tabla_comportamiento.pack(pady=10)
-
-            ctk.CTkLabel(self.frame_resultados, text="GANANCIA ACUMULADA", text_color=COLOR_TEXTO, font=("Arial", 18, "bold")).pack(pady=10)
-            self.tabla_acumulada=CTkTable(self.frame_resultados, values=tabla_acumulada)
-            self.tabla_acumulada.pack(pady=10)
 
             rentables=""
             for dato in dias_rentables[:3]:

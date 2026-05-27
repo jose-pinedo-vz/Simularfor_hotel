@@ -43,9 +43,9 @@ class InterfazPrincipal:
                       text="<- Regresar",
                       command=lambda:self.VentanaP.destroy()
                       ).pack(pady=20, padx=20)
-                                  
 
- 
+
+
 
 
     def limpiar_pantalla_grande(self) -> None:
@@ -58,7 +58,7 @@ class InterfazPrincipal:
 
     def FrameDeLosGeneradores(self) -> None:
         """
-        Descripcion: 
+        Descripcion:
             El objetivo de esta funcion es que contengra 2 frames, por un lado los metodos de
             comprogacion y por el otro como tal lo que se nesesita o el metodo de generacion.
 
@@ -66,25 +66,25 @@ class InterfazPrincipal:
             y limpiamos el frame central y podemos reultilisar el frame de los metodos
             de comprobacion
 
-        return: 
+        return:
             no retorna nada
 
-        atributos: 
-            y no ocupa nada, es independiendte 
+        atributos:
+            y no ocupa nada, es independiendte
         """
 
         self.ventana_genera=ctk.CTkToplevel()
         self.ventana_genera.title("METODOS DE GENERACION")
-            
+
         try: self.ventana_genera.state('zoomed')
         except: self.ventana_genera.attributes('-zoomed', True)
 
-        self.ventana_genera.grid_columnconfigure(1, weight=1) 
+        self.ventana_genera.grid_columnconfigure(1, weight=1)
         self.ventana_genera.grid_rowconfigure(0, weight=1)
 
         self.frame_menu=ctk.CTkFrame(self.ventana_genera, width=200, corner_radius=0)
         self.frame_menu.grid(row=0, column=0, sticky="nsew", padx=5, pady=5)
-        self.frame_menu.grid_propagate(False) 
+        self.frame_menu.grid_propagate(False)
 
         #Botones del menu:
 
@@ -104,7 +104,7 @@ class InterfazPrincipal:
 
         self.Kolmogorov=ctk.CTkButton(self.frame_menu, text="Kolmogorov", command=lambda: self.Llama_Prueba_Kolmogorov())
         self.Kolmogorov.pack(pady=20, padx=20)
-        
+
         self.Frecuencail=ctk.CTkButton(self.frame_menu, text="Frecuencail", command=lambda: self.FrecuencailLlamada())
         self.Frecuencail.pack(pady=20, padx=20)
 
@@ -140,7 +140,7 @@ class InterfazPrincipal:
 
         self.p3=ctk.CTkTextbox(self.frame_contenido, font=("Consolas", 13))
         self.p3.place(relx=0.75, rely=0.55, relwidth=0.12, relheight=0.4)
-                      
+
         def llamarCuadrados():
             semilla=self.Semilla.get()
             nf=int(self.CantIteraciones.get())
@@ -157,11 +157,11 @@ class InterfazPrincipal:
 
             texto_lista="\n".join([f"[{i+1}] -> {val}" for i, val in enumerate(self.lista)])
             self.p3.insert("0.0", texto_lista)
-            self.p3.configure(state="disabled") 
+            self.p3.configure(state="disabled")
 
         boton=ctk.CTkButton(self.frame_contenido, text="Generar",  width=400, height=120,
                               command= llamarCuadrados)
-        
+
         boton.place(relx=0.8, rely=0.2, relwidth=0.25, anchor="center")
 
     def Mixto(self):
@@ -177,14 +177,14 @@ class InterfazPrincipal:
 
         lista_C=["13", "21", "29", "37", "45", "53", "61", "69", "77", "85", "93", "101", "109", "117", "125", "133", "141", "149", "157", "165"]
 
-        
+
         lb_central=ctk.CTkLabel(self.frame_contenido, text="Congruencial mixto",
                                   font=("Arial", 20))
         lb_central.place(relx=.5, rely=.05, anchor=ctk.CENTER)
-        
+
         #___________________________________________________________________________________________________________________________#
 
-        lb_1=ctk.CTkLabel(self.frame_contenido, 
+        lb_1=ctk.CTkLabel(self.frame_contenido,
                           text="Semilla X0 (X0>0 y de preferencia impar):",
                           font=("Arial", 15))
         lb_1.place(relx=1/5, rely=.15, anchor=ctk.CENTER)
@@ -195,13 +195,13 @@ class InterfazPrincipal:
         #self.entry_X0.insert(0,self.n_aleatoreos)
         #self.entry_X0.configure(state="disabled")
 
-        combo_X0=ctk.CTkComboBox(self.frame_contenido, 
+        combo_X0=ctk.CTkComboBox(self.frame_contenido,
                                 values=lista_X0,
                                 width=200,
                                 state="readonly",
                                 command=lambda v: (self.entry_X0.delete(0,"end"), self.entry_X0.insert(0, v)))
         combo_X0.place(relx=3/5, rely=.15, anchor=ctk.CENTER)
-        
+
         #___________________________________________________________________________________________________________________________#
 
         lb_2=ctk.CTkLabel(self.frame_contenido,
@@ -212,7 +212,7 @@ class InterfazPrincipal:
         self.entry_M=ctk.CTkEntry(self.frame_contenido)
         self.entry_M.place(relx=2/5, rely=.2, anchor=ctk.CENTER)
 
-        combo_M=ctk.CTkComboBox(self.frame_contenido, 
+        combo_M=ctk.CTkComboBox(self.frame_contenido,
                                 values=lista_M,
                                 width=200,
                                 state="readonly",
@@ -229,14 +229,14 @@ class InterfazPrincipal:
         self.entry_A=ctk.CTkEntry(self.frame_contenido)
         self.entry_A.place(relx=2/5, rely=.25, anchor=ctk.CENTER)
 
-        combo_A=ctk.CTkComboBox(self.frame_contenido, 
+        combo_A=ctk.CTkComboBox(self.frame_contenido,
                                 values=lista_A,
                                 width=200,state="readonly",
                                 command=lambda v: (self.entry_A.delete(0,"end"), self.entry_A.insert(0, v)))
         combo_A.place(relx=3/5, rely=.25, anchor=ctk.CENTER)
 
         #___________________________________________________________________________________________________________________________#
-    
+
         lb_4=ctk.CTkLabel(self.frame_contenido,
                           text="Constante aditiva c ((c)mod8 == 5):",
                           font=("Arial", 15))
@@ -245,7 +245,7 @@ class InterfazPrincipal:
         self.entry_C=ctk.CTkEntry(self.frame_contenido)
         self.entry_C.place(relx=2/5, rely=.3, anchor=ctk.CENTER)
 
-        combo_C=ctk.CTkComboBox(self.frame_contenido, 
+        combo_C=ctk.CTkComboBox(self.frame_contenido,
                                 values=lista_C,
                                 width=200,
                                 state="readonly",
@@ -284,7 +284,7 @@ class InterfazPrincipal:
                 if self.lista!=[]:
                     for num in self.lista:
                         self.box_numeros.insert("end",str(num)+"\n")
-                    
+
                 else:
                     self.box_numeros.insert("end","OUCRRIO UN PROBLEMA!\n")
 
@@ -298,8 +298,8 @@ class InterfazPrincipal:
 
         btn2=ctk.CTkButton(self.frame_contenido, text="SIN RESTRICCIONES!",command=lambda:TomarValores(False),fg_color="red")
         btn2.place(relx=3/5,rely=.4,anchor=ctk.CENTER)
-        
-        
+
+
 
     def multiplicativo(self):
         v1="3 11 13 14 21 23 24 27 53 59 64 69 77 83 91 113 117 123 131 133 141 147 163 171 173 179 181 187 189 197"
@@ -316,7 +316,7 @@ class InterfazPrincipal:
 
         frame_inputs=ctk.CTkFrame(self.frame_contenido, fg_color="transparent")
         frame_inputs.grid(row=1, column=0, padx=20, sticky="ew")
-        
+
 
         self.CantIteraciones=ctk.CTkEntry(frame_inputs, placeholder_text="Cantidad de aleatorios", width=180, height=40)
         self.CantIteraciones.grid(row=0, column=0, padx=5, pady=5)
@@ -342,18 +342,18 @@ class InterfazPrincipal:
                 self.p1.configure(state="normal")
                 self.p1.delete("0.0", "end")
                 self.p1.insert("0.0", cadena)
-                self.p1.configure(state="disabled") 
+                self.p1.configure(state="disabled")
 
                 self.p2.configure(state="normal")
                 self.p2.delete("0.0", "end")
                 self.p2.insert("0.0", cadena2)
-                self.p2.configure(state="disabled") 
+                self.p2.configure(state="disabled")
 
                 self.p3.configure(state="normal")
                 self.p3.delete("0.0", "end")
                 texto_lista="\n".join([f"[{i+1}] -> {val}" for i, val in enumerate(self.lista)])
                 self.p3.insert("0.0", texto_lista)
-                self.p3.configure(state="disabled") 
+                self.p3.configure(state="disabled")
             except Exception as e:
                 from tkinter import messagebox
                 messagebox.showwarning("Error", f"Verifique sus datos: {e}")
@@ -394,8 +394,8 @@ class InterfazPrincipal:
                     num=random.randint(inf, sub)
                     if num not in lista: lista.append(num)
                 lista.sort()
-                self.arreglo.delete("0.0", "end")      
-                self.arreglo.insert("0.0", " ".join(str(n) for n in lista))   
+                self.arreglo.delete("0.0", "end")
+                self.arreglo.insert("0.0", " ".join(str(n) for n in lista))
             except:
                 messagebox.showwarning("Atención", "Ingrese datos numéricos válidos")
 
@@ -432,8 +432,8 @@ class InterfazPrincipal:
         else:
             self.comprobados=False
             self.PopUp("Fallo", "Los números NO pasaron la prueba.")
-  
-    
+
+
     def Llama_Prueba_Poker(self):
         prueba=Prueba_Del_Poker()
         paso=prueba.Ventana(self.lista)
@@ -505,7 +505,7 @@ class InterfazPrincipal:
         continuar=ctk.CTkButton(self.Emergente, text="Continuar",
                                 command=self.Emergente.destroy)
         continuar.place(relx=.5,rely=.6,anchor=ctk.CENTER)
-    
+
     def Regresar(self,generados,comprobados):
         if generados and comprobados:
             return True

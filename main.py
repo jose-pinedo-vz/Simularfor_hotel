@@ -1,9 +1,10 @@
 import customtkinter as ctk
 from PIL import Image, ImageOps
 
+
 import os
 
-class main:
+class Generador:
     def __init__(self):
         self.principal = ctk.CTk()
         self.principal.title("HOTEL")
@@ -16,8 +17,6 @@ class main:
         try: self.principal.after(200,lambda:self.principal.state('zoomed'))#con esto ya se pone en pantalla completa jose
         except: self.principal.attributes("-zoomed", True)
 
-
-
         self.menu = ctk.CTkScrollableFrame(self.principal, width=400, corner_radius=0, fg_color="#D7CCC8")
         self.menu.pack(side="left", fill="y")
 
@@ -26,7 +25,7 @@ class main:
         color_hover = "#3E2723"
         color_texto = "#FFFFFF"
         color_Extra = "#8C8680"
-        
+
         self.recepcion = ctk.CTkButton(self.menu, text="Recepcion", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.recepcion.pack(padx=10, pady=10)
 
@@ -177,7 +176,7 @@ class main:
 
         self.boton2 = ctk.CTkButton(
             self.contenido,
-            text="Detalles",
+            text="GENERAR NUMERO",
             fg_color="#5D4037",
             hover_color="#3E2723",
             width=400,
@@ -185,9 +184,17 @@ class main:
             text_color="#FFFFFF",
             border_color="#8C8680",
             border_width=2,
-            font=("Consolas", 18, "bold")
+            font=("Consolas", 18, "bold"),
+            command=lambda: self.llamarGenerador()
         )
         self.boton2.grid(row=7, column=0, pady=10)
+
+    def llamarGenerador(self):
+        print("Llega")
+        from GeneradorDeNumeroAleatorios import main
+        main.llamarVentanaAleatorios()
+
+
 
     def redimensionar_fondo(self, event):
             # funciona para la foto, si le mueven abisen
@@ -248,7 +255,6 @@ class main:
         print("regresa")
         self.total = 0
 
-
         self.caja_ingresos.delete("0.0", "end")
         self.caja_ingresos.insert("end", f"Ingresos: {self.ingresos}")
         self.caja_Egresos.delete("0.0", "end")
@@ -265,5 +271,5 @@ class main:
 
 
 if __name__ == "__main__":
-    app = main()
+    app = Generador()
     app.principal.mainloop()
