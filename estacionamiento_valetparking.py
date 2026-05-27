@@ -728,11 +728,8 @@ class TablaVisor(ctk.CTkFrame):
                       command=v.destroy).pack(pady=14)
 
 
-# =============================================================================
-#   SECCIÓN 7 — APLICACIÓN PRINCIPAL
-# =============================================================================
 
-class AppValetParking(ctk.CTk):
+class Interfaz_EVP(ctk.CTk):
 
     def __init__(self):
         super().__init__()
@@ -1081,5 +1078,5 @@ class AppValetParking(ctk.CTk):
 
 
 if __name__ == "__main__":
-    app = AppValetParking()
+    app = Interfaz_EVP()
     app.mainloop()
