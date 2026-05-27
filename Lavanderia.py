@@ -15,6 +15,8 @@ import random
 ctk.set_appearance_mode("dark") 
 ctk.set_default_color_theme("blue")
 
+import GeneraRandom 
+
 
 class Lavanderia:
     
@@ -25,7 +27,9 @@ class Lavanderia:
         
         self.Cargar_datos() 
         self.Calculos_probAcu_rang() 
-        
+        self.contador = 1
+                
+
         #-------------------------------------------------------------------------------------------------------------------------------------------------
         
         # Variables a usar
@@ -347,14 +351,14 @@ class Lavanderia:
         
         
         
-        # try: 
-        #     self.principal.state("zoomed")
-        # except: 
-        #     self.principal.attributes("-zoomed", True)
+        try: 
+            self.Interfaz.state("zoomed")
+        except: 
+            self.Interfaz.attributes("-zoomed", True)
         
         
         
-        self.Interfaz.state("zoomed") #windows
+        # self.Interfaz.state("zoomed") #windows
         # self.Interfaz.attributes('-zoomed', True) #Linux
         
         self.Interfaz.mainloop()
@@ -1726,8 +1730,9 @@ class Lavanderia:
         
         for _ in range(self.filas_tabla_monte_carlo):
             
-            
-            ale_tabla_1 = round(random.random(), 4)
+            self.contador += 1
+            ale_tabla_1 = round(GeneraRandom.aleatorio(self.contador), 4)
+
             # ale_tabla_2 = round(random.random(), 4)
             # ale_tabla_3 = round(random.random(), 4)
             # ale_tabla_4 = round(random.random(), 4)
@@ -1868,8 +1873,10 @@ class Lavanderia:
             cargas_dia = []
             
             while total_cargas < cargas:
+                self.contador += 1
+
                 
-                ale = round(random.random(), 4)
+                ale = round(GeneraRandom.aleatorio(self.contador), 4)
                 
                 for fila in self.Tabla_2_e_d:
                     
@@ -1946,8 +1953,8 @@ class Lavanderia:
             tiempo_dia = []
             
             for i in range(cargas):
-                
-                ale = round(random.random(), 4)
+                self.contador += 1
+                ale = round(GeneraRandom.aleatorio(self.contador), 4)
                 
                 for fila in self.Tabla_3_e_d:
                     
@@ -2020,8 +2027,8 @@ class Lavanderia:
             estado_dia = []
             
             for i in range(self.cantidad_maquinas_total):
-                
-                ale = random.random()
+                self.contador += 1
+                ale = GeneraRandom.aleatorio(self.contador)
                 
                 for fila in self.Tabla_4_e_d:
                     str_rango = fila[-1]
@@ -2101,8 +2108,9 @@ class Lavanderia:
             reparaciones_dia = []
             
             for i in range(fallas):
-            
-                ale = random.random()
+                self.contador += 1
+                ale = GeneraRandom.aleatorio(self.contador)
+                # ale = random.random()
                 
                 for fila in self.Tabla_5_e_d:
                     
@@ -2210,8 +2218,10 @@ class Lavanderia:
             daños_dia = []
             
             for i in range(cargas):
+                self.contador += 1
+                ale = GeneraRandom.aleatorio(self.contador)
                 
-                ale = random.random()
+                # ale = random.random()
                 
                 for fila in self.Tabla_6_e_d:
                     
@@ -2284,8 +2294,9 @@ class Lavanderia:
             jabon_dia = []
             
             for i in range(cargas):
-                
-                ale = random.random()
+                self.contador += 1
+                ale = GeneraRandom.aleatorio(self.contador)
+                # ale = random.random()
                 
                 for fila in self.Tabla_7_e_d:
                     
@@ -2351,8 +2362,9 @@ class Lavanderia:
             suavitel_dia = []
             
             for i in range(cargas):
-                
-                ale = random.random()
+                self.contador += 1
+                ale = GeneraRandom.aleatorio(self.contador)
+                # ale = random.random()
                 
                 for fila in self.Tabla_8_e_d:
                     
@@ -2418,8 +2430,9 @@ class Lavanderia:
             desmanchador_dia = []
             
             for i in range(cargas):
-                
-                ale = random.random()
+                self.contador += 1
+                ale = GeneraRandom.aleatorio(self.contador)
+                # ale = random.random()
                 
                 for fila in self.Tabla_9_e_d:
                     
@@ -2483,8 +2496,9 @@ class Lavanderia:
             bolsas_dia = []
             
             for i in range(cargas):
-                
-                ale = random.random()
+                self.contador += 1
+                ale = GeneraRandom.aleatorio(self.contador)
+                # ale = random.random()
                 
                 for fila in self.Tabla_10_e_d:
                     
@@ -2550,8 +2564,9 @@ class Lavanderia:
             ganchos_dia = []
             
             for i in range(cargas):
-                
-                ale = random.random()
+                self.contador += 1
+                ale = GeneraRandom.aleatorio(self.contador)
+                # ale = random.random()
                 
                 for fila in self.Tabla_11_e_d:
                     
