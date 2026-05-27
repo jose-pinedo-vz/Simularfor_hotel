@@ -2,6 +2,7 @@ import customtkinter as ctk
 from CTkTable import CTkTable
 from tkinter import messagebox
 import random
+import os
 
 COLOR_FONDO = "#5D4037"
 COLOR_TEXTO = "#FFFFFF"
@@ -10,9 +11,11 @@ COLOR_CONTORNO = "#4281FF"
 class Marketing:
     def __init__(self):
         self.ventana=ctk.CTk()
-        self.ventana.title("Área de Marketing")
-        self.ventana.geometry("1400x750")
+        self.ventana.title("Área de Habitaciones")
         self.ventana.configure(fg_color=COLOR_FONDO)
+        ancho=self.ventana.winfo_screenwidth()
+        alto=self.ventana.winfo_screenheight()
+        self.ventana.geometry(f"{ancho}x{alto}+0+0")
 
         try:
             self.ventana.state("zoomed")
@@ -448,18 +451,24 @@ class Marketing:
     # LEER ALEATORIOS
     def leer_aleatorios(self):
         aleatorios=[]
-        archivo=open("aleatorios.txt", "r")
-        for linea in archivo:
-            linea=linea.strip()
-            if linea!="":
-                numero=round(float(linea), 4)
-                if numero>=0 and numero<=1:
-                    aleatorios.append(numero)
-        archivo.close()
-        '''for i in range(10000):
-            alea=round(random.random(), 4)
-            aleatorios.append(alea)'''
-        random.shuffle(aleatorios)
+        ruta_base=os.path.dirname(os.path.abspath(__file__))
+
+        ruta_archivo=os.path.join(ruta_base, "GeneradorDeNumeroAleatorios", "Aleatorios.txt")
+        try:
+            with open(ruta_archivo, "r", encoding="utf-8") as archivo:
+                for linea in archivo:
+                    linea=linea.strip()
+                    if linea!="":
+                        try:
+                            numero=round(float(linea), 4)
+                            if 0<=numero<=1:
+                                aleatorios.append(numero)
+                        except ValueError:
+                            print("Dato inválido:", linea)
+        except FileNotFoundError:
+            messagebox.showerror("Error", "No se encontró el archivo")
+            messagebox.showerror("Ruta buscada", ruta_archivo)
+
         return aleatorios
 
     # SIMULACIÓN
@@ -585,19 +594,39 @@ class Marketing:
             titulo=ctk.CTkLabel(self.frame_resultados, text="RESULTADOS DE LA SIMULACIÓN", text_color=COLOR_TEXTO, font=("Arial", 22, "bold"))
             titulo.pack(pady=20)
 
-            ctk.CTkLabel(self.frame_resultados, text="SIMULACIÓN", text_color=COLOR_TEXTO, font=("Arial", 18, "bold")).pack(pady=10)
-            frame_simulacion=ctk.CTkScrollableFrame(self.frame_resultados, orientation="horizontal", width=1200, height=2000)
-            frame_simulacion.pack(fill="x", padx=20, pady=10)
+            self.tabs=ctk.CTkTabview(self.frame_resultados, width=1300, height=800)
+            self.tabs.pack(fill="both", expand=True, padx=20, pady=20)
+
+            # CREAR TABS
+            self.tabs.add("Simulación")
+            self.tabs.add("Resumen")
+            self.tabs.add("Comportamiento")
+            self.tabs.add("Acumulado")
+            self.tabs.add("Análisis")
+
+            ctk.CTkLabel(self.tabs.tab("Simulación"), text="SIMULACIÓN DIARIA", text_color=COLOR_TEXTO, font=("Arial", 18, "bold")).pack(pady=10)
+            frame_simulacion=ctk.CTkScrollableFrame(self.tabs.tab("Simulación"), orientation="horizontal", width=1200, height=500)
+            frame_simulacion.pack(fill="both", expand=True, padx=20, pady=10)
             self.tabla_simulacion=CTkTable(frame_simulacion, values=tabla_simulacion)
             self.tabla_simulacion.pack(padx=10, pady=10)
 
-            ctk.CTkLabel(self.frame_resultados, text="RESULTADOS", text_color=COLOR_TEXTO, font=("Arial", 18, "bold")).pack(pady=10)
-            self.tabla_resumen=CTkTable(self.frame_resultados, values=tabla_resumen)
-            self.tabla_resumen.pack(pady=10)
+            ctk.CTkLabel(self.tabs.tab("Resumen"), text="RESUMEN GENERAL", text_color=COLOR_TEXTO, font=("Arial", 18, "bold")).pack(pady=10)
+            frame_resumen=ctk.CTkScrollableFrame(self.tabs.tab("Resumen"), orientation="horizontal", width=1000, height=500)
+            frame_resumen.pack(fill="both", expand=True, padx=20, pady=10)
+            self.tabla_resumen=CTkTable(frame_resumen, values=tabla_resumen)
+            self.tabla_resumen.pack(padx=10, pady=10)
 
-            ctk.CTkLabel(self.frame_resultados, text="COMPORTAMIENTO POR DÍA", text_color=COLOR_TEXTO, font=("Arial", 18, "bold")).pack(pady=10)
-            self.tabla_comportamiento=CTkTable(self.frame_resultados, values=tabla_comportamiento)
-            self.tabla_comportamiento.pack(pady=10)
+            ctk.CTkLabel(self.tabs.tab("Comportamiento"), text="COMPORTAMIENTO POR DÍA", text_color=COLOR_TEXTO, font=("Arial", 18, "bold")).pack(pady=10)
+            frame_comportamiento=ctk.CTkScrollableFrame(self.tabs.tab("Comportamiento"), orientation="horizontal", width=1000, height=500)
+            frame_comportamiento.pack(fill="both", expand=True, padx=20, pady=10)
+            self.tabla_comportamiento=CTkTable(frame_comportamiento, values=tabla_comportamiento)
+            self.tabla_comportamiento.pack(padx=10, pady=10)
+
+            ctk.CTkLabel(self.tabs.tab("Acumulado"), text="GANANCIA ACUMULADA", text_color=COLOR_TEXTO, font=("Arial", 18, "bold")).pack(pady=10)
+            frame_acumulado=ctk.CTkScrollableFrame(self.tabs.tab("Acumulado"), orientation="horizontal", width=1000, height=500)
+            frame_acumulado.pack(fill="both", expand=True, padx=20, pady=10)
+            self.tabla_acumulada=CTkTable(frame_acumulado, values=tabla_acumulada)
+            self.tabla_acumulada.pack(padx=10, pady=10)
 
             rentables=""
             for dato in dias_rentables[:3]:

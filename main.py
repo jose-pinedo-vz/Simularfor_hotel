@@ -13,8 +13,8 @@ class Generador:
         self.egresos = 0
         self.total = 0
         self.diasTotales = 0
-        
-        try: self.principal.after(200,lambda:self.principal.state('zoomed'))#con esto ya se pone en pantalla completa jose
+
+        try: self.principal.state("zoomed")
         except: self.principal.attributes("-zoomed", True)
 
         self.menu = ctk.CTkScrollableFrame(self.principal, width=400, corner_radius=0, fg_color="#D7CCC8")
@@ -29,19 +29,13 @@ class Generador:
         self.recepcion = ctk.CTkButton(self.menu, text="Recepcion", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.recepcion.pack(padx=10, pady=10)
 
-        self.estacionamiento = ctk.CTkButton(self.menu, text="Estacionamiento",command=self.llama_estacionamiento, width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
+        self.estacionamiento = ctk.CTkButton(self.menu, text="Estacionamiento", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.estacionamiento.pack(padx=10, pady=10)
 
         self.restaurante = ctk.CTkButton(self.menu, text="Restaurante", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto, command=lambda: self.llamaCosina())
         self.restaurante.pack(padx=10, pady=10)
 
-        self.Artencionmedica = ctk.CTkButton(self.menu, 
-                                             text="Atencion medica", 
-                                             width=w, height=h, 
-                                             fg_color=color_fondo, 
-                                             hover_color=color_hover, 
-                                             text_color=color_texto,
-                                             command=lambda: self.Llama_area_medica())
+        self.Artencionmedica = ctk.CTkButton(self.menu, text="Atencion medica", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.Artencionmedica.pack(padx=10, pady=10)
 
         self.Lavanderia = ctk.CTkButton(self.menu, text="Lavanderia", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
@@ -53,17 +47,17 @@ class Generador:
         self.mantenimiento = ctk.CTkButton(self.menu, text="Mantenimiento", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.mantenimiento.pack(padx=10, pady=10)
 
-        self.ResercasOnline = ctk.CTkButton(self.menu, text="Reservas online", command= self.llama_reservas_online, width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
+        self.ResercasOnline = ctk.CTkButton(self.menu, text="Reservas online", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.ResercasOnline.pack(padx=10, pady=10)
 
-        self.marketing = ctk.CTkButton(self.menu, text="marketing",  width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
+        self.Habitaciones = ctk.CTkButton(self.menu, text="Habitaciones", command=lambda: self.llamahabitaciones(), width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
+        self.Habitaciones.pack(padx=10, pady=10)
+
+        self.marketing = ctk.CTkButton(self.menu, text="marketing", command=lambda: self.llamamarketing(), width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.marketing.pack(padx=10, pady=10)
 
-        self.Bodega = ctk.CTkButton(self.menu, text="Bodega central", command= self.llama_bodega, width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
+        self.Bodega = ctk.CTkButton(self.menu, text="Bodega central", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.Bodega.pack(padx=10, pady=10)
-
-        self.Habitaciones = ctk.CTkButton(self.menu, text="Habitaciones", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
-        self.Habitaciones.pack(padx=10, pady=10)
 
 
         self.contenido = ctk.CTkFrame(self.principal, fg_color="transparent")
@@ -208,29 +202,19 @@ class Generador:
         # yamea al modelo de la cosina
         from restaurante import cocina
         obj = cocina()
-    
-    def Llama_area_medica(self):
-        from AtencionMedica_v3 import Area_Atencion_Medica
-        obj=Area_Atencion_Medica()
-        obj.Iniciar()
 
     def llamabar(self):
         # yamea al modelo de Bar
         from Bar import Bar
         obj = Bar()
 
-    def llama_reservas_online(self):
-        from gestionreservas import GestionReservas
-        obj = GestionReservas()
+    def llamahabitaciones(self):
+        from Habitaciones import Habitaciones
+        obj = Habitaciones()
 
-    def llama_bodega(self):
-        from almacen import BodegaHotel
-        obj= BodegaHotel()
-
-    def llama_estacionamiento(self):
-        from estacionamiento_valetparking import Interfaz_EVP
-        app = Interfaz_EVP()
-        app.mainloop()
+    def llamamarketing(self):
+        from Marketing import Marketing
+        obj = Marketing()
 
     def ExtrearFechas(self):
         """
