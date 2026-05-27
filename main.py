@@ -26,7 +26,7 @@ class Generador:
         color_texto = "#FFFFFF"
         color_Extra = "#8C8680"
 
-        self.recepcion = ctk.CTkButton(self.menu, text="Recepcion", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
+        self.recepcion = ctk.CTkButton(self.menu, text="Recepcion", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)#, command= self.llama_recepcion)
         self.recepcion.pack(padx=10, pady=10)
 
         self.estacionamiento = ctk.CTkButton(self.menu, text="Estacionamiento", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
@@ -197,6 +197,10 @@ class Generador:
     def llama_lavanderia(self):
         from Lavanderia import Lavanderia
         Lavanderia()
+        
+    # def llama_recepcion(self):
+    #     from Recepcion import Recepcion
+    #     Recepcion()
 
     def redimensionar_fondo(self, event):
             # funciona para la foto, si le mueven abisen
