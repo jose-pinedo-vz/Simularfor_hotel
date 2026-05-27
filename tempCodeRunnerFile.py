@@ -1,1 +1,0 @@
-#! cuanto se tarda en promedio en lavar, cuanto dinero gastas, cuanto dinero ganas, poner la cantdidad visible 

@@ -44,7 +44,7 @@ class Generador:
                                              command=lambda: self.Llama_area_medica())
         self.Artencionmedica.pack(padx=10, pady=10)
 
-        self.Lavanderia = ctk.CTkButton(self.menu, text="Lavanderia", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
+        self.Lavanderia = ctk.CTkButton(self.menu, text="Lavanderia", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto, command= self.llama_lavanderia)
         self.Lavanderia.pack(padx=10, pady=10)
 
         self.bar = ctk.CTkButton(self.menu, text="Bar",command=lambda: self.llamabar(), width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
@@ -194,7 +194,9 @@ class Generador:
         from GeneradorDeNumeroAleatorios import main
         main.llamarVentanaAleatorios()
 
-
+    def llama_lavanderia(self):
+        from Lavanderia import Lavanderia
+        Lavanderia()
 
     def redimensionar_fondo(self, event):
             # funciona para la foto, si le mueven abisen
