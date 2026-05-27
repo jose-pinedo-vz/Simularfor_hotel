@@ -1493,6 +1493,12 @@ class cocina:
         self.text_eventoRh = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
         self.text_eventoRh.grid(row=3, column=4, padx=pad_col, pady=(2, 10))
 
+        label76 = ctk.CTkLabel(self.datosBariables, text="Evento de RH:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label76.grid(row=2, column=4, padx=pad_col, pady=(10, 2), sticky="ew")
+
+        self.text_penalisacionRh = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.text_penalisacionRh.grid(row=3, column=4, padx=pad_col, pady=(2, 10))
+
         label27 = ctk.CTkLabel(self.datosBariables, text="Prob evento de RH:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
         label27.grid(row=2, column=5, padx=pad_col, pady=(10, 2), sticky="ew")
 
