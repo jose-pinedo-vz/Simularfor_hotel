@@ -225,6 +225,7 @@ class Generador:
     def llamaestacionamiento(self):
         from estacionamiento_valetparking import Interfaz_EVP
         eyvp=Interfaz_EVP()
+        eyvp.mainloop()
 
     def ExtrearFechas(self):
         """

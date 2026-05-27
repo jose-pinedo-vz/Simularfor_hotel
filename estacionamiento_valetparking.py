@@ -5,104 +5,89 @@ import customtkinter as ctk
 from pathlib import Path
 
 
+# =============================================================================
+#   SECCIÓN 1 — GENERADOR DE NÚMEROS ALEATORIOS DESDE ARCHIVO
+# =============================================================================
 
+_indice_aleatorio = 1
+_cache_aleatorios: list = []
 
-class Agarrar_aleatorios:
-    #agarrar los aleatorios del archivo y si no, uso aletorios random
+def _cargar_aleatorios():
+    """Carga todos los números del archivo en memoria (una sola vez)."""
+    global _cache_aleatorios
+    if _cache_aleatorios:
+        return
+    ruta = Path(__file__).resolve().parent / "GeneradorDeNumeroAleatorios" / "Aleatorios.txt"
+    with open(ruta, "r") as f:
+        _cache_aleatorios = [float(l.strip()) for l in f if l.strip()]
+    print(f"[Aleatorios] {len(_cache_aleatorios)} números cargados.")
 
-    def __init__(self):
-        self._numeros: list[float] = []
-        self._indice:  int        = 0
-        self._cargar()
+def aleatorio(indice: int) -> float:
+    """Retorna el número en posición `indice` (base 1) desde caché."""
+    _cargar_aleatorios()
+    return _cache_aleatorios[indice - 1]
 
-    def _cargar(self):
-        ruta = Path(__file__).resolve().parent / "Aleatorios.txt"
-        try:
-            with open(ruta, "r") as f:
-                self._numeros = [
-                    float(linea.strip())
-                    for linea in f
-                    if linea.strip()        # ignorar líneas vacías
-                ]
-            print(f"[Aleatorios] {len(self._numeros)} números cargados.")
-        except FileNotFoundError:
-            print("[Aleatorios] Archivo no encontrado, usando random.random().")
+def generar_na() -> float:
+    global _indice_aleatorio
+    na = aleatorio(_indice_aleatorio)
+    print(f"NA usado (índice {_indice_aleatorio}): {na}")
+    _indice_aleatorio += 1
+    return na
 
-    def siguiente(self) -> float:
-        """Devuelve el próximo número; si se agotaron usa random como respaldo."""
-        if self._indice < len(self._numeros):
-            na = self._numeros[self._indice]
-            self._indice += 1
-            return na
-        # respaldo
-        return random.random()
-
-    def reiniciar(self):
-        """Vuelve al inicio del archivo para una nueva corrida."""
-        self._indice = 0
-
-    def reiniciar(self):
-        """Vuelve al inicio del archivo para una nueva corrida."""
-        self._indice = 0
-
-
-#cargar archivo
-_aleatorios = Agarrar_aleatorios()
+def reiniciar_aleatorios():
+    """Reinicia el índice y baraja el caché para obtener secuencias distintas."""
+    global _indice_aleatorio, _cache_aleatorios
+    _cargar_aleatorios()
+    random.shuffle(_cache_aleatorios)
+    _indice_aleatorio = 1
 
 
 def generar_probabilidades_aleatorias(n):
-    valores=[]
-    for i in range(n):
+    valores = []
+    for _ in range(n):
         valores.append(random.random())
-    suma=sum(valores)
-    probabilidades=[]
+    suma = sum(valores)
+    probabilidades = []
     for valor in valores:
         probabilidades.append(round(valor / suma, 4))
-        #hacer q sea 1 de a huevo
-    diferencia = round(1.0 - sum(probabilidades),4)
-    probabilidades[-1] = round(probabilidades[-1] + diferencia, 4) #uktima
+    diferencia = round(1.0 - sum(probabilidades), 4)
+    probabilidades[-1] = round(probabilidades[-1] + diferencia, 4)
     return probabilidades
 
 
 def construir_tabla_aleatoria(tiempos):
-    n=len(tiempos)
-    #probabilidaedes
-    valores=[]
-    for i in range(n):
+    n = len(tiempos)
+    valores = []
+    for _ in range(n):
         valores.append(random.random())
-    suma=sum(valores)
-    probabilidades=[]
-
+    suma = sum(valores)
+    probabilidades = []
     for valor in valores:
-        probabilidades.append(round(valor / suma), 4)
-    diferencia=round(1.0 - sum(probabilidades),4)
-    probabilidades[-1]= round(probabilidades[-1] + diferencia , 4)
+        probabilidades.append(round(valor / suma, 4))
+    diferencia = round(1.0 - sum(probabilidades), 4)
+    probabilidades[-1] = round(probabilidades[-1] + diferencia, 4)
 
-    #probabilidad acumulada
-    prob_acum=[]
-    acum=0.0
-
+    prob_acum = []
+    acum = 0.0
     for p in probabilidades:
-        acum=round(acum + p , 4)
+        acum = round(acum + p, 4)
         prob_acum.append(acum)
-    prob_acum[-1]=1.0
+    prob_acum[-1] = 1.0
 
-    rango_inf = []
-    rango_inf.append(0.0)
+    rango_inf = [0.0]
     for pa in prob_acum[:-1]:
         rango_inf.append(round(pa + 0.0001, 4))
 
     rango_sup = []
     for pa in prob_acum:
-        rango_sup.append(pa)    
-
+        rango_sup.append(pa)
 
     return {
         "TIEMPO": tiempos,
         "PROB": probabilidades,
-        "PROB ACUM": prob_acum,
-        "RANGO INF": rango_inf,
-        "RANGO SUP": rango_sup,
+        "PROB_ACUM": prob_acum,
+        "RANGO_INF": rango_inf,
+        "RANGO_SUP": rango_sup,
     }
 
 
@@ -110,23 +95,26 @@ def construir_tabla_llegadas_aleatoria():
     turnos   = ["Madrugada", "Mañana", "Medio día", "Tarde pico", "Noche", "Noche tardía"]
     horarios = ["00-06h", "06-10h", "10-14h", "14-18h", "18-22h", "22-00h"]
     veh_hora = ["1-2", "4-6", "6-9", "10-14", "8-11", "3-5"]
-    n= len(turnos)
-    probabilidades= generar_probabilidades_aleatorias(n)
+    n = len(turnos)
+    probabilidades = generar_probabilidades_aleatorias(n)
+
     prob_acum = []
-    acum      = 0.0
+    acum = 0.0
     for p in probabilidades:
         acum = round(acum + p, 4)
         prob_acum.append(acum)
     prob_acum[-1] = 1.0
+
     rango_inf = [0.0] + [round(pa + 0.0001, 4) for pa in prob_acum[:-1]]
+
     return {
-        "turno":     turnos,
-        "horario":   horarios,
-        "veh_hora":  veh_hora,
-        "prob":      probabilidades,
-        "prob_acum": prob_acum,
-        "rango_inf": rango_inf,
-        "rango_sup": prob_acum.copy(),
+        "TURNO":     turnos,
+        "HORARIO":   horarios,
+        "VEH_HORA":  veh_hora,
+        "PROB":      probabilidades,
+        "PROB_ACUM": prob_acum,
+        "RANGO_INF": rango_inf,
+        "RANGO_SUP": prob_acum.copy(),
     }
 
 
@@ -155,39 +143,61 @@ PENALIZACION_NEGADO  = 50
 #   SECCIÓN 3 — FUNCIONES AUXILIARES
 # =============================================================================
 
-def generar_na():
-    na = _aleatorios.siguiente()
-    print(f"NA usado: {na}")
-    return na
-
-
 def consultar_tabla(na, tabla_df):
+    """Busca el NA en RANGO_INF/RANGO_SUP y devuelve el valor de la columna 0
+    siempre como int o float nativo de Python (nunca str ni numpy)."""
+    col0 = tabla_df.columns[0]
+
+    def _normalizar(val):
+        try:
+            i = int(val)
+            f = float(val)
+            return i if i == f else f
+        except (ValueError, TypeError):
+            return val
+
     for i in range(len(tabla_df)):
-        if tabla_df.loc[i, "rango_inf"] <= na <= tabla_df.loc[i, "rango_sup"]:
-            return tabla_df.loc[i, tabla_df.columns[0]]
-    return tabla_df.loc[len(tabla_df) - 1, tabla_df.columns[0]]
+        if tabla_df.loc[i, "RANGO_INF"] <= na <= tabla_df.loc[i, "RANGO_SUP"]:
+            return _normalizar(tabla_df.loc[i, col0])
+    return _normalizar(tabla_df.loc[len(tabla_df) - 1, col0])
 
 
 def recalcular_rangos(df: pd.DataFrame) -> pd.DataFrame:
-    df    = df.copy()
-    acum  = 0.0
-    pa    = []
-    for p in df["prob"]:
+    """Recalcula PROB_ACUM, RANGO_INF y RANGO_SUP a partir de PROB.
+    Convierte la columna primaria a int nativo si sus valores son numéricos enteros."""
+    df = df.copy()
+    col0 = df.columns[0]
+    # Convertir columna primaria a int nativo siempre que sea posible
+    def _a_int(v):
+        try:
+            return int(v)
+        except (ValueError, TypeError):
+            return v
+    try:
+        convertidos = [_a_int(v) for v in df[col0]]
+        # Solo aplicar si todos quedaron como int
+        if all(isinstance(v, int) for v in convertidos):
+            df[col0] = convertidos
+    except Exception:
+        pass
+    acum = 0.0
+    pa = []
+    for p in df["PROB"]:
         acum = round(acum + p, 4)
         pa.append(acum)
     pa[-1] = 1.0
-    df["prob_acum"] = pa
-    df["rango_inf"] = [0.0] + [round(x + 0.0001, 4) for x in pa[:-1]]
-    df["rango_sup"] = pa
+    df["PROB_ACUM"] = pa
+    df["RANGO_INF"] = [0.0] + [round(x + 0.0001, 4) for x in pa[:-1]]
+    df["RANGO_SUP"] = pa
     return df
 
 
 def consultar_turno_t6(na, t6_df):
-    #NUERO ALEATORIO PARA SABER EN Q TURBNO LLEGA
+    """Devuelve (TURNO, HORARIO) según el NA."""
     for i in range(len(t6_df)):
-        if t6_df.loc[i, "rango_inf"] <= na <= t6_df.loc[i, "rango_sup"]:
-            return t6_df.loc[i, "turno"], t6_df.loc[i, "horario"]
-    return t6_df.loc[len(t6_df) - 1, "turno"], t6_df.loc[len(t6_df) - 1, "horario"]
+        if t6_df.loc[i, "RANGO_INF"] <= na <= t6_df.loc[i, "RANGO_SUP"]:
+            return t6_df.loc[i, "TURNO"], t6_df.loc[i, "HORARIO"]
+    return t6_df.loc[len(t6_df) - 1, "TURNO"], t6_df.loc[len(t6_df) - 1, "HORARIO"]
 
 
 # =============================================================================
@@ -205,10 +215,6 @@ class Estacionamiento_Valet_Parking:
         self.tablas          = None
 
     def metodo_estacionamiento(self, num_vehiculos=20):
-        """
-        Simula N vehículos. Para cada uno se sortea un NA en T6 para
-        determinar a qué turno pertenece. Luego pasa por T1-T5 y T7 normal.
-        """
         self.registros = []
         if self.tablas is None:
             self.tablas = generar_todas_las_tablas()
@@ -222,7 +228,7 @@ class Estacionamiento_Valet_Parking:
         T7 = self.tablas["TABLA_7_MANTENIMIENTO"]
 
         alea_mant           = generar_na()
-        cajones_mant        = consultar_tabla(alea_mant, T7)
+        cajones_mant        = int(float(consultar_tabla(alea_mant, T7)))
         cajones_disponibles = self.capacidad_total - cajones_mant
         cajones_ocupados    = 0
         relojes_choferes    = [0] * self.num_choferes
@@ -234,8 +240,7 @@ class Estacionamiento_Valet_Parking:
         total_espera_cola   = 0.0
 
         for num_vh in range(1, num_vehiculos + 1):
-            # ── Sortear turno con T6 ──────────────────────────────────
-            na_t6  = generar_na()
+            na_t6 = generar_na()
             turno, horario = consultar_turno_t6(na_t6, T6)
 
             registro = {
@@ -266,11 +271,11 @@ class Estacionamiento_Valet_Parking:
                 "chofer_asig": idx_libre + 1, "t_espera": t_espera_cola,
             })
 
-            na_rec = generar_na(); t_rec = consultar_tabla(na_rec, T1)
-            na_man = generar_na(); t_man = consultar_tabla(na_man, T2)
-            na_per = generar_na(); t_per = consultar_tabla(na_per, T3)
-            na_sol = generar_na(); t_sol = consultar_tabla(na_sol, T4)
-            na_dev = generar_na(); t_dev = consultar_tabla(na_dev, T5)
+            na_rec = generar_na(); t_rec = int(float(consultar_tabla(na_rec, T1)))
+            na_man = generar_na(); t_man = int(float(consultar_tabla(na_man, T2)))
+            na_per = generar_na(); t_per = int(float(consultar_tabla(na_per, T3)))
+            na_sol = generar_na(); t_sol = int(float(consultar_tabla(na_sol, T4)))
+            na_dev = generar_na(); t_dev = int(float(consultar_tabla(na_dev, T5)))
 
             registro.update({
                 "na_recepcion":   round(na_rec, 10), "t_recepcion":   t_rec,
@@ -338,13 +343,13 @@ TABS_TABLAS = [
 ]
 
 COL_PRIMARIA = {
-    "TABLA_1_RECEPCION":     "tiempo",
-    "TABLA_2_MANIOBRA":      "tiempo",
-    "TABLA_3_PERMANENCIA":   "tiempo",
-    "TABLA_4_SOLICITUD":     "tiempo",
-    "TABLA_5_DEVOLUCION":    "tiempo",
-    "TABLA_6_LLEGADAS":      "turno",
-    "TABLA_7_MANTENIMIENTO": "tiempo",
+    "TABLA_1_RECEPCION":     "TIEMPO",
+    "TABLA_2_MANIOBRA":      "TIEMPO",
+    "TABLA_3_PERMANENCIA":   "TIEMPO",
+    "TABLA_4_SOLICITUD":     "TIEMPO",
+    "TABLA_5_DEVOLUCION":    "TIEMPO",
+    "TABLA_6_LLEGADAS":      "TURNO",
+    "TABLA_7_MANTENIMIENTO": "TIEMPO",
 }
 
 
@@ -495,7 +500,7 @@ class TablaVisor(ctk.CTkFrame):
             self.lbl_suma.configure(text="sin datos", text_color=COLOR_TEXT_MUTED)
         else:
             df   = self._tablas_data[key]
-            suma = round(df["prob"].sum(), 4)
+            suma = round(df["PROB"].sum(), 4)
             self._text_vista.insert("end", df.to_string(index=False))
             color = COLOR_OK_GREEN if abs(suma - 1.0) < 0.0002 else COLOR_WARN_RED
             self.lbl_suma.configure(text=f"Σ prob = {suma}  ✓", text_color=color)
@@ -528,9 +533,11 @@ class TablaVisor(ctk.CTkFrame):
         col_prim    = COL_PRIMARIA[key]
         es_llegadas = (key == "TABLA_6_LLEGADAS")
 
-        headers    = [col_prim, "prob", "prob_acum", "rango_inf", "rango_sup", ""]
         if es_llegadas:
-            headers = ["turno", "horario", "veh_hora", "prob", "prob_acum", "rango_inf", "rango_sup", ""]
+            headers = ["TURNO", "HORARIO", "VEH_HORA", "PROB", "PROB_ACUM", "RANGO_INF", "RANGO_SUP", ""]
+        else:
+            headers = [col_prim, "PROB", "PROB_ACUM", "RANGO_INF", "RANGO_SUP", ""]
+
         col_widths = self._col_widths(es_llegadas)
 
         sf = self._scroll_edit
@@ -578,22 +585,22 @@ class TablaVisor(ctk.CTkFrame):
             return e
 
         if es_llegadas:
-            fila["e_turno"]   = make_entry(0, row_data.get("turno", ""), col_widths[0])
-            fila["e_horario"] = make_entry(1, row_data.get("horario", ""), col_widths[1])
-            fila["e_veh"]     = make_entry(2, row_data.get("veh_hora", ""), col_widths[2])
-            fila["e_prob"]    = make_entry(3, f"{row_data['prob']:.4f}", col_widths[3],
+            fila["e_turno"]   = make_entry(0, row_data.get("TURNO", ""),    col_widths[0])
+            fila["e_horario"] = make_entry(1, row_data.get("HORARIO", ""),  col_widths[1])
+            fila["e_veh"]     = make_entry(2, row_data.get("VEH_HORA", ""), col_widths[2])
+            fila["e_prob"]    = make_entry(3, f"{row_data['PROB']:.4f}",    col_widths[3],
                                            callback=lambda e: self._on_prob_change())
-            fila["e_acum"]    = make_entry(4, f"{row_data['prob_acum']:.4f}", col_widths[4], read_only=True)
-            fila["e_ri"]      = make_entry(5, f"{row_data['rango_inf']:.4f}", col_widths[5], read_only=True)
-            fila["e_rs"]      = make_entry(6, f"{row_data['rango_sup']:.4f}", col_widths[6], read_only=True)
+            fila["e_acum"]    = make_entry(4, f"{row_data['PROB_ACUM']:.4f}", col_widths[4], read_only=True)
+            fila["e_ri"]      = make_entry(5, f"{row_data['RANGO_INF']:.4f}", col_widths[5], read_only=True)
+            fila["e_rs"]      = make_entry(6, f"{row_data['RANGO_SUP']:.4f}", col_widths[6], read_only=True)
             del_col = 7
         else:
-            fila["e_prim"] = make_entry(0, row_data[col_prim], col_widths[0])
-            fila["e_prob"] = make_entry(1, f"{row_data['prob']:.4f}", col_widths[1],
+            fila["e_prim"] = make_entry(0, row_data[col_prim],             col_widths[0])
+            fila["e_prob"] = make_entry(1, f"{row_data['PROB']:.4f}",      col_widths[1],
                                         callback=lambda e: self._on_prob_change())
-            fila["e_acum"] = make_entry(2, f"{row_data['prob_acum']:.4f}", col_widths[2], read_only=True)
-            fila["e_ri"]   = make_entry(3, f"{row_data['rango_inf']:.4f}", col_widths[3], read_only=True)
-            fila["e_rs"]   = make_entry(4, f"{row_data['rango_sup']:.4f}", col_widths[4], read_only=True)
+            fila["e_acum"] = make_entry(2, f"{row_data['PROB_ACUM']:.4f}", col_widths[2], read_only=True)
+            fila["e_ri"]   = make_entry(3, f"{row_data['RANGO_INF']:.4f}", col_widths[3], read_only=True)
+            fila["e_rs"]   = make_entry(4, f"{row_data['RANGO_SUP']:.4f}", col_widths[4], read_only=True)
             del_col = 5
 
         btn_del = ctk.CTkButton(
@@ -610,9 +617,9 @@ class TablaVisor(ctk.CTkFrame):
     def _agregar_fila(self):
         if not self._edit_mode:
             return
-        sf       = self._scroll_edit
-        col_w    = self._col_widths(self._es_llegadas)
-        row_idx  = max((f["row"] for f in self._filas_edit), default=1) + 1
+        sf      = self._scroll_edit
+        col_w   = self._col_widths(self._es_llegadas)
+        row_idx = max((f["row"] for f in self._filas_edit), default=1) + 1
 
         if not self._es_llegadas:
             try:
@@ -625,8 +632,8 @@ class TablaVisor(ctk.CTkFrame):
 
         dummy = {
             self._col_prim: nuevo_val,
-            "prob": 0.0, "prob_acum": 0.0, "rango_inf": 0.0, "rango_sup": 0.0,
-            "horario": "HH-HHh", "veh_hora": "0-0",
+            "PROB": 0.0, "PROB_ACUM": 0.0, "RANGO_INF": 0.0, "RANGO_SUP": 0.0,
+            "HORARIO": "HH-HHh", "VEH_HORA": "0-0",
         }
         self._insertar_fila_grid(sf, row_idx, dummy, self._es_llegadas, self._col_prim, col_w)
         self._on_prob_change()
@@ -699,17 +706,17 @@ class TablaVisor(ctk.CTkFrame):
         for f, p in zip(self._filas_edit, probabilidades):
             if es_llegadas:
                 row = {
-                    "turno":    f["e_turno"].get(),
-                    "horario":  f["e_horario"].get(),
-                    "veh_hora": f["e_veh"].get(),
-                    "prob":     p,
+                    "TURNO":    f["e_turno"].get(),
+                    "HORARIO":  f["e_horario"].get(),
+                    "VEH_HORA": f["e_veh"].get(),
+                    "PROB":     p,
                 }
             else:
                 try:
                     val = int(f["e_prim"].get())
                 except ValueError:
                     val = f["e_prim"].get()
-                row = {col_prim: val, "prob": p}
+                row = {col_prim: val, "PROB": p}
             filas_data.append(row)
 
         df_nuevo = pd.DataFrame(filas_data)
@@ -753,6 +760,9 @@ class TablaVisor(ctk.CTkFrame):
                       command=v.destroy).pack(pady=14)
 
 
+# =============================================================================
+#   SECCIÓN 7 — INTERFAZ PRINCIPAL
+# =============================================================================
 
 class Interfaz_EVP(ctk.CTk):
 
@@ -841,7 +851,6 @@ class Interfaz_EVP(ctk.CTk):
         self.entry_vehiculos.insert(0, "20")
         self.entry_vehiculos.grid(row=1, column=1, sticky="ew", padx=(6, 0))
 
-        # Nota explicativa de T6
         ctk.CTkLabel(
             frame_top,
             text="ℹ  El turno de cada vehículo\nse sortea con T6 – Llegadas.",
@@ -956,9 +965,6 @@ class Interfaz_EVP(ctk.CTk):
         ctk.CTkLabel(f, text=valor, font=ctk.CTkFont(size=11, weight="bold"),
                      text_color=color).pack(side="right")
 
-    # ------------------------------------------------------------------
-    # Simulación
-    # ------------------------------------------------------------------
     def _iniciar_simulacion(self):
         try:
             nc = int(self.entry_choferes.get())
@@ -977,7 +983,7 @@ class Interfaz_EVP(ctk.CTk):
 
     def _ejecutar_simulacion(self, nc, nv):
         try:
-            _aleatorios.reiniciar()
+            reiniciar_aleatorios()
             hotel = Estacionamiento_Valet_Parking(num_choferes=nc)
             if self.tabla_visor._tablas_data is not None:
                 hotel.tablas = {k: v.copy() for k, v in self.tabla_visor._tablas_data.items()}
@@ -986,7 +992,9 @@ class Interfaz_EVP(ctk.CTk):
             costo, ganancia = hotel.metodo_estacionamiento(num_vehiculos=nv)
             self.hotel = hotel
         except Exception as e:
-            self.after(0, lambda: self._mostrar_error(str(e)))
+            import traceback
+            tb = traceback.format_exc()
+            self.after(0, lambda msg=tb: self._mostrar_error(msg))
             self.after(0, lambda: self.btn_simular.configure(
                 state="normal", text="▶  EMPEZAR SIMULACIÓN"))
             return
@@ -1066,13 +1074,19 @@ class Interfaz_EVP(ctk.CTk):
             fijas = f"{r['vehiculo']:>4}  {turno_corto:<12}  {na_t6_str:>8}  {'Sí' if r['atendido'] else 'No':>5}  "
             if r["atendido"]:
                 fijas += f"{r['chofer_asig']:>6}  {r['t_espera']:>6.0f}"
+                tr  = int(r['t_recepcion'])
+                tm  = int(r['t_maniobra'])
+                tp  = int(r['t_permanencia'])
+                ts  = int(r['t_solicitud'])
+                td  = int(r['t_devolucion'])
+                tch = int(r['t_chofer'])
                 var = (
-                    f"  {r['na_recepcion']:>8.6f}  {r['t_recepcion']:>4}"
-                    f"  {r['na_maniobra']:>9.6f}  {r['t_maniobra']:>4}"
-                    f"  {r['na_permanencia']:>8.6f}  {r['t_permanencia']:>4}"
-                    f"  {r['na_solicitud']:>8.6f}  {r['t_solicitud']:>4}"
-                    f"  {r['na_devolucion']:>8.6f}  {r['t_devolucion']:>4}"
-                    f"  {r['t_chofer']:>8}  ${r['ingreso']:>6}"
+                    f"  {r['na_recepcion']:>8.6f}  {tr:>4}"
+                    f"  {r['na_maniobra']:>9.6f}  {tm:>4}"
+                    f"  {r['na_permanencia']:>8.6f}  {tp:>4}"
+                    f"  {r['na_solicitud']:>8.6f}  {ts:>4}"
+                    f"  {r['na_devolucion']:>8.6f}  {td:>4}"
+                    f"  {tch:>8}  ${r['ingreso']:>6}"
                     f"  ${r['costo']:>5.2f}  ${r['ganancia']:>8.2f}"
                 )
                 lineas.append(fijas + var)
@@ -1091,7 +1105,7 @@ class Interfaz_EVP(ctk.CTk):
 
     def _mostrar_error(self, mensaje):
         v = ctk.CTkToplevel(self)
-        v.title("Error"); v.geometry("360x150")
+        v.title("Error"); v.geometry("600x400")
         v.configure(fg_color=COLOR_BG_DARK); v.grab_set()
         ctk.CTkLabel(v, text="⚠  Error",
                      font=ctk.CTkFont(size=14, weight="bold"),
