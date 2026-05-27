@@ -74,7 +74,7 @@ def construir_tabla_aleatoria(tiempos):
     probabilidades=[]
 
     for valor in valores:
-        probabilidades.append(round(valor / suma), 4)
+        probabilidades.append(round(valor / suma, 4))
     diferencia=round(1.0 - sum(probabilidades),4)
     probabilidades[-1]= round(probabilidades[-1] + diferencia , 4)
 
