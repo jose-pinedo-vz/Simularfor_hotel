@@ -53,13 +53,13 @@ class Generador:
         self.mantenimiento = ctk.CTkButton(self.menu, text="Mantenimiento", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.mantenimiento.pack(padx=10, pady=10)
 
-        self.ResercasOnline = ctk.CTkButton(self.menu, text="Reservas online", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
+        self.ResercasOnline = ctk.CTkButton(self.menu, text="Reservas online", command= self.llama_reservas_online, width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.ResercasOnline.pack(padx=10, pady=10)
 
-        self.marketing = ctk.CTkButton(self.menu, text="marketing", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
+        self.marketing = ctk.CTkButton(self.menu, text="marketing",  width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.marketing.pack(padx=10, pady=10)
 
-        self.Bodega = ctk.CTkButton(self.menu, text="Bodega central", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
+        self.Bodega = ctk.CTkButton(self.menu, text="Bodega central", command= self.llama_bodega, width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.Bodega.pack(padx=10, pady=10)
 
         self.Habitaciones = ctk.CTkButton(self.menu, text="Habitaciones", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
@@ -218,6 +218,14 @@ class Generador:
         # yamea al modelo de Bar
         from Bar import Bar
         obj = Bar()
+
+    def llama_reservas_online(self):
+        from gestionreservas import GestionReservas
+        obj = GestionReservas()
+
+    def llama_bodega(self):
+        from almacen import BodegaHotel
+        obj= BodegaHotel()
 
     def ExtrearFechas(self):
         """
