@@ -1223,7 +1223,7 @@ def validaciones(Dias_a_Simular) -> float:
     # insidenticas
 
 
-    print("insidencias")
+    # print("insidencias")
     insidencias_diccionario = {}
 
     for insidencia in Evento_Ale:
@@ -1235,12 +1235,12 @@ def validaciones(Dias_a_Simular) -> float:
         cantidad = insidencaisDelDiarioRh.count(rh)
         insidencias_rh_diccionario[rh] = cantidad
 
-    print("Evento rh")
-    print(insidencias_rh_diccionario)
+    # print("Evento rh")
+    # print(insidencias_rh_diccionario)
 
-    print(lista_meses)
-    print(ganancias_mensuales)
-    print(personas_mensuales)
+    # print(lista_meses)
+    # print(ganancias_mensuales)
+    # print(personas_mensuales)
 
     # lista_eventos = []
     # lisat_provavilidad = []

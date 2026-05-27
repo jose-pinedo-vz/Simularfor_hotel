@@ -8,14 +8,11 @@ from pathlib import Path
 
 
 class Agarrar_aleatorios:
-    """
-    Lee Aleatorios.txt una sola vez y entrega los números en orden.
-    Si se agotan, regresa a random.random() como respaldo.
-    """
+    #agarrar los aleatorios del archivo y si no, uso aletorios random
 
     def __init__(self):
         self._numeros: list[float] = []
-        self._indice:  int         = 0
+        self._indice:  int        = 0
         self._cargar()
 
     def _cargar(self):
@@ -49,35 +46,63 @@ class Agarrar_aleatorios:
         self._indice = 0
 
 
-# Instancia global — se carga una sola vez al arrancar el programa
+#cargar archivo
 _aleatorios = Agarrar_aleatorios()
 
 
 def generar_probabilidades_aleatorias(n):
-    valores = [random.random() for _ in range(n)]
-    total   = sum(valores)
-    probabilidades   = [round(v / total, 4) for v in valores]
-    dif     = round(1.0 - sum(probabilidades), 4)
-    probabilidades[-1] = round(probabilidades[-1] + dif, 4)
+    valores=[]
+    for i in range(n):
+        valores.append(random.random())
+    suma=sum(valores)
+    probabilidades=[]
+    for valor in valores:
+        probabilidades.append(round(valor / suma, 4))
+        #hacer q sea 1 de a huevo
+    diferencia = round(1.0 - sum(probabilidades),4)
+    probabilidades[-1] = round(probabilidades[-1] + diferencia, 4) #uktima
     return probabilidades
 
 
 def construir_tabla_aleatoria(tiempos):
-    n         = len(tiempos)
-    probabilidades     = generar_probabilidades_aleatorias(n)
-    prob_acum = []
-    acum      = 0.0
+    n=len(tiempos)
+    #probabilidaedes
+    valores=[]
+    for i in range(n):
+        valores.append(random.random())
+    suma=sum(valores)
+    probabilidades=[]
+
+    for valor in valores:
+        probabilidades.append(round(valor / suma), 4)
+    diferencia=round(1.0 - sum(probabilidades),4)
+    probabilidades[-1]= round(probabilidades[-1] + diferencia , 4)
+
+    #probabilidad acumulada
+    prob_acum=[]
+    acum=0.0
+
     for p in probabilidades:
-        acum = round(acum + p, 4)
+        acum=round(acum + p , 4)
         prob_acum.append(acum)
-    prob_acum[-1] = 1.0
-    rango_inf = [0.0] + [round(pa + 0.0001, 4) for pa in prob_acum[:-1]]
+    prob_acum[-1]=1.0
+
+    rango_inf = []
+    rango_inf.append(0.0)
+    for pa in prob_acum[:-1]:
+        rango_inf.append(round(pa + 0.0001, 4))
+
+    rango_sup = []
+    for pa in prob_acum:
+        rango_sup.append(pa)    
+
+
     return {
-        "tiempo":    tiempos,
-        "prob":      probabilidades,
-        "prob_acum": prob_acum,
-        "rango_inf": rango_inf,
-        "rango_sup": prob_acum.copy(),
+        "TIEMPO": tiempos,
+        "PROB": probabilidades,
+        "PROB ACUM": prob_acum,
+        "RANGO INF": rango_inf,
+        "RANGO SUP": rango_sup,
     }
 
 
@@ -85,8 +110,8 @@ def construir_tabla_llegadas_aleatoria():
     turnos   = ["Madrugada", "Mañana", "Medio día", "Tarde pico", "Noche", "Noche tardía"]
     horarios = ["00-06h", "06-10h", "10-14h", "14-18h", "18-22h", "22-00h"]
     veh_hora = ["1-2", "4-6", "6-9", "10-14", "8-11", "3-5"]
-    n        = len(turnos)
-    probabilidades    = generar_probabilidades_aleatorias(n)
+    n= len(turnos)
+    probabilidades= generar_probabilidades_aleatorias(n)
     prob_acum = []
     acum      = 0.0
     for p in probabilidades:
