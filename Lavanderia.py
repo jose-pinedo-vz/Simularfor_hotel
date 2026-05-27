@@ -1753,6 +1753,9 @@ class Lavanderia:
                 valor_1 = self.L_tabla_1[indice_1]
                 
                 self.Tabla.insert(indice_1 + 1, columna_tabla_1, valor_1)
+
+        # print("Mostrar tabla")
+        # print(self.L_tabla_1)
             
             
             # Aleatorios 2 (tipos de cargas)
@@ -1850,12 +1853,25 @@ class Lavanderia:
             
             
             #Cargas exactas 
+
             
             columna_tabla_1_1 = 3
             for indice_1_1 in range(len(self.resultados_cargas_exactos)):
                 valor_1_1 = self.resultados_cargas_exactos[indice_1_1]
                 
                 self.Tabla.insert(indice_1_1 + 1, columna_tabla_1_1, valor_1_1)
+
+        # genero las tablas de los recidentes, para la vediricacion de estos -----------------------------
+
+        print(self.L_tabla_1)
+        print(self.resultados_cargas_exactos)
+        def llamarTablas():
+            self.GenerarTlas(self.L_tabla_1, self.resultados_cargas_exactos)
+
+        botonsito = ctk.CTkButton(self.scroll_frame_det, text="generar tablas residentes", command=lambda:llamarTablas())
+        botonsito.pack(padx=20,pady=20)
+
+        # --------------------------------------------------
             
             
         self.Tipo_cargas_moda()
@@ -3567,4 +3583,44 @@ class Lavanderia:
         self.costos_diarios.delete(0, "end")
     
     
+    def GenerarTlas(self, lista1: list, lista2: list) -> None:
+        """
+        el la primera lista es de aleatorios y la segunda es de los resultados
+        """
+        self.ventanaTlablas = ctk.CTkToplevel()
+        self.ventanaTlablas.geometry("500x500")
+        self.ventanaTlablas.title("Ver aleatorios")
+
+        # self.ventanaTlablas.after(100, self.ventanaTlablas.lift)
+        
+        self.ventanaTlablas.grid_columnconfigure(0, weight=1)
+        self.ventanaTlablas.grid_rowconfigure(1, weight=1)
+
+        lbl_aleatorio = ctk.CTkLabel(self.ventanaTlablas, text="Aleatorio", font=("Arial", 14, "bold"))
+        lbl_aleatorio.grid(row=0, column=0, padx=10, pady=10, sticky="ew")
+        
+
+        lbl_evento = ctk.CTkLabel(self.ventanaTlablas, text="Evento", font=("Arial", 14, "bold"))
+        lbl_evento.grid(row=0, column=1, padx=10, pady=10, sticky="ew")
+        
+        self.ventanaTlablas.grid_columnconfigure(0, weight=1)
+        self.ventanaTlablas.grid_columnconfigure(1, weight=1)
+
+
+        frame_tabla = ctk.CTkScrollableFrame(self.ventanaTlablas)
+        frame_tabla.grid(row=1, column=0, columnspan=2, padx=15, pady=(0, 15), sticky="nsew")
+        
+
+        frame_tabla.grid_columnconfigure(0, weight=1)
+        frame_tabla.grid_columnconfigure(1, weight=1)
+
+        for i, (aleatorio, evento) in enumerate(zip(lista1, lista2)):
+
+            lbl_val1 = ctk.CTkLabel(frame_tabla, text=str(aleatorio), font=("Arial", 12))
+            lbl_val1.grid(row=i, column=0, padx=5, pady=2, sticky="ew")
+
+            lbl_val2 = ctk.CTkLabel(frame_tabla, text=str(evento), font=("Arial", 12))
+            lbl_val2.grid(row=i, column=1, padx=5, pady=2, sticky="ew")
+
+
 Lavanderia()
