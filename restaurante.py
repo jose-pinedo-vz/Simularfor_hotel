@@ -500,7 +500,8 @@ class mostrar_Tablasa():
 def CargarMedios():
     global flojo_diario, flujo_siario_prob, grupo, grupo_prob, tem_preparacion, tem_preparacion_prob, consumo, condumo_prob, suministro, \
         suministro_prob, even_rh, even_rh_prob, Evento_Ale_prob, Evento_Ale, hora_critica, hora_critica_prob, porcen_ora_critica, \
-        porcen_ora_critica_prob, categorai_platillos, categorai_platillos_prob, platillos_disponibles, cantidadMinimaDeStock, cantidadDelStockmaxiom, platilllosEmpesamos, Listamultiplciadores
+        porcen_ora_critica_prob, categorai_platillos, categorai_platillos_prob, platillos_disponibles, cantidadMinimaDeStock, cantidadDelStockmaxiom, platilllosEmpesamos, Listamultiplciadores, \
+        even_rh_penalisaciones, Evento_Ale_penalisaciones
 
 
     flojo_diario = [60, 100, 160, 200, 240]
@@ -519,10 +520,12 @@ def CargarMedios():
     suministro_prob = [60, 30, 5, 5]
 
     even_rh = ["nada", "renuncia", "despedido", "multiple"]
+    even_rh_penalisaciones = [0, 500, 500, 1000]
     even_rh_prob = [92, 3, 4, 1]
 
     Evento_Ale_prob = [80, 10, 5, 5]
-    Evento_Ale = ["Nada", "Merma o accidente menor", "Falla en equipo", "Devolucion de platillo"]
+    Evento_Ale_penalisaciones = [0, 100, 1000, 200]
+    Evento_Ale = ["Nada", "Merma", "Falla en equipo", "Devolucion de platillo"]
 
     hora_critica = [0, 1]
     hora_critica_prob = [90, 10]
@@ -1493,49 +1496,56 @@ class cocina:
         self.text_eventoRh = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
         self.text_eventoRh.grid(row=3, column=4, padx=pad_col, pady=(2, 10))
 
-        label76 = ctk.CTkLabel(self.datosBariables, text="Evento de RH:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
-        label76.grid(row=2, column=4, padx=pad_col, pady=(10, 2), sticky="ew")
+        label76 = ctk.CTkLabel(self.datosBariables, text="penalización de RH:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label76.grid(row=2, column=5, padx=pad_col, pady=(10, 2), sticky="ew")
 
         self.text_penalisacionRh = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
-        self.text_penalisacionRh.grid(row=3, column=4, padx=pad_col, pady=(2, 10))
+        self.text_penalisacionRh.grid(row=3, column=5, padx=pad_col, pady=(2, 10))
 
         label27 = ctk.CTkLabel(self.datosBariables, text="Prob evento de RH:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
-        label27.grid(row=2, column=5, padx=pad_col, pady=(10, 2), sticky="ew")
+        label27.grid(row=2, column=6, padx=pad_col, pady=(10, 2), sticky="ew")
 
         self.text_eventoRh_prob = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
-        self.text_eventoRh_prob.grid(row=3, column=5, padx=pad_col, pady=(2, 10))
+        self.text_eventoRh_prob.grid(row=3, column=6, padx=pad_col, pady=(2, 10))
 
 
+        # baja 
         label28 = ctk.CTkLabel(self.datosBariables, text="Evento aleatorios:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
         label28.grid(row=4, column=0, padx=pad_col, pady=(10, 2), sticky="ew")
 
         self.text_eventoAle = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
         self.text_eventoAle.grid(row=5, column=0, padx=pad_col, pady=(2, 10))
 
+        label78 = ctk.CTkLabel(self.datosBariables, text="penalización aleatorios:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
+        label78.grid(row=4, column=1, padx=pad_col, pady=(10, 2), sticky="ew")
+
+        self.text_PenalisacionAle = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
+        self.text_PenalisacionAle.grid(row=5, column=1, padx=pad_col, pady=(2, 10))
+
         label29 = ctk.CTkLabel(self.datosBariables, text="Prob evento aleatorios:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
-        label29.grid(row=4, column=1, padx=pad_col, pady=(10, 2), sticky="ew")
+        label29.grid(row=4, column=2, padx=pad_col, pady=(10, 2), sticky="ew")
 
         self.text_eventoAle_prob = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
-        self.text_eventoAle_prob.grid(row=5, column=1, padx=pad_col, pady=(2, 10))
+        self.text_eventoAle_prob.grid(row=5, column=2, padx=pad_col, pady=(2, 10))
 
         label30 = ctk.CTkLabel(self.datosBariables, text="Horas criticas:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
-        label30.grid(row=4, column=2, padx=pad_col, pady=(10, 2), sticky="ew")
+        label30.grid(row=4, column=3, padx=pad_col, pady=(10, 2), sticky="ew")
 
         self.textHorasCriticas = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
-        self.textHorasCriticas.grid(row=5, column=2, padx=pad_col, pady=(2, 10))
+        self.textHorasCriticas.grid(row=5, column=3, padx=pad_col, pady=(2, 10))
 
         label31 = ctk.CTkLabel(self.datosBariables, text="Prob horas criticas:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
-        label31.grid(row=4, column=3, padx=pad_col, pady=(10, 2), sticky="ew")
+        label31.grid(row=4, column=4, padx=pad_col, pady=(10, 2), sticky="ew")
 
         self.textHorasCriticasprob = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
-        self.textHorasCriticasprob.grid(row=5, column=3, padx=pad_col, pady=(2, 10))
+        self.textHorasCriticasprob.grid(row=5, column=4, padx=pad_col, pady=(2, 10))
 
 
         label32 = ctk.CTkLabel(self.datosBariables, text="Hay hora critica:", font=("Arial", 13), text_color=color_texto, wraplength=ancho_txt)
-        label32.grid(row=4, column=4, padx=pad_col, pady=(10, 2), sticky="ew")
+        label32.grid(row=4, column=5, padx=pad_col, pady=(10, 2), sticky="ew")
 
         self.texHayhoracritica = ctk.CTkTextbox(self.datosBariables, font=("Arial", 13), width=ancho_txt, height=alto_txt)
-        self.texHayhoracritica.grid(row=5, column=4, padx=pad_col, pady=(2, 10))
+        self.texHayhoracritica.grid(row=5, column=5, padx=pad_col, pady=(2, 10))
 
         self.datosmeses = ctk.CTkFrame(
             self.frame_scroll,
@@ -1764,13 +1774,25 @@ class cocina:
         for elemento in even_rh_prob:
             self.text_eventoRh_prob.insert("end", str(elemento) + "\n")
 
-        self.text_eventoAle.delete("1.0", "end")
-        for elemento in Evento_Ale:
-            self.text_eventoAle.insert("end", str(elemento) + "\n")
+        # self.text_PenalisacionAle.delete("1.0", "end")
+        # for elemento in even_rh_penalisaciones:
+        #     self.text_PenalisacionAle.insert("end", str(elemento) + "\n")
+
+        self.text_penalisacionRh.delete("1.0", "end")
+        for elemento in even_rh_penalisaciones:
+            self.text_penalisacionRh.insert("end", str(elemento) + "\n")
+
+        self.text_PenalisacionAle.delete("1.0", "end")
+        for elemento in Evento_Ale_penalisaciones:
+            self.text_PenalisacionAle.insert("end", str(elemento) + "\n")
 
         self.text_eventoAle_prob.delete("1.0", "end")
         for elemento in Evento_Ale_prob:
             self.text_eventoAle_prob.insert("end", str(elemento) + "\n")
+
+        self.text_eventoAle.delete("1.0", "end")
+        for elemento in Evento_Ale:
+            self.text_eventoAle.insert("end", str(elemento) + "\n")
 
         self.textHorasCriticas.delete("1.0", "end")
         for elemento in porcen_ora_critica:
@@ -1881,6 +1903,11 @@ class cocina:
         texto_crudo = self.text_eventoRh_prob.get("1.0", "end")
         even_rh_prob = [float(x) for x in texto_crudo.split()]
 
+        texto_crudo =  self.text_penalisacionRh.get("1.0", "end")
+        even_rh_penalisaciones = [float(x) for x in texto_crudo.split()]
+
+        texto_crudo =  self.text_penalisacionRh.get("1.0", "end")
+        Evento_Ale_penalisaciones = [float(x) for x in texto_crudo.split()]
 
         # error
         texto_crudo = self.text_eventoAle_prob.get("1.0", "end-1c")

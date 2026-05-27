@@ -5,12 +5,16 @@ import random
 from datetime import datetime, timedelta
 import math
 import tkinter.messagebox as messagebox
+import os
 
 class Bar(ctk.CTkToplevel):
 
     def __init__(self, master=None):
         super().__init__(master)
         self.detalles_diarios = {} 
+        #self.lista_aleatorios = []
+        self.indice_aleatorio = 0
+        self.cargar_archivo_aleatorios("GeneradorDeNumeroAleatorios/Aleatorios.txt")
 
         self.title("Simulación Monte Carlo - Bar del Hotel")
         self.geometry("1400x850")
@@ -486,10 +490,10 @@ class Bar(ctk.CTkToplevel):
             reloj_bartenders = [0] * num_bartenders
 
             while tiempo_actual < minutos_totales:
-                rn_ll = random.random()
+                rn_ll = self.obtener_aleatorio()
                 grupo = self.pers(rn_ll)
                 
-                rn_min = random.random()
+                rn_min = self.obtener_aleatorio()
                 m = self.minutos(rn_min)
                 
                 acumulado = acumulado + m 
@@ -515,14 +519,14 @@ class Bar(ctk.CTkToplevel):
                             if pueden_entrar > 0:
                                 cola_variable = cola_variable - pueden_entrar
                                 ocup_act = ocup_act + pueden_entrar
-                                rn_permanencia_cola = random.random()
+                                rn_permanencia_cola = self.obtener_aleatorio()
                                 h_salida_cola = hora_llegada + timedelta(minutes=self.tiem_perman(rn_permanencia_cola))
                                 personas_adentro.append((h_salida_cola, pueden_entrar))
                     else: 
                         i = i + 1
 
-                rn_des = random.random()
-                rn_ida = random.random()
+                rn_des = self.obtener_aleatorio()
+                rn_ida = self.obtener_aleatorio()
                 des = "---"
                 perm = 0
                 hora_salida_str = "---"
@@ -551,10 +555,10 @@ class Bar(ctk.CTkToplevel):
                     perm = self.tiem_perman(rn_ida)
                     des = "Entra"
 
-                    rn_beb = random.random()
+                    rn_beb = self.obtener_aleatorio()
                     tipo_b = self.Bebidas(rn_beb)
                     
-                    rn_p_beb = random.random()
+                    rn_p_beb = self.obtener_aleatorio()
                     prom = self.prom_beb(rn_p_beb)
                     beb_consumidas = grupo * prom
                     
@@ -571,10 +575,10 @@ class Bar(ctk.CTkToplevel):
                         conteo_beb_dia[tipo_b] = conteo_beb_dia[tipo_b] + beb_consumidas
                         conteo_global_beb[tipo_b] = conteo_global_beb[tipo_b] + beb_consumidas
 
-                    rn_s_mes = random.random()
+                    rn_s_mes = self.obtener_aleatorio()
                     t_mesero = self.get_tiempo_servicio(rn_s_mes, self.serv_mesero)
                     
-                    rn_s_bar = random.random()
+                    rn_s_bar = self.obtener_aleatorio()
                     t_bartender = self.get_tiempo_servicio(rn_s_bar, self.prep_bartender)
                     
                     carga_trabajo_meseros = carga_trabajo_meseros + t_mesero
@@ -638,17 +642,17 @@ class Bar(ctk.CTkToplevel):
                 ))
 
             # --- CÁLCULOS FINALES DEL DÍA ---
-            rn_luz = random.random()
+            rn_luz = self.obtener_aleatorio()
             costo_luz_dia = self.costo_luz(rn_luz)
             
-            rn_agua = random.random()
+            rn_agua = self.obtener_aleatorio()
             tarifa_agua = self.costo_agua(rn_agua)
             costo_agua_total = tarifa_agua * clientes_dia
             
-            rn_inc = random.random()
+            rn_inc = self.obtener_aleatorio()
             tipo_incidente, costo_incidente = self.get_incidente_detalle(rn_inc)
             
-            rn_ins = random.random()
+            rn_ins = self.obtener_aleatorio()
             tipo_insumo, costo_insumo = self.get_insumo_detalle(rn_ins)
             
             perdida_abandonos = abandonos_acum * prom_cons
@@ -913,6 +917,42 @@ class Bar(ctk.CTkToplevel):
             
         for k in self.resumen_labels: 
             self.resumen_labels[k].configure(text="---")
+    
+
+    def cargar_archivo_aleatorios(self, subcarpeta_y_nombre):
+        # 1. Obtenemos la ruta absoluta de la carpeta donde está guardado V6.py
+        directorio_actual = os.path.dirname(os.path.abspath(__file__))
+        
+        # 2. Combinamos esa ruta con la subcarpeta y el nombre del archivo
+        # Esto hace que Python sepa exactamente dónde buscar, sin importar desde dónde lo ejecutes
+        ruta_completa = os.path.join(directorio_actual, subcarpeta_y_nombre)
+        
+        try:
+            with open(ruta_completa, "r") as f:
+                self.lista_aleatorios = []
+                for line in f:
+                    linea_limpia = line.strip()
+                    if linea_limpia != "":
+                        self.lista_aleatorios.append(float(linea_limpia))
+            
+            print(f"Éxito: Se cargaron {len(self.lista_aleatorios)} números desde: {ruta_completa}")
+            
+        except FileNotFoundError:
+            print(f"Error: No se pudo encontrar el archivo en la ruta: {ruta_completa}")
+            self.lista_aleatorios = [0.5]
+
+    def obtener_aleatorio(self):
+        # Si llegamos al final de la lista, reiniciamos el índice a 0
+        if self.indice_aleatorio >= len(self.lista_aleatorios):
+            self.indice_aleatorio = 0
+            
+        # Obtenemos el número actual
+        numero = self.lista_aleatorios[self.indice_aleatorio]
+        
+        # Avanzamos al siguiente número para la próxima vez
+        self.indice_aleatorio += 1
+        
+        return numero
 
 if __name__ == "__main__":
     root = ctk.CTk(); root.withdraw() 
