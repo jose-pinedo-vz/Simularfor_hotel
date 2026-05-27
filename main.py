@@ -26,10 +26,10 @@ class Generador:
         color_texto = "#FFFFFF"
         color_Extra = "#8C8680"
 
-        self.recepcion = ctk.CTkButton(self.menu, text="Recepcion", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
+        self.recepcion = ctk.CTkButton(self.menu, text="Recepcion", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)#, command= self.llama_recepcion)
         self.recepcion.pack(padx=10, pady=10)
 
-        self.estacionamiento = ctk.CTkButton(self.menu, text="Estacionamiento", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
+        self.estacionamiento = ctk.CTkButton(self.menu, text="Estacionamiento", command= lambda: self.llamaestacionamiento() , width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.estacionamiento.pack(padx=10, pady=10)
 
         self.restaurante = ctk.CTkButton(self.menu, text="Restaurante", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto, command=lambda: self.llamaCosina())
@@ -41,10 +41,18 @@ class Generador:
                                              fg_color=color_fondo, 
                                              hover_color=color_hover, 
                                              text_color=color_texto,
-                                             command=lambda: self.Llama_area_medica())
+                                             command= lambda: self.Llama_area_medica())
         self.Artencionmedica.pack(padx=10, pady=10)
 
-        self.Lavanderia = ctk.CTkButton(self.menu, text="Lavanderia", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
+        self.Entretenimiento = ctk.CTkButton(self.menu, 
+                                             text="Entretenimiento", width=w, height=h, 
+                                             fg_color=color_fondo, 
+                                             hover_color=color_hover, 
+                                             text_color=color_texto,
+                                             command= lambda: self.Llama_area_entretenimiento())
+        self.Entretenimiento.pack(padx=10, pady=10)
+
+        self.Lavanderia = ctk.CTkButton(self.menu, text="Lavanderia", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto, command= self.llama_lavanderia)
         self.Lavanderia.pack(padx=10, pady=10)
 
         self.bar = ctk.CTkButton(self.menu, text="Bar",command=lambda: self.llamabar(), width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
@@ -56,14 +64,14 @@ class Generador:
         self.ResercasOnline = ctk.CTkButton(self.menu, text="Reservas online", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.ResercasOnline.pack(padx=10, pady=10)
 
-        self.marketing = ctk.CTkButton(self.menu, text="marketing", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
+        self.Habitaciones = ctk.CTkButton(self.menu, text="Habitaciones", command=lambda: self.llamahabitaciones(), width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
+        self.Habitaciones.pack(padx=10, pady=10)
+
+        self.marketing = ctk.CTkButton(self.menu, text="marketing", command=lambda: self.llamamarketing(), width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.marketing.pack(padx=10, pady=10)
 
         self.Bodega = ctk.CTkButton(self.menu, text="Bodega central", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.Bodega.pack(padx=10, pady=10)
-
-        self.Habitaciones = ctk.CTkButton(self.menu, text="Habitaciones", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
-        self.Habitaciones.pack(padx=10, pady=10)
 
 
         self.contenido = ctk.CTkFrame(self.principal, fg_color="transparent")
@@ -94,71 +102,71 @@ class Generador:
         # self.frame_widgets = ctk.CTkFrame(self.contenido, fg_color="transparent")
         # self.frame_widgets.place(relx=0.5, rely=0.5, anchor="center")  # centrado
 
-        self.caja_ingresos = ctk.CTkTextbox(
-            master=self.contenido,
-            width=500,
-            height=70,
-            fg_color="#F5F5DC",
-            text_color="#228B22",
-            border_color="#228B22",
-            border_width=10,
-            font=("Consolas", 20, "bold")
-        )
-        self.caja_ingresos.grid(row=0, column=0, pady=20, padx=20)
+        # self.caja_ingresos = ctk.CTkTextbox(
+        #     master=self.contenido,
+        #     width=500,
+        #     height=70,
+        #     fg_color="#F5F5DC",
+        #     text_color="#228B22",
+        #     border_color="#228B22",
+        #     border_width=10,
+        #     font=("Consolas", 20, "bold")
+        # )
+        # self.caja_ingresos.grid(row=0, column=0, pady=20, padx=20)
 
-        self.caja_ingresos.delete("0.0", "end")
-        self.caja_ingresos.insert("end", f"Ingresos: {self.ingresos}")\
+        # self.caja_ingresos.delete("0.0", "end")
+        # self.caja_ingresos.insert("end", f"Ingresos: {self.ingresos}")\
 
-        self.caja_Egresos = ctk.CTkTextbox(
-            master=self.contenido,
-            width=500,
-            height=70,
-            fg_color="#F5F5DC",
-            text_color="#B22222",
-            border_color="#B22222",
-            border_width=10,
-            font=("Consolas", 20, "bold")
-        )
-        self.caja_Egresos.grid(row=1, column=0, pady=20, padx=20)
+        # self.caja_Egresos = ctk.CTkTextbox(
+        #     master=self.contenido,
+        #     width=500,
+        #     height=70,
+        #     fg_color="#F5F5DC",
+        #     text_color="#B22222",
+        #     border_color="#B22222",
+        #     border_width=10,
+        #     font=("Consolas", 20, "bold")
+        # )
+        # self.caja_Egresos.grid(row=1, column=0, pady=20, padx=20)
 
-        self.caja_Egresos.delete("0.0", "end")
-        self.caja_Egresos.insert("end", f"Egresos: {self.egresos}")
+        # self.caja_Egresos.delete("0.0", "end")
+        # self.caja_Egresos.insert("end", f"Egresos: {self.egresos}")
 
-        self.caja_Totales = ctk.CTkTextbox(
-            master=self.contenido,
-            width=500,
-            height=70,
-            fg_color="#F5F5DC",
-            text_color="#DAA520",
-            border_color="#DAA520",
-            border_width=10,
-            font=("Consolas", 20, "bold")
-        )
-        self.caja_Totales.grid(row=2, column=0, pady=20, padx=20)
+        # self.caja_Totales = ctk.CTkTextbox(
+        #     master=self.contenido,
+        #     width=500,
+        #     height=70,
+        #     fg_color="#F5F5DC",
+        #     text_color="#DAA520",
+        #     border_color="#DAA520",
+        #     border_width=10,
+        #     font=("Consolas", 20, "bold")
+        # )
+        # self.caja_Totales.grid(row=2, column=0, pady=20, padx=20)
 
-        self.caja_Totales.delete("0.0", "end")
-        self.caja_Totales.insert("end", f"Totales: {self.total}")
+        # self.caja_Totales.delete("0.0", "end")
+        # self.caja_Totales.insert("end", f"Totales: {self.total}")
 
-        self.label = ctk.CTkLabel(self.contenido, text="")
-        self.label.grid(row=3, column=0, pady=20, padx=20)
+        # self.label = ctk.CTkLabel(self.contenido, text="")
+        # self.label.grid(row=3, column=0, pady=20, padx=20)
 
-        self.label = ctk.CTkLabel(self.contenido, text="")
-        self.label.grid(row=4, column=0, pady=20, padx=20)
+        # self.label = ctk.CTkLabel(self.contenido, text="")
+        # self.label.grid(row=4, column=0, pady=20, padx=20)
 
-        self.Dias = ctk.CTkTextbox(
-            master=self.contenido,
-            width=500,
-            height=70,
-            fg_color="#F5F5DC",
-            text_color="#8C8680",
-            border_color="#8C8680",
-            border_width=10,
-            font=("Consolas", 20, "bold")
-        )
-        self.Dias.grid(row=5, column=0, pady=20, padx=20)
+        # self.Dias = ctk.CTkTextbox(
+        #     master=self.contenido,
+        #     width=500,
+        #     height=70,
+        #     fg_color="#F5F5DC",
+        #     text_color="#8C8680",
+        #     border_color="#8C8680",
+        #     border_width=10,
+        #     font=("Consolas", 20, "bold")
+        # )
+        # self.Dias.grid(row=5, column=0, pady=20, padx=20)
 
-        self.Dias.delete("0.0", "end")
-        self.Dias.insert("end", f"A: 00 M: 00 D: 00")
+        # self.Dias.delete("0.0", "end")
+        # self.Dias.insert("end", f"A: 00 M: 00 D: 00")
 
         self.boton = ctk.CTkButton(
             self.contenido,
@@ -194,7 +202,13 @@ class Generador:
         from GeneradorDeNumeroAleatorios import main
         main.llamarVentanaAleatorios()
 
-
+    def llama_lavanderia(self):
+        from Lavanderia import Lavanderia
+        Lavanderia()
+        
+    # def llama_recepcion(self):
+    #     from Recepcion import Recepcion
+    #     Recepcion()
 
     def redimensionar_fondo(self, event):
             # funciona para la foto, si le mueven abisen
@@ -211,32 +225,53 @@ class Generador:
     
     def Llama_area_medica(self):
         from AtencionMedica_v3 import Area_Atencion_Medica
-        obj=Area_Atencion_Medica()
+        obj = Area_Atencion_Medica()
         obj.Iniciar()
+    
+    def Llama_area_entretenimiento(self):
+        print("pobre del cabron que quite de nuevo mi boton")
+
+    def llamaCosina(self):
+        # yamea al modelo de la cosina
+        from restaurante import cocina
+        obj = cocina()
 
     def llamabar(self):
         # yamea al modelo de Bar
         from Bar import Bar
         obj = Bar()
 
+    def llamahabitaciones(self):
+        from Habitaciones import Habitaciones
+        obj = Habitaciones()
+
+    def llamamarketing(self):
+        from Marketing import Marketing
+        obj = Marketing()
+
+    def llamaestacionamiento(self):
+        from estacionamiento_valetparking import Interfaz_EVP
+        eyvp=Interfaz_EVP()
+        eyvp.mainloop()
+
     def ExtrearFechas(self):
         """
             Tomando los valores que se encuetran en un entri de arriba se encargara de separar
             años, meses y dias, de esta forma noc quedamos unciamente con dias fijos
         """
-        try:
-            textoCurudo = self.Dias.get("0.0", "end").split()
-            años = int(textoCurudo[1])
-            meses = int(textoCurudo[3])
-            dias = int(textoCurudo[5])
-            self.diasTotales = (años * 365) + (meses * 30) + dias
+        # try:
+        #     textoCurudo = self.Dias.get("0.0", "end").split()
+        #     años = int(textoCurudo[1])
+        #     meses = int(textoCurudo[3])
+        #     dias = int(textoCurudo[5])
+        #     self.diasTotales = (años * 365) + (meses * 30) + dias
 
-            print(f"dias a simular: {diasTotales}")
-            print("Se Va")
-            self.simulador(diasTotales)
-        except:
-            self.Dias.delete("0.0", "end")
-            self.Dias.insert("end", f"A: 00 M: 00 D: 00")
+        #     print(f"dias a simular: {diasTotales}")
+        #     print("Se Va")
+        #     self.simulador(diasTotales)
+        # except:
+        #     self.Dias.delete("0.0", "end")
+        #     self.Dias.insert("end", f"A: 00 M: 00 D: 00")
 
 
 
@@ -248,21 +283,21 @@ class Generador:
             resive el parametro dias que se le pasara a cada funcin con el objetivo de
             que esos sean los dias as imular
         """
-        import restaurante as rc
-        print("Se ejecuta restaurante")
-        print(dias)
-        self.egresos, self.ingresos = rc.validaciones(int(dias))
-        print("regresa")
-        self.total = 0
+        # import restaurante as rc
+        # print("Se ejecuta restaurante")
+        # print(dias)
+        # self.egresos, self.ingresos = rc.validaciones(int(dias))
+        # print("regresa")
+        # self.total = 0
 
-        self.caja_ingresos.delete("0.0", "end")
-        self.caja_ingresos.insert("end", f"Ingresos: {self.ingresos}")
-        self.caja_Egresos.delete("0.0", "end")
-        self.egresos = round((self.egresos), 2)
-        self.caja_Egresos.insert("end", f"Egresos: {self.egresos}")
-        self.caja_Totales.delete("0.0", "end")
-        total = round((self.ingresos - self.egresos), 2)
-        self.caja_Totales.insert("end", f"Totales: {total}")
+        # self.caja_ingresos.delete("0.0", "end")
+        # self.caja_ingresos.insert("end", f"Ingresos: {self.ingresos}")
+        # self.caja_Egresos.delete("0.0", "end")
+        # self.egresos = round((self.egresos), 2)
+        # self.caja_Egresos.insert("end", f"Egresos: {self.egresos}")
+        # self.caja_Totales.delete("0.0", "end")
+        # total = round((self.ingresos - self.egresos), 2)
+        # self.caja_Totales.insert("end", f"Totales: {total}")
 
 
 

@@ -2017,6 +2017,3 @@ class Area_Atencion_Medica():
             return self.Aleatoreos.pop(0)
         else:
             return
-
-obj=Area_Atencion_Medica()
-obj.Iniciar()
