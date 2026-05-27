@@ -1397,7 +1397,6 @@ class Habitaciones:
 
                     # ELEGIR HABITACIÓN
                     if len(habitaciones_disponibles)>0:
-
                         tipo, numero, datos=random.choice(habitaciones_disponibles)
                         datos["mantenimiento_hasta"]=dia + dias_fuera
         
