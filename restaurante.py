@@ -101,11 +101,11 @@ class mostrar_Tablasa():
                                     text_color="#3E2723")
         label_titulo.pack(pady=20)
 
-        label_titulo = ctk.CTkLabel(fm_General,
-                                    text="CLIENTES",
-                                    font=("Arial", 24, "bold"),
-                                    text_color="#3E2723")
-        label_titulo.pack(pady=20)
+        # label_titulo = ctk.CTkLabel(fm_General,
+        #                             text="CLIENTES",
+        #                             font=("Arial", 24, "bold"),
+        #                             text_color="#3E2723")
+        # label_titulo.pack(pady=20)
 
 
         style = ttk.Style()
@@ -503,7 +503,6 @@ def CargarMedios():
         porcen_ora_critica_prob, categorai_platillos, categorai_platillos_prob, platillos_disponibles, cantidadMinimaDeStock, cantidadDelStockmaxiom, platilllosEmpesamos, Listamultiplciadores, \
         even_rh_penalisaciones, Evento_Ale_penalisaciones
 
-
     flojo_diario = [60, 100, 160, 200, 240]
     flujo_siario_prob = [10, 25, 40, 20, 5]
 
@@ -561,10 +560,87 @@ def CargarMedios():
     penalisacino_por_personas_perdidas = 100
     penalisacion_por_platillos_perdidos = 50
 
-    # print("Si carga")
-
-
     Listamultiplciadores = [1, 1, 1, 1, 1, 1, 1, 1,1, 1, 1, 1]
+
+def CargarAltos():
+    global flojo_diario, flujo_siario_prob, grupo, grupo_prob, tem_preparacion, tem_preparacion_prob, consumo, condumo_prob, suministro, \
+        suministro_prob, even_rh, even_rh_prob, Evento_Ale_prob, Evento_Ale, hora_critica, hora_critica_prob, porcen_ora_critica, \
+        porcen_ora_critica_prob, categorai_platillos, categorai_platillos_prob, platillos_disponibles, cantidadMinimaDeStock, cantidadDelStockmaxiom, platilllosEmpesamos, Listamultiplciadores, \
+        even_rh_penalisaciones, Evento_Ale_penalisaciones
+
+    # Aumentamos drásticamente el flujo diario y sus probabilidades más altas
+    flojo_diario = [60, 100, 160, 200, 240]
+    flujo_siario_prob = [5, 10, 20, 40, 25]  # Ahora es mucho más probable que lleguen 200 o 240 personas
+
+    # Los grupos que llegan ahora son más grandes en promedio
+    grupo = [2, 4, 6, 7, 8]
+    grupo_prob = [5, 15, 30, 35, 15]  # Más probabilidad de grupos de 6, 7 u 8 personas
+
+    # El tiempo de preparación se dispara (cuello de botella en cocina)
+    tem_preparacion = [5, 10, 20, 30]
+    tem_preparacion_prob = [5, 15, 40, 40]  # Lo normal ahora es que tarden 20 o 30 minutos
+
+    # El consumo individual baja (mucha gente pero gasta poco)
+    consumo = [1, 2, 3]
+    condumo_prob = [60, 30, 10]  # El 60% de la gente consume solo 1 platillo
+
+    # El suministro tarda más en llegar
+    suministro = [1, 2, 3, 4]
+    suministro_prob = [10, 20, 40, 30]  # Es más probable que el suministro tarde 3 o 4 unidades de tiempo
+
+    # Eventos de Recursos Humanos más frecuentes y costosos
+    even_rh = ["nada", "renuncia", "despedido", "multiple"]
+    even_rh_penalisaciones = [0, 1500, 1500, 3000]  # Penalizaciones triples
+    even_rh_prob = [75, 10, 10, 5]  # Mucho más probable que renuncien o despidan gente
+
+    # Eventos aleatorios destructivos mucho más frecuentes (mermas y fallas)
+    Evento_Ale_prob = [40, 30, 20, 10]  # El "Nada" bajó de 80 a 40. Las mermas y fallas suben mucho
+    Evento_Ale_penalisaciones = [0, 400, 2500, 800]  # Pérdidas económicas más agresivas por fallas
+    Evento_Ale = ["Nada", "Merma", "Falla en equipo", "Devolucion de platillo"]
+
+    # Las horas críticas ocurren más seguido y con mayor porcentaje de saturación
+    hora_critica = [0, 1]
+    hora_critica_prob = [60, 40]  # Sube la probabilidad de hora crítica de 10% a 40%
+
+    porcen_ora_critica = [30, 40, 50]
+    porcen_ora_critica_prob = [10, 30, 60]  # Es más probable que la hora crítica sature un 50% extra
+
+    # La gente prefiere los platillos baratos ("normal") sobre los caros o exóticos
+    categorai_platillos = [[70, 20, 10], [60, 25, 15], [50, 30, 20]]
+    categorai_platillos_prob = [80, 15, 5]  # 80% de probabilidad de que consuman lo más barato
+
+    platillos_disponibles = ["normal", "caro", "exotico"]
+    platilllosEmpesamos = [600, 400, 100]
+
+    cantidadMinimaDeStock = [400, 130, 40]
+    cantidadDelStockmaxiom = platilllosEmpesamos[:]
+
+    global cantidad_de_mesas, cantidad_de_cosineros, sueldo_cosineros, horas_habiles, personal, sueldo_personal, pago_servicios, platillos_lista, \
+        ganancias_por_platillo, ganancias_netas, penalisacino_por_personas_perdidas, penalisacion_por_platillos_perdidos
+
+    platillos_lista = platilllosEmpesamos[:]
+    
+    # Reducimos drásticamente el margen de ganancia neta para que el volumen no genere dinero
+    ganancias_por_platillo = [50, 150, 300]
+    ganancias_netas = [5, 15, 30]  # Bajaron drásticamente. El platillo normal casi no da ganancia neta.
+
+    # Infraestructura y personal insuficientes para la cantidad de gente (caos garantizado)
+    cantidad_de_mesas = 12       # Menos mesas (antes 15) para que la gente se quede fuera
+    cantidad_de_cosineros = 5    # Menos cocineros (antes 8) para ralentizar la cocina
+    sueldo_cosineros = 15000
+    horas_habiles = 8
+    personal = 6                 # Menos meseros/personal (antes 10) para colapsar la atención
+    sueldo_personal = 8000
+
+    pago_servicios = 4000        # Aumento en el costo fijo de servicios
+
+    # Multas severas por el mal servicio debido a la saturación
+    penalisacino_por_personas_perdidas = 350    # De 100 subió a 350 por cada cliente insatisfecho que se va
+    penalisacion_por_platillos_perdidos = 150   # De 50 subió a 150 por desperdicio
+
+    # Multiplicadores mensuales: simulan temporadas altas de gente pero con alta ineficiencia
+    Listamultiplciadores = [1.2, 1.3, 1.4, 1.2, 1.1, 1.3, 1.5, 1.4, 1.2, 1.1, 1.3, 1.5]
+
 
 
 def validar(lista) -> bool:
@@ -1633,7 +1709,8 @@ class cocina:
             self.Botonsitos, text="Valores altos",
             width=ancho_btn, height=alto_btn,
             fg_color=color_Extra, hover_color=color_hover,
-            text_color=color_texto, font=("Arial", 14, "bold")
+            text_color=color_texto, font=("Arial", 14, "bold"),
+            command=lambda: self.CargarAltos()
         )
         self.at.grid(row=0, column=3, padx=20, pady=20)
 
@@ -2074,6 +2151,12 @@ class cocina:
         print("Si carga")
 
         self.cargarElementosEninterface()
+
+    def CargarAltos(self):
+        CargarAltos()
+
+        self.cargarElementosEninterface()
+
 
     def piloto(self):
         dias = int(self.Dias_simular.get())
