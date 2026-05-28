@@ -955,7 +955,7 @@ class Bar(ctk.CTkToplevel):
         #numero = self.lista_aleatorios[self.indice_aleatorio]
         #self.indice_aleatorio += 1
         
-        n=random.randint(1,len(self.lista_aleatorios))
+        n=random.randint(0,len(self.lista_aleatorios)-1)
         numero = self.lista_aleatorios[n]
         return numero
 
