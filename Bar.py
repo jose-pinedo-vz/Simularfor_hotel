@@ -134,7 +134,7 @@ class Bar(ctk.CTkToplevel):
         self.tabla_mc.heading("perdida", text="Pérdidas (Aband.)")
         
         for c in cols:
-            self.tabla_mc.column(c, anchor="center", width=140)
+            self.tabla_mc.column(c, anchor="center", width=160)
 
         scroll_y = ttk.Scrollbar(self.mc_container, orient="vertical", command=self.tabla_mc.yview)
         scroll_x = ttk.Scrollbar(self.mc_container, orient="horizontal", command=self.tabla_mc.xview)
@@ -466,7 +466,10 @@ class Bar(ctk.CTkToplevel):
         tot_limpieza = 0
         tot_botellas = 0
         max_mesas_global = 0
-        conteo_global_beb = {"Bebida Simple": 0, "Preparado": 0, "Cocteleria": 0, "Botella": 0}
+        conteo_global_beb = {}
+        for i in range(1, len(self.bebidas)):
+            nombre_bebida = self.bebidas[i][0]
+            conteo_global_beb[nombre_bebida] = 0
 
         for d in range(1, dias + 1):
             tiempo_actual = 0
@@ -485,7 +488,10 @@ class Bar(ctk.CTkToplevel):
             max_ocupacion_dia = 0 
             
             # Reiniciamos el conteo del día
-            conteo_beb_dia = {"Bebida Simple": 0, "Preparado": 0, "Cocteleria": 0, "Botella": 0}
+            conteo_beb_dia = {}
+            for i in range(1, len(self.bebidas)):
+                nombre_bebida = self.bebidas[i][0]
+                conteo_beb_dia[nombre_bebida] = 0
 
             reloj_meseros = [0] * num_meseros
             reloj_bartenders = [0] * num_bartenders
@@ -678,7 +684,9 @@ class Bar(ctk.CTkToplevel):
                     bebida_fav_dia = bebida
             
             
-            tragos_vendidos_botella = conteo_beb_dia["Botella"]
+            nombre_columna_botella = self.bebidas[4][0]
+
+            tragos_vendidos_botella = conteo_beb_dia.get(nombre_columna_botella, 0)
             botellas_abiertas_dia = math.ceil(tragos_vendidos_botella / rendimiento_botella)
             
             
@@ -901,7 +909,7 @@ class Bar(ctk.CTkToplevel):
         
         for col, txt in headings:
             tabla_det.heading(col, text=txt)
-            tabla_det.column(col, width=135, anchor="center")
+            tabla_det.column(col, width=155, anchor="center")
         
         if dia in self.detalles_diarios:
             for fila in self.detalles_diarios[dia]: 
