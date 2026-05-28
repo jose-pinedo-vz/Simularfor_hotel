@@ -487,7 +487,6 @@ class Bar(ctk.CTkToplevel):
             log_llegadas = []
             max_ocupacion_dia = 0 
             
-            # Reiniciamos el conteo del día
             conteo_beb_dia = {}
             for i in range(1, len(self.bebidas)):
                 nombre_bebida = self.bebidas[i][0]
@@ -717,7 +716,7 @@ class Bar(ctk.CTkToplevel):
             tot_incidentes_costo = tot_incidentes_costo + costo_incidente
             tot_limpieza = tot_limpieza + costo_limpieza_total_dia
             
-            # SUMAMOS LAS BOTELLAS REALES GLOBALES
+            
             tot_botellas = tot_botellas + botellas_abiertas_dia
             
             if meseros_necesarios > total_meseros_sugeridos:
@@ -727,7 +726,7 @@ class Bar(ctk.CTkToplevel):
 
             self.detalles_diarios[d] = log_llegadas
             
-            # INSERTAMOS LA VARIABLE NUEVA (botellas_abiertas_dia) EN LUGAR DEL DECIMAL ANTERIOR
+            
             self.tabla_mc.insert("", "end", values=(
                 f"Día {d}", clientes_dia, total_cola_dia, abandonos_acum, f"{total_bebidas_dia:.1f}", 
                 f"${total_ingresos_dia:,.2f}", meseros_necesarios, bartenders_necesarios,
