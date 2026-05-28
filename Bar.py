@@ -942,16 +942,13 @@ class Bar(ctk.CTkToplevel):
             self.lista_aleatorios = [0.5]
 
     def obtener_aleatorio(self):
-        # Si llegamos al final de la lista, reiniciamos el índice a 0
-        if self.indice_aleatorio >= len(self.lista_aleatorios):
-            self.indice_aleatorio = 0
-            
-        # Obtenemos el número actual
-        numero = self.lista_aleatorios[self.indice_aleatorio]
+        #if self.indice_aleatorio >= len(self.lista_aleatorios):
+        #    self.indice_aleatorio = 0
+        #numero = self.lista_aleatorios[self.indice_aleatorio]
+        #self.indice_aleatorio += 1
         
-        # Avanzamos al siguiente número para la próxima vez
-        self.indice_aleatorio += 1
-        
+        n=random.randint(1,len(self.lista_aleatorios))
+        numero = self.lista_aleatorios[n]
         return numero
 
 if __name__ == "__main__":
