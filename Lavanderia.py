@@ -1865,6 +1865,7 @@ class Lavanderia:
 
         print(self.L_tabla_1)
         print(self.resultados_cargas_exactos)
+        
         def llamarTablas():
             self.GenerarTlas(self.L_tabla_1, self.resultados_cargas_exactos)
 
@@ -3591,8 +3592,6 @@ class Lavanderia:
         self.ventanaTlablas.geometry("500x500")
         self.ventanaTlablas.title("Ver aleatorios")
 
-        # self.ventanaTlablas.after(100, self.ventanaTlablas.lift)
-        
         self.ventanaTlablas.grid_columnconfigure(0, weight=1)
         self.ventanaTlablas.grid_rowconfigure(1, weight=1)
 
