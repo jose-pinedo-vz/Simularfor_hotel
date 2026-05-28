@@ -28,16 +28,16 @@ class Marketing:
                           [60, 0.20]]
 
         self.datos_conversion=[[10, 0.30],
-                               [20, 0.50],
-                               [30, 0.20]]
+                               [20, 0.20],
+                               [30, 0.50]]
 
         self.datos_campaña=[["Facebook", 0.50],
                             ["Google Ads", 0.30],
                             ["Orgánico", 0.20]]
 
-        self.datos_costos=[[300, 0.30],
-                            [500, 0.50],
-                            [800, 0.20]]
+        self.datos_costos=[[100, 0.30],
+                            [300, 0.50],
+                            [500, 0.20]]
         
         self.datos_cancelaciones=[[0, 0.50],
                                   [1, 0.30],
@@ -800,10 +800,12 @@ class Marketing:
                         dias_debiles[i]=dias_debiles[j]
                         dias_debiles[j]=auxiliar
 
+            sobrante_presupuesto=presupuesto - costos_totales
+
             self.lbl_vistas.configure(text=f"Vistas: {vistas_totales}")
             self.lbl_reservas.configure(text=f"Posibles reservas: {reservas_totales}")
             self.lbl_ingresos.configure(text=f"Posibles ingresos: ${ingresos_totales:,.2f}")
-            self.lbl_ganancia.configure(text=f"Posibles ganancias: ${ganancia_total:,.2f}")
+            self.lbl_ganancia.configure(text=f"Sobra del presupuesto: ${sobrante_presupuesto:,.2f}")
 
             for widget in self.frame_resultados.winfo_children():
                 widget.destroy()
@@ -924,3 +926,5 @@ class Marketing:
         ctk.CTkLabel(ventana_detalle, text=f"Total generado el día {dia}:  ${total_dia:,.2f}", text_color="#00FF99", font=("Arial", 16, "bold")).pack(pady=10)
 
         ctk.CTkButton(ventana_detalle, text="Cerrar", fg_color="#D6C49E", text_color="#000000", command=ventana_detalle.destroy).pack(pady=10)
+
+Marketing()

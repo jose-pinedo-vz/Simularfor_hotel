@@ -1706,3 +1706,8 @@ class Habitaciones:
 
         tabla=CTkTable(ventana, values=datos)
         tabla.pack(expand=True, fill="both", padx=20, pady=20)
+
+
+
+
+Habitaciones()
