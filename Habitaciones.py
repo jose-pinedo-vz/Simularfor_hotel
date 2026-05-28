@@ -15,7 +15,6 @@ import customtkinter as ctk
 from CTkTable import CTkTable
 from tkinter import messagebox
 import random
-import os
 import math
 from GeneraRandom import aleatorio
 
@@ -235,7 +234,7 @@ class Habitaciones:
         # BOTON SIMULAR
         self.frame_simular=ctk.CTkFrame(self.frame_scroll)
         self.frame_simular.pack(fill="x", padx=20, pady=20)
-        self.btn_simular=ctk.CTkButton(self.frame_simular, text="SIMULAR HOTEL", width=300, height=50, fg_color="#D6C49E", text_color="#000000", font=("Arial", 18, "bold"), command=self.simular)
+        self.btn_simular=ctk.CTkButton(self.frame_simular, text="SIMULAR", width=300, height=50, fg_color="#D6C49E", text_color="#000000", font=("Arial", 18, "bold"), command=self.simular)
         self.btn_simular.pack(pady=20)
 
         # KPIS
@@ -258,7 +257,7 @@ class Habitaciones:
         botones=[("Limpiar", self.limpiar),
                  ("Sistema estresado", self.sistema_estresado),
                  ("Sistema equilibrado", self.sistema_equilibrado),
-                 ("Siatema con oseo", self.sistema_oseo)]
+                 ("Siatema con ocio", self.sistema_oseo)]
         
         for i, (texto, comando) in enumerate(botones):
             boton=ctk.CTkButton(self.frame_botones, text=texto, width=180, height=40, fg_color="#FFBF42", text_color="#000000", command=comando)
@@ -332,31 +331,31 @@ class Habitaciones:
         self.entry_dobles.insert(0, "3")
 
         self.entry_suites.delete(0, "end")
-        self.entry_suites.insert(0, "2")
+        self.entry_suites.insert(0, "1")
 
         self.entry_operativo.delete(0, "end")
-        self.entry_operativo.insert(0, "200")
+        self.entry_operativo.insert(0, "300")
 
         self.entry_limpieza_individual.delete(0, "end")
-        self.entry_limpieza_individual.insert(0, "50")
+        self.entry_limpieza_individual.insert(0, "120")
 
         self.entry_limpieza_doble.delete(0, "end")
-        self.entry_limpieza_doble.insert(0, "80")
+        self.entry_limpieza_doble.insert(0, "180")
 
         self.entry_limpieza_suite.delete(0, "end")
-        self.entry_limpieza_suite.insert(0, "120")
+        self.entry_limpieza_suite.insert(0, "250")
 
         self.entry_dias.delete(0, "end")
         self.entry_dias.insert(0, "10")
 
         self.entry_precio_individual.delete(0, "end")
-        self.entry_precio_individual.insert(0, "400")
+        self.entry_precio_individual.insert(0, "350")
 
         self.entry_precio_doble.delete(0, "end")
-        self.entry_precio_doble.insert(0, "700")
+        self.entry_precio_doble.insert(0, "600")
 
         self.entry_precio_suite.delete(0, "end")
-        self.entry_precio_suite.insert(0, "1200")
+        self.entry_precio_suite.insert(0, "1000")
     
     def sistema_equilibrado(self):
         self.entry_individuales.delete(0, "end")
@@ -366,19 +365,19 @@ class Habitaciones:
         self.entry_dobles.insert(0, "8")
 
         self.entry_suites.delete(0, "end")
-        self.entry_suites.insert(0, "5")
+        self.entry_suites.insert(0, "4")
 
         self.entry_operativo.delete(0, "end")
-        self.entry_operativo.insert(0, "400")
+        self.entry_operativo.insert(0, "500")
 
         self.entry_limpieza_individual.delete(0, "end")
-        self.entry_limpieza_individual.insert(0, "100")
+        self.entry_limpieza_individual.insert(0, "80")
 
         self.entry_limpieza_doble.delete(0, "end")
-        self.entry_limpieza_doble.insert(0, "150")
+        self.entry_limpieza_doble.insert(0, "120")
 
         self.entry_limpieza_suite.delete(0, "end")
-        self.entry_limpieza_suite.insert(0, "200")
+        self.entry_limpieza_suite.insert(0, "180")
 
         self.entry_dias.delete(0, "end")
         self.entry_dias.insert(0, "20")
@@ -406,13 +405,13 @@ class Habitaciones:
         self.entry_operativo.insert(0, "600")
 
         self.entry_limpieza_individual.delete(0, "end")
-        self.entry_limpieza_individual.insert(0, "120")
+        self.entry_limpieza_individual.insert(0, "100")
 
         self.entry_limpieza_doble.delete(0, "end")
-        self.entry_limpieza_doble.insert(0, "200")
+        self.entry_limpieza_doble.insert(0, "160")
 
         self.entry_limpieza_suite.delete(0, "end")
-        self.entry_limpieza_suite.insert(0, "250")
+        self.entry_limpieza_suite.insert(0, "220")
 
         self.entry_dias.delete(0, "end")
         self.entry_dias.insert(0, "50")
@@ -1135,7 +1134,7 @@ class Habitaciones:
                      "Suite":precio_suite}
 
 
-            indice=random.randint(1, 9000)
+            indice=random.randint(1, 16000)
             print("indice", indice)
             # TABLAS
             tabla_llegadas=[["Día", "Temporada", "Aleatorio", "Llegadas"]]
@@ -1397,6 +1396,7 @@ class Habitaciones:
 
                     # ELEGIR HABITACIÓN
                     if len(habitaciones_disponibles)>0:
+
                         tipo, numero, datos=random.choice(habitaciones_disponibles)
                         datos["mantenimiento_hasta"]=dia + dias_fuera
         
@@ -1706,8 +1706,3 @@ class Habitaciones:
 
         tabla=CTkTable(ventana, values=datos)
         tabla.pack(expand=True, fill="both", padx=20, pady=20)
-
-
-
-
-Habitaciones()
