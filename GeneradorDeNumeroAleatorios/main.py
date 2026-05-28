@@ -37,12 +37,12 @@ class InterfazPrincipal:
                                              command=lambda: self.multiplicativo())
         self.CongruencialMul.pack(pady=20, padx=20)
 
-        self.LineasDeEspera = ctk.CTkButton(self.VentanaP, text="Lineas de espra",
-                                            command=lambda: self.Esperas())
-        self.LineasDeEspera.pack(pady=20, padx=20)
+        # self.LineasDeEspera = ctk.CTkButton(self.VentanaP, text="Lineas de espra",
+        #                                     command=lambda: self.Esperas())
+        # self.LineasDeEspera.pack(pady=20, padx=20)
 
-        self.TeoriaIn = ctk.CTkButton(self.VentanaP, text="Teoria de inventarios")
-        self.TeoriaIn.pack(pady=20, padx=20)
+        # self.TeoriaIn = ctk.CTkButton(self.VentanaP, text="Teoria de inventarios")
+        # self.TeoriaIn.pack(pady=20, padx=20)
                                   
 
         self.VentanaP.mainloop()
