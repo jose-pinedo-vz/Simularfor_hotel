@@ -971,7 +971,7 @@ def validaciones(Dias_a_Simular) -> float:
                 multiplicador = Listamultiplciadores[indice]
 
         
-        print("el multiplicador es de  1")
+        print("el multiplicador es de  ")
 
         
 
@@ -991,6 +991,7 @@ def validaciones(Dias_a_Simular) -> float:
         personas, random_1 = provavilidar(flojo_diario,  flujo_siario_prob)
         personas = int(personas)
         personas = multiplicador * personas
+
         personas_totales_en_el_dia = personas
         print("canditad de personas en el dia: ", personas)
         personas_totales_de_llegada += personas
@@ -1000,9 +1001,10 @@ def validaciones(Dias_a_Simular) -> float:
 
         if _ in diasDeENcarga:
             estado_de_la_encarga_mostrar = "llego mercancia"
-            for idx, dia_pedido in enumerate(diasDeENcarga):
+
+            for i, dia_pedido in enumerate(diasDeENcarga):
                 if _ == dia_pedido:
-                    pedido = platillosDeEncarga[idx]
+                    pedido = platillosDeEncarga[i]
                     for cat in range(len(platillos_lista)):
                         platillos_lista[cat] += pedido[cat]
             estado_encarga = 0
@@ -1087,7 +1089,14 @@ def validaciones(Dias_a_Simular) -> float:
 
         print(f"Lista platillos totales: {platillos_totales_sumatoria}")
 
-        indice_maximo = max(range(len(platillos_totales_sumatoria)), key=platillos_totales_sumatoria.__getitem__)
+        indice_maximo = 0
+        valor_maximo = platillos_totales_sumatoria[0]
+
+
+        for i in range(1, len(platillos_totales_sumatoria)):
+            if platillos_totales_sumatoria[i] > valor_maximo:
+                valor_maximo = platillos_totales_sumatoria[i]
+                indice_maximo = i
 
         lista_de_maximas_apariciones.append(indice_maximo)
 
