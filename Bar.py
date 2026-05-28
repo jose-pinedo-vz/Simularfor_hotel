@@ -172,17 +172,17 @@ class Bar(ctk.CTkToplevel):
 
     def tab_dashboard(self, parent):
         def editar_celda(tabla, datos, fila, col):
-            # 1. Obtener el nombre de la columna a la que se le dio clic
+            
             titulo_columna = str(datos[0][col])
 
-            # 2. REGLA DE BLOQUEO: Si el usuario da clic en Acumulada o Rango, no hacemos nada.
+            
             if "Acumulada" in titulo_columna or "Rango" in titulo_columna:
-                return # El return vacío cancela la ejecución, impidiendo que se abra la ventana.
+                return 
 
-            # 3. Crear la ventana emergente para editar toda la columna
+            
             ventana = ctk.CTkToplevel(self)
             ventana.title(f"Editando: {titulo_columna}")
-            ventana.geometry("350x400") # Un poco más alta para que quepan varias cajas de texto
+            ventana.geometry("350x400") 
             ventana.grab_set()
             ventana.lift()                 
             ventana.attributes("-topmost", True)  
@@ -190,58 +190,58 @@ class Bar(ctk.CTkToplevel):
 
             ctk.CTkLabel(ventana, text=f"Modificando columna: {titulo_columna}", font=("Arial", 14, "bold")).pack(pady=10)
 
-            # Usamos un frame con scroll por si la tabla tiene muchas filas (ej. Insumos)
+            
             frame_entradas = ctk.CTkScrollableFrame(ventana, fg_color="transparent")
             frame_entradas.pack(fill="both", expand=True, padx=10, pady=5)
 
-            # Lista para guardar las referencias a las cajas de texto y saber a qué fila pertenecen
+            
             entradas_texto = []
 
-            # 4. Leer la longitud de la columna (ignorando la fila 0 que es el encabezado)
+            
             for i in range(1, len(datos)):
-                # Nombre de la fila (usamos la columna 0 como referencia, ej: "Vaso Roto", "2 Personas")
+                
                 nombre_fila = str(datos[i][0])
                 valor_actual = str(datos[i][col])
 
-                # Crear un label que indique qué estamos editando
+                
                 ctk.CTkLabel(frame_entradas, text=nombre_fila, font=("Arial", 12)).pack(anchor="w", padx=5)
                 
-                # Crear la caja de texto y ponerle el valor que tiene actualmente
+                
                 entry = ctk.CTkEntry(frame_entradas, width=280)
                 entry.insert(0, valor_actual)
                 entry.pack(pady=(0, 10))
 
-                # Guardar el índice de la fila real y el objeto entry para leerlo después
+                
                 entradas_texto.append((i, entry))
 
-            # 5. Función que se ejecuta al presionar "Guardar"
+            
             def guardar_cambios():
-                # CASO A: Si estamos editando la columna de PROBABILIDAD
+                
                 if "Probabilidad" in titulo_columna:
                     valores_nuevos = []
                     
-                    # Extraer los textos y convertirlos a números decimales (float)
+                    
                     try:
                         for _, entry in entradas_texto:
                             valor = float(entry.get())
                             valores_nuevos.append(valor)
                     except ValueError:
-                        # Si el usuario escribió letras en vez de números, lanzamos error
+                        
                         messagebox.showerror("Error de formato", "Por favor ingresa únicamente números con punto decimal.")
                         return
 
-                    # VALIDACIÓN DE LA SUMA = 1
+                    
                     suma_total = sum(valores_nuevos)
-                    # Usamos una resta pequeña (0.0001) por cuestiones de cómo las computadoras suman decimales
+                    
                     if abs(suma_total - 1.0) > 0.0001:
                         messagebox.showerror("Error de Suma", f"La suma de las probabilidades debe dar exactamente 1.0\n\nTu suma actual da: {suma_total:.4f}\nPor favor, corrige los valores.")
-                        return # Cancelamos el guardado si no suma 1
+                        return 
                     
-                    # SI PASA LA VALIDACIÓN: Guardar y Auto-calcular Acumulada y Rango
+                    
                     acumulado = 0.0
                     col_prob = col
-                    col_acum = col + 1  # La acumulada siempre está una columna a la derecha
-                    col_rango = col + 2 # El rango siempre está dos columnas a la derecha
+                    col_acum = col + 1  
+                    col_rango = col + 2 
 
                     for indice_lista, (fila_real, entry) in enumerate(entradas_texto):
                         prob_actual = valores_nuevos[indice_lista]
@@ -249,38 +249,38 @@ class Bar(ctk.CTkToplevel):
                         acumulado = acumulado + prob_actual
                         limite_superior = acumulado
 
-                        # Formatear números a strings con 4 decimales
+                        
                         str_prob = str(prob_actual)
                         str_acum = f"{acumulado:.4f}"
                         
-                        # Formatear el Rango (Si es el primero empieza en 0.0000, los demás en lim_inf + 0.0001)
+                        
                         if indice_lista == 0:
                             str_rango = f"0.0000 - {limite_superior:.4f}"
                         else:
                             str_rango = f"{(limite_inferior + 0.0001):.4f} - {limite_superior:.4f}"
 
-                        # 1. Actualizar los datos internos (matriz)
+                        
                         datos[fila_real][col_prob] = str_prob
                         datos[fila_real][col_acum] = str_acum
                         datos[fila_real][col_rango] = str_rango
 
-                        # 2. Actualizar visualmente la tabla CTkTable
+                        
                         tabla.insert(fila_real, col_prob, str_prob)
                         tabla.insert(fila_real, col_acum, str_acum)
                         tabla.insert(fila_real, col_rango, str_rango)
 
-                # CASO B: Si estamos editando OTRA COLUMNA (Nombres, Costos, Ganancias)
+                
                 else:
                     for fila_real, entry in entradas_texto:
                         nuevo_valor = entry.get()
-                        # Solo actualizamos el valor de esa celda, no hay validaciones matemáticas
+                        
                         datos[fila_real][col] = nuevo_valor
                         tabla.insert(fila_real, col, nuevo_valor)
 
-                # Cerrar la ventana una vez guardado con éxito
+                
                 ventana.destroy()
 
-            # Botón de guardar que llama a la función de arriba
+            
             ctk.CTkButton(ventana, text="Guardar Cambios", fg_color="green", hover_color="darkgreen", command=guardar_cambios).pack(pady=10)
 
         inferior = ctk.CTkScrollableFrame(parent, fg_color="transparent")
@@ -405,7 +405,7 @@ class Bar(ctk.CTkToplevel):
             ("Días", "3"), ("Capacidad del Bar", "50"), ("Horas laborales", "8"), ("Hora de apertura", "8"), 
             ("Meseros", "2"), ("Bartenders", "1"), 
             ("Sueldo Mesero/Día", "300"), ("Sueldo Bartender/Día", "400"), ("Sueldo Limpieza/Día", "250"),
-            ("Bebidas por Botella", "4"),("Promedio de consumo","150") # <-- NUEVO PARÁMETRO
+            ("Bebidas por Botella", "4"),("Promedio de consumo","150"),("Personal de Limpieza\nAtención Por Día","30")
         ]
         for i, (txt, val) in enumerate(params_list):
             ctk.CTkLabel(parent, text=txt).grid(row=i, column=0, padx=20, pady=10, sticky="w")
@@ -440,6 +440,7 @@ class Bar(ctk.CTkToplevel):
             rendimiento_botella = int(self.inputs["Bebidas por Botella"].get())
             if rendimiento_botella <= 0: rendimiento_botella = 1 
             prom_cons= float(self.inputs["Promedio de consumo"].get())
+            At_Lim=int(self.inputs["Personal de Limpieza\nAtención Por Día"].get())
             
             minutos_totales = horas * 60
         except: 
@@ -657,7 +658,7 @@ class Bar(ctk.CTkToplevel):
             
             perdida_abandonos = abandonos_acum * prom_cons
             
-            personal_limpieza = math.ceil(max_ocupacion_dia / 30)
+            personal_limpieza = math.ceil(max_ocupacion_dia / At_Lim)
             if personal_limpieza == 0: 
                 personal_limpieza = 1
                 
@@ -676,10 +677,10 @@ class Bar(ctk.CTkToplevel):
                     mayor_cantidad = cantidad
                     bebida_fav_dia = bebida
             
-            # --- NUEVA LÓGICA DE BOTELLAS ---
+            
             tragos_vendidos_botella = conteo_beb_dia["Botella"]
             botellas_abiertas_dia = math.ceil(tragos_vendidos_botella / rendimiento_botella)
-            # --------------------------------
+            
             
             sueldos_dia = (num_meseros * sueldo_m) + (num_bartenders * sueldo_b) + costo_sueldo_limpieza
             
