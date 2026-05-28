@@ -229,7 +229,9 @@ class Generador:
         obj.Iniciar()
     
     def Llama_area_entretenimiento(self):
-        print("pobre del cabron que quite de nuevo mi boton")
+        from Entretenimiento import Area_Entretenimiento
+        obj = Area_Entretenimiento()
+        obj.Iniciar()
 
     def llamaCosina(self):
         # yamea al modelo de la cosina

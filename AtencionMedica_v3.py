@@ -165,7 +165,7 @@ class Area_Atencion_Medica():
         self.kits_en_camino={"Higienico": 0,
                                "Curacion": 0,
                                "Sutura": 0}
-        
+        self.stock_min_cajas=list(map(int, self.Cajas_pastillas[0]))
         self.dias_espera_med={
             "DolorFiebre": 0, 
             "Inflamacion": 0, 
@@ -442,12 +442,13 @@ class Area_Atencion_Medica():
         if len(self.Aleatoreos)==0:
             self.txt_aleatorios.insert("0.0","No hay numeros para\niniciar la simulacion")
         else:
-            texto_lista="Numeros a utilizar:\n"
-            texto_lista+="\n".join([f"[{i+1}] -> {val}" for i, val in enumerate(self.Aleatoreos)])
+            texto_lista = "Numeros a utilizar:\n"
+
+            for i, val in enumerate(self.Aleatoreos):
+                texto_lista += f"[{i + 1}] -> {val}\n"
 
             self.txt_aleatorios.insert("0.0", texto_lista)
             self.txt_aleatorios.configure(state="disabled")
-         
 
 
     def Mostrar_tablas(self):
@@ -1640,7 +1641,7 @@ class Area_Atencion_Medica():
             aux=[]
             for e, (a, b) in enumerate(rangos):
                 print(a, b)
-                aux.append([f"{str(a)}-{str(b)} : {evento[e]}"])
+                aux.append([f"{a:g} - {b:g}  ->  {evento[e]}"])
 
             tabla=CTkTable(
             frame,
