@@ -1381,17 +1381,17 @@ class Habitaciones:
                     habitaciones_disponibles=[]
                     # INDIVIDUALES
                     for numero, datos in self.habitaciones_individuales.items():
-                        if (datos["ocupada"]==False and dia>=datos["limpieza_hasta"] and dia>=datos["mantenimiento_hasta"]):
+                        if (dia >= datos["ocupada_hasta"] and dia >= datos["limpieza_hasta"] and dia >= datos["mantenimiento_hasta"]):
                             habitaciones_disponibles.append(("Individual", numero, datos))
 
                     # DOBLES
                     for numero, datos in self.habitaciones_dobles.items():
-                        if (datos["ocupada"]==False and dia>=datos["limpieza_hasta"] and dia>=datos["mantenimiento_hasta"]):
+                        if (dia >= datos["ocupada_hasta"] and dia >= datos["limpieza_hasta"] and dia >= datos["mantenimiento_hasta"]):
                             habitaciones_disponibles.append(("Doble", numero, datos))
 
                     # SUITES
                     for numero, datos in self.habitaciones_suite.items():
-                        if (datos["ocupada"]==False and dia>=datos["limpieza_hasta"] and dia>=datos["mantenimiento_hasta"]):
+                        if (dia >= datos["ocupada_hasta"] and dia >= datos["limpieza_hasta"] and dia >= datos["mantenimiento_hasta"]):
                             habitaciones_disponibles.append(("Suite", numero, datos))
 
                     # ELEGIR HABITACIÓN
