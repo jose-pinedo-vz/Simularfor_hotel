@@ -170,7 +170,7 @@ class Generador:
 
         self.boton = ctk.CTkButton(
             self.contenido,
-            text="Aceptar",
+            text="Generar nuevos aleatorios",
             fg_color="#5D4037",
             hover_color="#3E2723",
             width=400,
@@ -179,12 +179,12 @@ class Generador:
             border_color="#8C8680",
             border_width=2,
             font=("Consolas", 18, "bold"),
-            command=lambda: self.ExtrearFechas())
+            command=lambda: self.eliminarArchivoAleatorios())
         self.boton.grid(row=6, column=0, pady=10)
 
         self.boton2 = ctk.CTkButton(
             self.contenido,
-            text="GENERAR NUMERO",
+            text="agregar aleatorios",
             fg_color="#5D4037",
             hover_color="#3E2723",
             width=400,
@@ -201,6 +201,17 @@ class Generador:
         print("Llega")
         from GeneradorDeNumeroAleatorios import main
         main.llamarVentanaAleatorios()
+
+    def eliminarArchivoAleatorios(self):
+        import os
+
+        ruta_archivo = "GeneradorDeNumeroAleatorios/Aleatorios.txt"
+        if os.path.exists(ruta_archivo):
+            os.remove(ruta_archivo)
+            print("Exito")
+            self.llamarGenerador()
+        else:
+            print("Fracaso")
 
     def llama_lavanderia(self):
         from Lavanderia import Lavanderia
