@@ -174,6 +174,7 @@ class Area_Atencion_Medica():
             "Diarrea": 0, 
             "Nausea": 0, 
             "Infeccion": 0}
+        
 
         self.med_en_camino={
             "DolorFiebre": 0, 
@@ -232,6 +233,7 @@ class Area_Atencion_Medica():
         self.Insertar_datos_en_txtbox(self.TiempoAtencion[0], self.TiempoAtencion[1], self.TxtTiempoAtencion)
         self.Insertar_datos_en_txtbox(self.Medicamentos_usados[0],self.Medicamentos_usados[1],self.Txtmedicamentos)
         self.Insertar_datos_en_txtbox(self.Farmacia[0],self.Farmacia[1],self.TxtFarmacia)
+        self.Insertar_datos_en_txtbox(self.Cajas_pastillas[0],[],self.TxtPastillasIniciales)
         self.Insertar_datos_en_txtbox(self.tiempo_reabastecer[0],self.tiempo_reabastecer[1],self.TxtTiempoReabastecer)
 
     def cargar_datos_ligeros(self):
@@ -269,6 +271,7 @@ class Area_Atencion_Medica():
                                        ("Diarrea",30.0),
                                        ("Nausea",40.0),
                                        ("Infeccion",100.0)),self.Farmacia[1],self.TxtFarmacia)
+        self.Insertar_datos_en_txtbox(self.Cajas_pastillas[0],[],self.TxtPastillasIniciales)
         self.Insertar_datos_en_txtbox((0,1,2),self.tiempo_reabastecer[1],self.TxtTiempoReabastecer)
     def cargar_datos_estres(self):
         self.DeclaracionVarialbles()
@@ -304,6 +307,7 @@ class Area_Atencion_Medica():
                                        ("Diarrea",90.0),
                                        ("Nausea",110.0),
                                        ("Infeccion",250.0)),self.Farmacia[1],self.TxtFarmacia)
+        self.Insertar_datos_en_txtbox(self.Cajas_pastillas[0],[],self.TxtPastillasIniciales)
         self.Insertar_datos_en_txtbox((2,3,4),self.tiempo_reabastecer[1],self.TxtTiempoReabastecer)
 
     def mostrar_pestaña_tablas(self):
@@ -548,7 +552,7 @@ class Area_Atencion_Medica():
 
         
         label5=ctk.CTkLabel(self.Frame_tablas,
-                             text="Cajas de medicamentos\nusadas",
+                             text="Pastillas\nrecetadas",
                                font=("Arial", 16))
         label5.grid(row=fil+2, column=0, padx=5, pady=(0, 0), sticky="n")
         self.Txtmedicamentos= ctk.CTkTextbox(self.Frame_tablas,
@@ -560,7 +564,7 @@ class Area_Atencion_Medica():
 
         
         label6=ctk.CTkLabel(self.Frame_tablas,
-                             text="Pastillas\nrecetadas",
+                             text="Cajas de medicamentos\nusadas",
                              font=("Arial", 16))
         label6.grid(row=fil+2, column=1, padx=5, pady=(0, 0), sticky="n")
         self.TxtFarmacia= ctk.CTkTextbox(self.Frame_tablas,
@@ -571,14 +575,24 @@ class Area_Atencion_Medica():
         self.TxtFarmacia.grid(row=fil+3, column=1, padx=5, pady=(2, 5), sticky="n")
 
         label7=ctk.CTkLabel(self.Frame_tablas,
-                             text="Tiempo de reabastecer",
+                             text="Cajas de pastillas\niniciales",
                              font=("Arial", 16))
         label7.grid(row=fil+2, column=2, padx=5, pady=(0, 0), sticky="n")
+        self.TxtPastillasIniciales= ctk.CTkTextbox(self.Frame_tablas,
+                                             font=("Arial", 15),
+                                             width=ancho_fijo,
+                                             height=alto_fijo)
+        self.TxtPastillasIniciales.grid(row=fil+3, column=2, padx=5, pady=(2, 5), sticky="n")
+
+        label8=ctk.CTkLabel(self.Frame_tablas,
+                             text="Tiempo de reabastecer",
+                             font=("Arial", 16))
+        label8.grid(row=fil+2, column=3, padx=5, pady=(0, 0), sticky="n")
         self.TxtTiempoReabastecer= ctk.CTkTextbox(self.Frame_tablas,
                                              font=("Arial", 15),
                                              width=ancho_fijo,
                                              height=alto_fijo)
-        self.TxtTiempoReabastecer.grid(row=fil+3, column=2, padx=5, pady=(2, 5), sticky="n")
+        self.TxtTiempoReabastecer.grid(row=fil+3, column=3, padx=5, pady=(2, 5), sticky="n")
 
 
     def Guardar_datos(self):
@@ -588,6 +602,7 @@ class Area_Atencion_Medica():
         self.TiempoAtencion=self.procesar_datos_textbox(self.TxtTiempoAtencion,"Tiempo de atención")
         self.Medicamentos_usados=self.procesar_datos_textbox(self.Txtmedicamentos,"Medicamentos usados")
         self.Farmacia=self.procesar_datos_textbox(self.TxtFarmacia,"Farmacia")
+        cajas_iniciales=self.procesar_datos_textbox(self.TxtPastillasIniciales,"Pastillas iniciales")
         self.tiempo_reabastecer=self.procesar_datos_textbox(self.TxtTiempoReabastecer,"Tiempo de reorden")
         lista=[self.Llegadas_de_pacientes,
                self.Prob_cruce,
@@ -595,11 +610,18 @@ class Area_Atencion_Medica():
                self.TiempoAtencion,
                self.Medicamentos_usados, 
                self.Farmacia,
-               self.tiempo_reabastecer]
+               self.tiempo_reabastecer,
+               self.Cajas_pastillas[0]]
         if any(item is None for item in lista):
             return
         else:
-            self.procesar_datos_contables()
+            try:
+                self.stock_min_cajas=list(map(int, cajas_iniciales))
+                self.Cajas_pastillas[0]=list(map(int, cajas_iniciales))
+                self.procesar_datos_contables()
+            except ValueError:
+                CTkMessagebox(title="Error", message="Ingrese valores numericos enteros para la cantidad de cajas iniciales", icon="cancel")
+                return
         
     def Insertar_datos_en_txtbox(self,eventos,prob,entry):
         entry.delete("0.0", "end") 
@@ -1278,7 +1300,7 @@ class Area_Atencion_Medica():
                     return pastillas_entregadas
                     
                 else:
-                    #  nos alcanza el medicamento
+                    # alcanza el medicamento?
                     self.Cajas_pastillas[1][e] += cantidad
                     
                     if self.Cajas_pastillas[1][e] >= tamaño_caja:
@@ -1299,14 +1321,14 @@ class Area_Atencion_Medica():
         print("--------------- calculo de faltantes------------------")
         faltantes=[]
         for e, cajas in enumerate(self.Cajas_pastillas[0]):
-
+            stock_min_del_med=self.stock_min_cajas[e]
+            print("Stok minnimo del medicamento: ",stock_min_del_med)
             if cajas <= 0:
                 print(f" Inventario agotado de {self.Farmacia[0][e][0]}")
-                faltantes.append((self.Farmacia[0][e][0], 10)) # Pedimos el stock completo
-            
-    
-            elif cajas <= 3:
-                cantidad_a_pedir=10-cajas
+                faltantes.append((self.Farmacia[0][e][0], stock_min_del_med)) # Pedimos el stock completo
+                return
+            elif cajas <= stock_min_del_med//3:
+                cantidad_a_pedir=stock_min_del_med-cajas
                 faltantes.append((self.Farmacia[0][e][0], cantidad_a_pedir))
         print("Pastillas: ",self.Cajas_pastillas)
         print("Faltantes: ",faltantes)
@@ -1328,7 +1350,7 @@ class Area_Atencion_Medica():
                     if tipo == "Sutura": self.kit_sutura += self.kits_en_camino[tipo]
                     
                     print(f" Llegó el pedido de {self.kits_en_camino[tipo]} unidades de Kit {tipo}.")
-                    self.kits_en_camino[tipo]=0 # Vaciamos el tránsito ya que entró al stock físico
+                    self.kits_en_camino[tipo]=0 #vaciar pedido ya que entró al stock físico
 
         
         higienico=False
@@ -1545,7 +1567,7 @@ class Area_Atencion_Medica():
             tabla_sub.add_row(values=fila_datos)
 
 
-    def Tabla_montecarlo(self,resultados_totales):#A quien le corresponda, esta funcion define la tabla para mostra las iteraciones de los dias de la simulacion
+    def Tabla_montecarlo(self,resultados_totales):
         self.Frame_tabla_montecarlo.grid_columnconfigure(0, weight=1)
         if hasattr(self, 'tabla') and self.tabla:
             self.tabla.destroy()
@@ -1669,9 +1691,9 @@ class Area_Atencion_Medica():
                      text="FINANZAS",
                      font=("Arial", 18, "bold")).pack(pady=10)
         ctk.CTkLabel(card_finanzas,
-                     text=f"Inversión Inicial: ${self.CostoInventarioInicial:,.2f}").pack(anchor="w", padx=20)
+                     text=f"Inversión Inicial: \n${self.CostoInventarioInicial:,.2f}").pack(anchor="w", padx=20,fill="both")
         ctk.CTkLabel(card_finanzas,
-                     text=f"Costo de operacion: ${self.CostoOperativoAcumulado:,.2f}").pack(anchor="w", padx=20)
+                     text=f"Costo de operacion: \n${self.CostoOperativoAcumulado:,.2f}").pack(anchor="w", padx=20,fill="both")
         ctk.CTkLabel(card_finanzas,
                      text=f"Inversion total: ${self.CostoGeneral:,.2f}", 
                     text_color="#e74c3c", font=("Arial", 16, "bold")).pack(pady=15)
@@ -1726,14 +1748,16 @@ class Area_Atencion_Medica():
                                                  height=100)
         scroll_no_disponibles.pack(fill="both", expand=True, padx=10)
         for kit, veces in self.Veces_kit_no_disponible.items():
-            ctk.CTkLabel(scroll_no_disponibles,
-                            text=f"{kit}: {veces} veces no disponible",
-                            font=("Arial", 12)).pack(anchor="w")
+            if veces>0:
+                ctk.CTkLabel(scroll_no_disponibles,
+                                text=f"{kit}: {veces} veces no disponible",
+                                font=("Arial", 12)).pack(anchor="w")
                 
         for med, veces in self.Veces_medicamento_no_disponible.items():
-            ctk.CTkLabel(scroll_no_disponibles,
-                         text=f"{med}: {veces} veces no disponible",
-                         font=("Arial", 11)).pack(anchor="w")
+            if veces>0:
+                ctk.CTkLabel(scroll_no_disponibles,
+                            text=f"{med}: {veces} veces no disponible",
+                            font=("Arial", 11)).pack(anchor="w")
         
         ctk.CTkLabel(card_quejas,
                      text=f"Quejas Totales: {self.conteo_quejas}").pack(anchor="w", padx=20)
@@ -1833,7 +1857,7 @@ class Area_Atencion_Medica():
                      font=("Arial", 18, "bold"),
                      text_color=self.color_texto).pack(pady=10)
         
-        # Etiquetas para las probabilidades calculadas
+        # etiquetas para las probabilidades calculadas
         self.lbl_prob_colapso=ctk.CTkLabel(card_probabilidad,
                                              text="Calculando tasa de colapso...",
                                              font=("Arial", 14),
@@ -1847,7 +1871,30 @@ class Area_Atencion_Medica():
                                                text_color=self.color_texto,
                                                justify="left")
         self.lbl_prob_desabasto.pack(anchor="w", padx=20, pady=8)
+        
         self.Calcular_Sugerencias_Y_Probabilidades()
+
+        # Veces que un medicamento fue reordenado
+        card_veces_reorden=ctk.CTkFrame(container,
+                                         fg_color="#3E2723",
+                                         corner_radius=15,
+                                         border_width=2,
+                                         border_color="#D7CCC8")
+        card_veces_reorden.grid(row=3, column=0, padx=15, pady=15, sticky="nsew")
+        
+        ctk.CTkLabel(card_veces_reorden,
+                     text="Veces que un medicamento fue\nreabastecido",
+                     font=("Arial", 18, "bold"),
+                     text_color=self.color_texto).pack(pady=10)
+        scroll_reabasto=ctk.CTkScrollableFrame(card_veces_reorden,
+                                                 fg_color="transparent",
+                                                 height=100)
+        scroll_reabasto.pack(fill="both", expand=True, padx=10)
+        for med,veces in self.Veces_abasto_medicamento.items(): 
+            ctk.CTkLabel(scroll_reabasto,
+                            text=f"{med}: {veces} pedidos",
+                            font=("Arial", 12)).pack(anchor="w")
+                
     
     def Calcular_Sugerencias_Y_Probabilidades(self):
        
@@ -1871,7 +1918,7 @@ class Area_Atencion_Medica():
         self.lbl_prob_desabasto.configure(text=texto_desabasto)
 
         if prob_no_atencion > 20.0:
-            # Si supera el 20% calculamos cuántos sugerir según la gravedad
+            # si supera el 20% calculamos cuantos sugerir segun la gravedad
             doctores_sugeridos=1 if prob_no_atencion <= 40.0 else 2
             texto_sug_doc=(f" La probabilidad de colapso ({prob_no_atencion:.1f}%) supera el límite del 20%.\n"
                              f" Se recomienda contratar de manera inmediata a {doctores_sugeridos} doctor(es)\n"
@@ -1885,7 +1932,7 @@ class Area_Atencion_Medica():
             
         self.lbl_sug_doctores.configure(text=texto_sug_doc)
 
-        # 2. Análisis de Reabastecimiento de Medicamentos
+        # analisis de eabastecimiento de medicamentos
         for widget in self.scroll_inventario_sug.winfo_children():
             widget.destroy()
             

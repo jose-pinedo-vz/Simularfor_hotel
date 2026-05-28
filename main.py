@@ -13,8 +13,8 @@ class Generador:
         self.egresos = 0
         self.total = 0
         self.diasTotales = 0
-
-        try: self.principal.state("zoomed")
+        
+        try: self.principal.after(200,lambda:self.principal.state('zoomed'))
         except: self.principal.attributes("-zoomed", True)
 
         self.menu = ctk.CTkScrollableFrame(self.principal, width=400, corner_radius=0, fg_color="#D7CCC8")
@@ -35,8 +35,22 @@ class Generador:
         self.restaurante = ctk.CTkButton(self.menu, text="Restaurante", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto, command=lambda: self.llamaCosina())
         self.restaurante.pack(padx=10, pady=10)
 
-        self.Artencionmedica = ctk.CTkButton(self.menu, text="Atencion medica", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
+        self.Artencionmedica = ctk.CTkButton(self.menu, 
+                                             text="Atencion medica", 
+                                             width=w, height=h, 
+                                             fg_color=color_fondo, 
+                                             hover_color=color_hover, 
+                                             text_color=color_texto,
+                                             command= lambda: self.Llama_area_medica())
         self.Artencionmedica.pack(padx=10, pady=10)
+
+        self.Entretenimiento = ctk.CTkButton(self.menu, 
+                                             text="Entretenimiento", width=w, height=h, 
+                                             fg_color=color_fondo, 
+                                             hover_color=color_hover, 
+                                             text_color=color_texto,
+                                             command= lambda: self.Llama_area_entretenimiento())
+        self.Entretenimiento.pack(padx=10, pady=10)
 
         self.Lavanderia = ctk.CTkButton(self.menu, text="Lavanderia", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto, command= self.llama_lavanderia)
         self.Lavanderia.pack(padx=10, pady=10)
@@ -156,7 +170,7 @@ class Generador:
 
         self.boton = ctk.CTkButton(
             self.contenido,
-            text="Aceptar",
+            text="Generar nuevos aleatorios",
             fg_color="#5D4037",
             hover_color="#3E2723",
             width=400,
@@ -165,12 +179,12 @@ class Generador:
             border_color="#8C8680",
             border_width=2,
             font=("Consolas", 18, "bold"),
-            command=lambda: self.ExtrearFechas())
+            command=lambda: self.eliminarArchivoAleatorios())
         self.boton.grid(row=6, column=0, pady=10)
 
         self.boton2 = ctk.CTkButton(
             self.contenido,
-            text="GENERAR NUMERO",
+            text="agregar aleatorios",
             fg_color="#5D4037",
             hover_color="#3E2723",
             width=400,
@@ -188,6 +202,17 @@ class Generador:
         from GeneradorDeNumeroAleatorios import main
         main.llamarVentanaAleatorios()
 
+    def eliminarArchivoAleatorios(self):
+        import os
+
+        ruta_archivo = "GeneradorDeNumeroAleatorios/Aleatorios.txt"
+        if os.path.exists(ruta_archivo):
+            os.remove(ruta_archivo)
+            print("Exito")
+            self.llamarGenerador()
+        else:
+            print("Fracaso")
+
     def llama_lavanderia(self):
         from Lavanderia import Lavanderia
         Lavanderia()
@@ -203,6 +228,19 @@ class Generador:
             if ancho > 0 and alto > 0:
                 self.img_fondo_tk.configure(size=(ancho, alto))
                 self.lbl_fondo.configure(image=self.img_fondo_tk)
+
+    def llamaCosina(self):
+        # yamea al modelo de la cosina
+        from restaurante import cocina
+        obj = cocina()
+    
+    def Llama_area_medica(self):
+        from AtencionMedica_v3 import Area_Atencion_Medica
+        obj = Area_Atencion_Medica()
+        obj.Iniciar()
+    
+    def Llama_area_entretenimiento(self):
+        print("pobre del cabron que quite de nuevo mi boton")
 
     def llamaCosina(self):
         # yamea al modelo de la cosina

@@ -712,6 +712,8 @@ def CargarBajos():
 
 
 
+
+
 def validar(lista) -> bool:
     # print(lista)
     if sum(lista) == 100:
