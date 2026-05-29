@@ -17,11 +17,6 @@ class Marketing:
         alto=self.ventana.winfo_screenheight()
         self.ventana.geometry(f"{ancho}x{alto}+0+0")
 
-        try:
-            self.ventana.state("zoomed")
-        except:
-            self.ventana.attributes("-zoomed", True)
-
         # DATOS
         self.datos_vistas=[[20, 0.30],
                           [40, 0.50],
@@ -500,7 +495,6 @@ class Marketing:
     # BUSCAR RESULTADO
     def buscar_resultado(self, numero, datos):
         acumulada=0
-
         for valor, probabilidad in datos:
             acumulada=acumulada + probabilidad
             if numero<=acumulada:
@@ -635,8 +629,7 @@ class Marketing:
 
             acumulada=0
 
-            indice=random.randint(1, 9000)
-            print("indice", indice)
+            indice=1
 
             dias_rentables=[]
             dias_debiles=[]
@@ -694,9 +687,9 @@ class Marketing:
 
                     tipo=self.buscar_resultado(alea_habitacion, self.datos_habitacion)
                     estancia=self.buscar_resultado(alea_estancia, self.datos_estancia)
-                    if self.disponibles[tipo] > 0:
-                        self.disponibles[tipo] -= 1
-                        reservas_reales += 1
+                    if self.disponibles[tipo]>0:
+                        self.disponibles[tipo]-=1
+                        reservas_reales+=1
                         reservas_dia.append({"Aleatorio habitacion": alea_habitacion, "Tipo": tipo, "Aleatorio estancia": alea_estancia, "Estancia": estancia})
 
                 self.reservas_por_dia[dia]=reservas_dia
@@ -767,7 +760,7 @@ class Marketing:
             #Rentabilidad
             roi=ganancia_total / costos_totales if costos_totales > 0 else 0
             if roi<0.2:
-                analisis.append(["Rentabilidad", "BAJA rentabilidad. El sistema no es eficiente en convertir costos en ganancias."])
+                analisis.append(["Rentabilidad", "Baja rentabilidad. El sistema no es eficiente en convertir costos en ganancias."])
             elif roi < 0.5:
                 analisis.append(["Rentabilidad", "Rentabilidad media. El sistema es estable pero mejorable."])
             else:
@@ -926,5 +919,3 @@ class Marketing:
         ctk.CTkLabel(ventana_detalle, text=f"Total generado el día {dia}:  ${total_dia:,.2f}", text_color="#00FF99", font=("Arial", 16, "bold")).pack(pady=10)
 
         ctk.CTkButton(ventana_detalle, text="Cerrar", fg_color="#D6C49E", text_color="#000000", command=ventana_detalle.destroy).pack(pady=10)
-
-Marketing()

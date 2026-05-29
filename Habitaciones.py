@@ -1134,8 +1134,7 @@ class Habitaciones:
                      "Suite":precio_suite}
 
 
-            indice=random.randint(1, 16000)
-            print("indice", indice)
+            indice=1
             # TABLAS
             tabla_llegadas=[["Día", "Temporada", "Aleatorio", "Llegadas"]]
 
@@ -1235,7 +1234,7 @@ class Habitaciones:
                         for fila in self.datos_daños:
                             if fila[0]==daño:
                                 costo_daño_individual=fila[2]
-                        detalles_daños[dia].append([round(alea_daño,4), daño, costo_daño_individual])
+                        detalles_daños[dia].append([alea_daño, daño, costo_daño_individual])
                         
                         for fila in self.datos_daños:
                             if fila[0]==daño:
@@ -1259,7 +1258,7 @@ class Habitaciones:
 
                 # LLEGADAS
                 llegadas=self.buscar_resultado(alea_llegadas, self.datos_llegadas)
-                temporada, datos_temporada = self.obtener_temporada(dia)
+                temporada, datos_temporada=self.obtener_temporada(dia)
                 factor_llegadas=datos_temporada["factor_llegadas"]
                 llegadas=round(llegadas * factor_llegadas)
                 if llegadas<0:
@@ -1267,7 +1266,6 @@ class Habitaciones:
 
                 tabla_llegadas.append([dia, temporada, alea_llegadas, llegadas])
 
-                                      
                 ingresos_dia=0
                 costo_insumos_dia=0
                 # CLIENTES
@@ -1381,22 +1379,21 @@ class Habitaciones:
                     habitaciones_disponibles=[]
                     # INDIVIDUALES
                     for numero, datos in self.habitaciones_individuales.items():
-                        if (dia >= datos["ocupada_hasta"] and dia >= datos["limpieza_hasta"] and dia >= datos["mantenimiento_hasta"]):
+                        if (dia>=datos["ocupada_hasta"] and dia>=datos["limpieza_hasta"] and dia>=datos["mantenimiento_hasta"]):
                             habitaciones_disponibles.append(("Individual", numero, datos))
 
                     # DOBLES
                     for numero, datos in self.habitaciones_dobles.items():
-                        if (dia >= datos["ocupada_hasta"] and dia >= datos["limpieza_hasta"] and dia >= datos["mantenimiento_hasta"]):
+                        if (dia>=datos["ocupada_hasta"] and dia>=datos["limpieza_hasta"] and dia>=datos["mantenimiento_hasta"]):
                             habitaciones_disponibles.append(("Doble", numero, datos))
 
                     # SUITES
                     for numero, datos in self.habitaciones_suite.items():
-                        if (dia >= datos["ocupada_hasta"] and dia >= datos["limpieza_hasta"] and dia >= datos["mantenimiento_hasta"]):
+                        if (dia>=datos["ocupada_hasta"] and dia>=datos["limpieza_hasta"] and dia>=datos["mantenimiento_hasta"]):
                             habitaciones_disponibles.append(("Suite", numero, datos))
 
                     # ELEGIR HABITACIÓN
                     if len(habitaciones_disponibles)>0:
-
                         tipo, numero, datos=random.choice(habitaciones_disponibles)
                         datos["mantenimiento_hasta"]=dia + dias_fuera
         
@@ -1706,8 +1703,3 @@ class Habitaciones:
 
         tabla=CTkTable(ventana, values=datos)
         tabla.pack(expand=True, fill="both", padx=20, pady=20)
-
-
-
-
-Habitaciones()
