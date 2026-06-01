@@ -211,6 +211,7 @@ class Generador:
             print("Exito")
             self.llamarGenerador()
         else:
+            self.llamarGenerador()
             print("Fracaso")
 
     def llama_lavanderia(self):
