@@ -67,7 +67,7 @@ class Generador:
         self.Habitaciones = ctk.CTkButton(self.menu, text="Habitaciones", command=lambda: self.llamahabitaciones(), width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.Habitaciones.pack(padx=10, pady=10)
 
-        self.marketing = ctk.CTkButton(self.menu, text="marketing", command=lambda: self.llamamarketing(), width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
+        self.marketing = ctk.CTkButton(self.menu, text="Marketing", command=lambda: self.llamamarketing(), width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)
         self.marketing.pack(padx=10, pady=10)
 
         self.Bodega = ctk.CTkButton(self.menu, text="Bodega central", width=w, height=h, fg_color=color_fondo, hover_color=color_hover, text_color=color_texto)

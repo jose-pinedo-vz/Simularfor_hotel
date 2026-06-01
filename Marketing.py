@@ -11,13 +11,13 @@ COLOR_CONTORNO = "#4281FF"
 class Marketing:
     def __init__(self):
         self.ventana=ctk.CTk()
-        self.ventana.title("Área de Habitaciones")
+        self.ventana.title("Marketing")
         self.ventana.configure(fg_color=COLOR_FONDO)
         ancho=self.ventana.winfo_screenwidth()
         alto=self.ventana.winfo_screenheight()
         self.ventana.geometry(f"{ancho}x{alto}+0+0")
 
-        # DATOS
+        #DATOS
         self.datos_vistas=[[20, 0.30],
                           [40, 0.50],
                           [60, 0.20]]
@@ -54,15 +54,15 @@ class Marketing:
         self.reiniciar_habitacion=False
         self.reiniciar_estancia=False
 
-        # SCROLL
+        #SCROLL
         self.frame_scroll=ctk.CTkScrollableFrame(self.ventana)
         self.frame_scroll.pack(fill="both", expand=True, padx=20, pady=20)
 
-        # TITULO
+        #TITULO
         titulo=ctk.CTkLabel(self.frame_scroll, text="Simulación de marketing", text_color=COLOR_TEXTO, font=("Arial", 28, "bold", "italic"))
         titulo.pack(pady=20)
 
-        # FRAME DATOS
+        #FRAME DATOS
         self.frame_datos=ctk.CTkFrame(self.frame_scroll, border_width=2, border_color=COLOR_CONTORNO)
         self.frame_datos.pack(fill="x", padx=20, pady=20)
 
@@ -104,7 +104,7 @@ class Marketing:
         self.entry_costo_campaña.grid(row=3, column=2, padx=20, pady=(0, 20))
         self.entry_costo_campaña.insert(0, "150")
 
-                # HABITACIONES
+        #HABITACIONES
         ctk.CTkLabel(self.frame_datos, text="Habitaciones Individuales:", text_color=COLOR_TEXTO, font=("Arial", 16)).grid(row=4, column=0, padx=20, pady=(10, 5))
         self.entry_individual=ctk.CTkEntry(self.frame_datos, width=ancho_entry, height=alto_entry)
         self.entry_individual.grid(row=5, column=0, padx=20, pady=(0, 20))
@@ -123,7 +123,7 @@ class Marketing:
         self.btn_simular=ctk.CTkButton(self.frame_scroll, text="Simular", width=ancho_entry, height=alto_entry, fg_color="#D6C49E", text_color="#000000", command=self.simular)
         self.btn_simular.pack(pady=20)
 
-        # KPIS
+        #KPIS
         self.frame_kpis=ctk.CTkFrame(self.frame_scroll, border_width=2, border_color=COLOR_CONTORNO)
         self.frame_kpis.pack(fill="x", padx=20, pady=20)
 
@@ -139,7 +139,7 @@ class Marketing:
         self.lbl_ganancia=ctk.CTkLabel(self.frame_kpis, text="Posibles ganancias: $0", text_color="#FF6666", font=("Arial", 18, "bold"))
         self.lbl_ganancia.grid(row=0, column=3, padx=40, pady=30)
 
-        # BOTONES
+        #BOTONES
         self.frame_botones=ctk.CTkFrame(self.frame_scroll, border_width=2, border_color=COLOR_CONTORNO)
         self.frame_botones.pack(fill="x", padx=20, pady=20)
 
@@ -152,7 +152,7 @@ class Marketing:
             boton=ctk.CTkButton(self.frame_botones, text=texto, width=180, height=40, fg_color="#FFBF42", text_color="#000000", command=comando)
             boton.grid(row=0, column=i, padx=20, pady=30)
 
-        # FRAME PROBABILIDADES
+        #FRAME PROBABILIDADES
         self.frame_probabilidades=ctk.CTkFrame(self.frame_scroll, border_width=2, border_color=COLOR_CONTORNO)
         self.frame_probabilidades.pack(fill="x", padx=20, pady=20)
 
@@ -176,7 +176,7 @@ class Marketing:
         
         self.crear_tabla("Estancia", "Estancia", self.datos_estancia, 6)
 
-        # RESULTADOS
+        #RESULTADOS
         self.frame_resultados=ctk.CTkFrame(self.frame_scroll, border_width=2, border_color=COLOR_CONTORNO)
         self.frame_resultados.pack(fill="both", expand=True, padx=20, pady=20)
 
@@ -185,7 +185,7 @@ class Marketing:
 
         self.ventana.mainloop()
 
-    # LIMPIAR
+    #LIMPIAR
     def limpiar(self):
         self.entry_presupuesto.delete(0, "end")
         self.entry_campañas.delete(0, "end")
@@ -203,7 +203,7 @@ class Marketing:
 
         messagebox.showinfo("Correcto", "Datos limpiados")
 
-    # VALORES BAJOS
+    #VALORES BAJOS
     def sistema_estresado(self):
         self.modo_sistema = "estresado"
 
@@ -225,7 +225,7 @@ class Marketing:
         self.datos_vistas = [[30, 0.20], [60, 0.50], [100, 0.30]]
         self.datos_conversion = [[5, 0.30], [15, 0.50], [25, 0.20]]
 
-    # VALORES MEDIOS
+    #VALORES MEDIOS
     def sistema_equilibrado(self):
         self.modo_sistema = "equilibrado"
 
@@ -247,7 +247,7 @@ class Marketing:
         self.datos_vistas = [[20, 0.30], [40, 0.50], [60, 0.20]]
         self.datos_conversion = [[10, 0.30], [20, 0.50], [30, 0.20]]
 
-    # VALORES ALTOS
+    #VALORES ALTOS
     def sistema_oseo(self):
         self.modo_sistema = "ocio"
 
@@ -269,7 +269,7 @@ class Marketing:
         self.datos_vistas = [[10, 0.50], [20, 0.30], [30, 0.20]]
         self.datos_conversion = [[5, 0.50], [10, 0.30], [15, 0.20]]
 
-    # CREAR TABLAS
+    #CREAR TABLAS
     def crear_tabla(self, titulo, encabezado, datos, fila):
         frame=ctk.CTkFrame(self.contenedor)
         frame.grid(row=fila, column=0, padx=20, pady=20)
@@ -309,7 +309,7 @@ class Marketing:
         elif encabezado=="Estancia":
             self.tabla_estancia=tabla
 
-    # CALCULAR TABLA
+    #CALCULAR TABLA
     def calcular_tabla(self, datos, encabezado):
         tabla=[[encabezado, "Probabilidad", "Prob. Acumulada", "Rango"]]
 
@@ -331,7 +331,7 @@ class Marketing:
 
         return tabla
 
-    # AGREGAR DATOS
+    #AGREGAR DATOS
     def agregar_dato(self, entrada1, entrada2, datos, encabezado, frame):
         try:
             valor=entrada1.get().strip()
@@ -358,7 +358,7 @@ class Marketing:
 
             suma=round(suma, 4)
 
-            # ADVERTENCIA ANTES DE REINICIAR TABLA
+            #ADVERTENCIA ANTES DE REINICIAR TABLA
             if suma==1:
                 if encabezado=="Vistas":
                     if self.reiniciar_vistas==False:
@@ -492,7 +492,7 @@ class Marketing:
         except:
             messagebox.showerror("Error", "No se pudo agregar")
 
-    # BUSCAR RESULTADO
+    #BUSCAR RESULTADO
     def buscar_resultado(self, numero, datos):
         acumulada=0
         for valor, probabilidad in datos:
@@ -568,17 +568,17 @@ class Marketing:
             return "Baja", {"factor_vistas": 0.7, 
                             "factor_precio": 0.8}
 
-        # TEMPORADA MEDIA
+        #TEMPORADA MEDIA
         elif ciclo>=11 and ciclo<=20:
             return "Media", {"factor_vistas": 1.0,
                              "factor_precio": 1.0}
 
-        # TEMPORADA ALTA
+        #TEMPORADA ALTA
         else:
             return "Alta", {"factor_vistas": 1.5,
                             "factor_precio": 1.4}
 
-    # SIMULACIÓN
+    #SIMULACIÓN
     def simular(self):
         try:
             if self.validar_tablas()==False:
@@ -751,13 +751,14 @@ class Marketing:
 
             #ANÁLISIS
             analisis=[]
-            #Marketing
+
+            #MARKETING
             if costos_totales>presupuesto * 0.8:
                 analisis.append(["Marketing", "La inversión en marketing es Alta y se acerca al límite del presupuesto."])
             else:
                 analisis.append(["Marketing", "La inversión en marketing es controlada dentro del presupuesto."])
 
-            #Rentabilidad
+            #RENTABILIDAD
             roi=ganancia_total / costos_totales if costos_totales > 0 else 0
             if roi<0.2:
                 analisis.append(["Rentabilidad", "Baja rentabilidad. El sistema no es eficiente en convertir costos en ganancias."])
@@ -766,7 +767,7 @@ class Marketing:
             else:
                 analisis.append(["Rentabilidad", "Alta rentabilidad. El sistema es eficiente."])
 
-            # 5. Cancelaciones
+            #CANCELACIONES
             if reservas_totales>0:
                 tasa_cancelacion=(reservas_totales - reservas_reales) / reservas_totales
             else:
@@ -777,7 +778,7 @@ class Marketing:
             else:
                 analisis.append(["Cancelaciones", "Tasa de cancelación dentro de rango aceptable."])
 
-            # ORDENAR DÍAS RENTABLES
+            #ORDENAR DÍAS RENTABLES
             for i in range(len(dias_rentables)):
                 for j in range(i + 1, len(dias_rentables)):
                     if dias_rentables[i][1] < dias_rentables[j][1]:
@@ -785,7 +786,7 @@ class Marketing:
                         dias_rentables[i]=dias_rentables[j]
                         dias_rentables[j]=auxiliar
 
-            # ORDENAR DÍAS DÉBILES
+            #ORDENAR DÍAS DÉBILES
             for i in range(len(dias_debiles)):
                 for j in range(i + 1, len(dias_debiles)):
                     if dias_debiles[i][1] > dias_debiles[j][1]:
@@ -809,7 +810,7 @@ class Marketing:
             self.tabs=ctk.CTkTabview(self.frame_resultados, width=1300, height=800)
             self.tabs.pack(fill="both", expand=True, padx=20, pady=20)
 
-            # CREAR TABS
+            #CREAR TABS
             self.tabs.add("Simulación")
             self.tabs.add("Resumen")
             self.tabs.add("Comportamiento")
@@ -904,7 +905,7 @@ class Marketing:
         frame_scroll=ctk.CTkScrollableFrame(ventana_detalle, orientation="horizontal", width=860,height=380)
         frame_scroll.pack(padx=20, pady=10, fill="both", expand=True)
 
-        # Encabezados
+        #Encabezados
         encabezados=["Reserva", "Aleatorio Habitación", "Tipo Habitación", "Aleatorio Estancia", "Días de Estancia", "Precio por Noche", "Total Estancia"]
         valores_tabla=[encabezados]
 
