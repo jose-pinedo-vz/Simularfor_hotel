@@ -5,41 +5,36 @@ import customtkinter as ctk
 from pathlib import Path
 
 
-# =============================================================================
-#   SECCIÓN 1 — GENERADOR DE NÚMEROS ALEATORIOS DESDE ARCHIVO
-# =============================================================================
 
-_indice_aleatorio = 1
-_cache_aleatorios: list = []
+nums_no_usados= []
+nums_usados= []
 
 def _cargar_aleatorios():
-    """Carga todos los números del archivo en memoria (una sola vez)."""
-    global _cache_aleatorios
-    if _cache_aleatorios:
+    global nums_no_usados
+    if nums_no_usados:
         return
     ruta = Path(__file__).resolve().parent / "GeneradorDeNumeroAleatorios" / "Aleatorios.txt"
     with open(ruta, "r") as f:
-        _cache_aleatorios = [float(l.strip()) for l in f if l.strip()]
-    print(f"[Aleatorios] {len(_cache_aleatorios)} números cargados.")
-
-def aleatorio(indice: int) -> float:
-    """Retorna el número en posición `indice` (base 1) desde caché."""
-    _cargar_aleatorios()
-    return _cache_aleatorios[indice - 1]
-
-def generar_na() -> float:
-    global _indice_aleatorio
-    na = aleatorio(_indice_aleatorio)
-    print(f"NA usado (índice {_indice_aleatorio}): {na}")
-    _indice_aleatorio += 1
-    return na
+        for linea in f:
+            nums_no_usados.append(float(linea.strip()))
+    random.shuffle(nums_no_usados)
 
 def reiniciar_aleatorios():
-    """Reinicia el índice y baraja el caché para obtener secuencias distintas."""
-    global _indice_aleatorio, _cache_aleatorios
+    global nums_no_usados, nums_usados
     _cargar_aleatorios()
-    random.shuffle(_cache_aleatorios)
-    _indice_aleatorio = 1
+    nums_no_usados = nums_no_usados + nums_usados
+    nums_usados = []
+    random.shuffle(nums_no_usados)
+
+def generar_na() -> float:
+    global nums_no_usados, nums_usados
+    _cargar_aleatorios()
+    if len(nums_no_usados) == 0:
+        reiniciar_aleatorios()
+    numero = nums_no_usados[0]
+    nums_no_usados.remove(numero)
+    nums_usados.append(numero)
+    return numero
 
 
 def generar_probabilidades_aleatorias(n):
@@ -55,7 +50,8 @@ def generar_probabilidades_aleatorias(n):
     return probabilidades
 
 
-def construir_tabla_aleatoria(tiempos):
+def construir_tabla_t1():
+    tiempos = [1,2,3,4,5,6,7,8,9,10]
     n = len(tiempos)
     valores = []
     for _ in range(n):
@@ -66,33 +62,173 @@ def construir_tabla_aleatoria(tiempos):
         probabilidades.append(round(valor / suma, 4))
     diferencia = round(1.0 - sum(probabilidades), 4)
     probabilidades[-1] = round(probabilidades[-1] + diferencia, 4)
-
     prob_acum = []
     acum = 0.0
     for p in probabilidades:
         acum = round(acum + p, 4)
         prob_acum.append(acum)
     prob_acum[-1] = 1.0
-
-    rango_inf = [0.0]
-    for pa in prob_acum[:-1]:
-        rango_inf.append(round(pa + 0.0001, 4))
-
+    rango_inf = []
+    for i in range(n):
+        if i == 0:
+            rango_inf.append(0.0)
+        else:
+            rango_inf.append(round(prob_acum[i-1] + 0.0001, 4))
     rango_sup = []
     for pa in prob_acum:
         rango_sup.append(pa)
-
     return {
-        "TIEMPO": tiempos,
-        "PROB": probabilidades,
-        "PROB_ACUM": prob_acum,
-        "RANGO_INF": rango_inf,
-        "RANGO_SUP": rango_sup,
+        "tiempo": tiempos,
+        "prob": probabilidades,
+        "prob_acum": prob_acum,
+        "rango_inf": rango_inf,
+        "rango_sup": rango_sup,
+    }
+
+def construir_tabla_t2():
+    tiempos =[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    n = len(tiempos)
+    valores = []
+    for _ in range(n):
+        valores.append(random.random())
+    suma = sum(valores)
+    probabilidades = []
+    for valor in valores:
+        probabilidades.append(round(valor / suma, 4))
+    diferencia = round(1.0 - sum(probabilidades), 4)
+    probabilidades[-1] = round(probabilidades[-1] + diferencia, 4)
+    prob_acum = []
+    acum = 0.0
+    for p in probabilidades:
+        acum = round(acum + p, 4)
+        prob_acum.append(acum)
+    prob_acum[-1] = 1.0
+    rango_inf = []
+    for i in range(n):
+        if i == 0:
+            rango_inf.append(0.0)
+        else:
+            rango_inf.append(round(prob_acum[i-1] + 0.0001, 4))
+    rango_sup = []
+    for pa in prob_acum:
+        rango_sup.append(pa)
+    return {
+        "tiempo": tiempos,
+        "prob": probabilidades,
+        "prob_acum": prob_acum,
+        "rango_inf": rango_inf,
+        "rango_sup": rango_sup,
+    }
+
+def construir_tabla_t3():
+    tiempos =[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+    n = len(tiempos)
+    valores = []
+    for _ in range(n):
+        valores.append(random.random())
+    suma = sum(valores)
+    probabilidades = []
+    for valor in valores:
+        probabilidades.append(round(valor / suma, 4))
+    diferencia = round(1.0 - sum(probabilidades), 4)
+    probabilidades[-1] = round(probabilidades[-1] + diferencia, 4)
+    prob_acum = []
+    acum = 0.0
+    for p in probabilidades:
+        acum = round(acum + p, 4)
+        prob_acum.append(acum)
+    prob_acum[-1] = 1.0
+    rango_inf = []
+    for i in range(n):
+        if i == 0:
+            rango_inf.append(0.0)
+        else:
+            rango_inf.append(round(prob_acum[i-1] + 0.0001, 4))
+    rango_sup = []
+    for pa in prob_acum:
+        rango_sup.append(pa)
+    return {
+        "tiempo": tiempos,
+        "prob": probabilidades,
+        "prob_acum": prob_acum,
+        "rango_inf": rango_inf,
+        "rango_sup": rango_sup,
+    }
+
+def construir_tabla_t4():
+    tiempos =[2, 3, 4, 5]
+    n = len(tiempos)
+    valores = []
+    for _ in range(n):
+        valores.append(random.random())
+    suma = sum(valores)
+    probabilidades = []
+    for valor in valores:
+        probabilidades.append(round(valor / suma, 4))
+    diferencia = round(1.0 - sum(probabilidades), 4)
+    probabilidades[-1] = round(probabilidades[-1] + diferencia, 4)
+    prob_acum = []
+    acum = 0.0
+    for p in probabilidades:
+        acum = round(acum + p, 4)
+        prob_acum.append(acum)
+    prob_acum[-1] = 1.0
+    rango_inf = []
+    for i in range(n):
+        if i == 0:
+            rango_inf.append(0.0)
+        else:
+            rango_inf.append(round(prob_acum[i-1] + 0.0001, 4))
+    rango_sup = []
+    for pa in prob_acum:
+        rango_sup.append(pa)
+    return {
+        "tiempo": tiempos,
+        "prob": probabilidades,
+        "prob_acum": prob_acum,
+        "rango_inf": rango_inf,
+        "rango_sup": rango_sup,
     }
 
 
-def construir_tabla_llegadas_aleatoria():
-    turnos   = ["Madrugada", "Mañana", "Medio día", "Tarde pico", "Noche", "Noche tardía"]
+def construir_tabla_t5():
+    tiempos =[2, 3, 4, 5 ,6]
+    n = len(tiempos)
+    valores = []
+    for _ in range(n):
+        valores.append(random.random())
+    suma = sum(valores)
+    probabilidades = []
+    for valor in valores:
+        probabilidades.append(round(valor / suma, 4))
+    diferencia = round(1.0 - sum(probabilidades), 4)
+    probabilidades[-1] = round(probabilidades[-1] + diferencia, 4)
+    prob_acum = []
+    acum = 0.0
+    for p in probabilidades:
+        acum = round(acum + p, 4)
+        prob_acum.append(acum)
+    prob_acum[-1] = 1.0
+    rango_inf = []
+    for i in range(n):
+        if i == 0:
+            rango_inf.append(0.0)
+        else:
+            rango_inf.append(round(prob_acum[i-1] + 0.0001, 4))
+    rango_sup = []
+    for pa in prob_acum:
+        rango_sup.append(pa)
+    return {
+        "tiempo": tiempos,
+        "prob": probabilidades,
+        "prob_acum": prob_acum,
+        "rango_inf": rango_inf,
+        "rango_sup": rango_sup,
+    }
+
+
+def construir_tabla_t6():
+    turnos = ["Madrugada", "Mañana", "Medio día", "Tarde pico", "Noche", "Noche tardía"]
     horarios = ["00-06h", "06-10h", "10-14h", "14-18h", "18-22h", "22-00h"]
     veh_hora = ["1-2", "4-6", "6-9", "10-14", "8-11", "3-5"]
     n = len(turnos)
@@ -105,103 +241,313 @@ def construir_tabla_llegadas_aleatoria():
         prob_acum.append(acum)
     prob_acum[-1] = 1.0
 
+    rango_inf = []
+    for i in range(n):
+        if i == 0:
+            rango_inf.append(0.0)
+        else:
+            rango_inf.append(round(prob_acum[i-1] + 0.0001, 4))
+
+    rango_sup = []
+    for pa in prob_acum:
+        rango_sup.append(pa)
+
+    return {
+        "turno":     turnos,
+        "horario":   horarios,
+        "veh_hora":  veh_hora,
+        "prob":      probabilidades,
+        "prob_acum": prob_acum,
+        "rango_inf": rango_inf,
+        "rango_sup": prob_acum.copy(),
+    }
+
+
+def construir_tabla_t7():
+    tiempos =[2, 3, 4, 5]
+    n = len(tiempos)
+    valores = []
+    for _ in range(n):
+        valores.append(random.random())
+    suma = sum(valores)
+    probabilidades = []
+    for valor in valores:
+        probabilidades.append(round(valor / suma, 4))
+    diferencia = round(1.0 - sum(probabilidades), 4)
+    probabilidades[-1] = round(probabilidades[-1] + diferencia, 4)
+    prob_acum = []
+    acum = 0.0
+    for p in probabilidades:
+        acum = round(acum + p, 4)
+        prob_acum.append(acum)
+    prob_acum[-1] = 1.0
+    rango_inf = []
+    for i in range(n):
+        if i == 0:
+            rango_inf.append(0.0)
+        else:
+            rango_inf.append(round(prob_acum[i-1] + 0.0001, 4))
+    rango_sup = []
+    for pa in prob_acum:
+        rango_sup.append(pa)
+    return {
+        "tiempo": tiempos,
+        "prob": probabilidades,
+        "prob_acum": prob_acum,
+        "rango_inf": rango_inf,
+        "rango_sup": rango_sup,
+    }
+
+
+def construir_tabla_t8_daños():
+    tipos  = ["Sin daño", "Rayón leve", "Abolladura", "Vidrio roto", "Daño mayor"]
+    costos = [0, 500, 1500, 3000, 6000]
+    probs  = [0.50, 0.25, 0.13, 0.08, 0.04]
+
+    acum = 0.0
+    prob_acum = []
+    for p in probs:
+        acum = round(acum + p, 4)
+        prob_acum.append(acum)
+    prob_acum[-1] = 1.0
+
     rango_inf = [0.0] + [round(pa + 0.0001, 4) for pa in prob_acum[:-1]]
 
     return {
-        "TURNO":     turnos,
-        "HORARIO":   horarios,
-        "VEH_HORA":  veh_hora,
-        "PROB":      probabilidades,
-        "PROB_ACUM": prob_acum,
-        "RANGO_INF": rango_inf,
-        "RANGO_SUP": prob_acum.copy(),
+        "tipo de daño": tipos,
+        "costo de rep": costos,
+        "prob":      probs,
+        "prob_acum": prob_acum,
+        "rango_inf": rango_inf,
+        "rango_sup": prob_acum.copy(),
+    }
+
+
+def construir_tabla_t9_excede():
+    estados = ["No", "Sí"]
+    probs   = [0.65, 0.35]
+    acum = 0.0
+    prob_acum = []
+    for p in probs:
+        acum = round(acum + p, 4)
+        prob_acum.append(acum)
+    prob_acum[-1] = 1.0
+    rango_inf = [0.0] + [round(pa + 0.0001, 4) for pa in prob_acum[:-1]]
+    return {
+        "excede":    estados,
+        "prob":      probs,
+        "prob_acum": prob_acum,
+        "rango_inf": rango_inf,
+        "rango_sup": prob_acum.copy(),
+    }
+
+def construir_tabla_t9h_horas():
+    horas      = [1,   2,   3  ]
+    costos_ext = [300, 600, 900]
+    probs      = [0.50, 0.30, 0.20]
+    acum = 0.0
+    prob_acum = []
+    for p in probs:
+        acum = round(acum + p, 4)
+        prob_acum.append(acum)
+    prob_acum[-1] = 1.0
+    rango_inf = [0.0] + [round(pa + 0.0001, 4) for pa in prob_acum[:-1]]
+    return {
+        "horas_extra": horas,
+        "costo_extra": costos_ext,
+        "prob":        probs,
+        "prob_acum":   prob_acum,
+        "rango_inf":   rango_inf,
+        "rango_sup":   prob_acum.copy(),
+    }
+
+
+def construir_tabla_t10_falla():
+    estados = ["Activo", "Falla"]
+    probs   = [0.90, 0.10]
+    acum = 0.0
+    prob_acum = []
+    for p in probs:
+        acum = round(acum + p, 4)
+        prob_acum.append(acum)
+    prob_acum[-1] = 1.0
+    rango_inf = [0.0] + [round(pa + 0.0001, 4) for pa in prob_acum[:-1]]
+    return {
+        "estado_chofer":    estados,
+        "prob":      probs,
+        "prob_acum": prob_acum,
+        "rango_inf": rango_inf,
+        "rango_sup": prob_acum.copy(),
+    }
+
+
+def construir_tabla_t11_cancela():
+    estados = ["No", "Sí"]
+    probs   = [0.75, 0.25]
+    acum = 0.0
+    prob_acum = []
+    for p in probs:
+        acum = round(acum + p, 4)
+        prob_acum.append(acum)
+    prob_acum[-1] = 1.0
+    rango_inf = [0.0] + [round(pa + 0.0001, 4) for pa in prob_acum[:-1]]
+    return {
+        "cancela":   estados,
+        "prob":      probs,
+        "prob_acum": prob_acum,
+        "rango_inf": rango_inf,
+        "rango_sup": prob_acum.copy(),
+    }
+
+
+def construir_tabla_t12_sale_temprano():
+    estados = ["No", "Sí"]
+    probs   = [0.70, 0.30]
+    acum = 0.0
+    prob_acum = []
+    for p in probs:
+        acum = round(acum + p, 4)
+        prob_acum.append(acum)
+    prob_acum[-1] = 1.0
+    rango_inf = [0.0] + [round(pa + 0.0001, 4) for pa in prob_acum[:-1]]
+    return {
+        "sale_temprano": estados,
+        "prob":      probs,
+        "prob_acum": prob_acum,
+        "rango_inf": rango_inf,
+        "rango_sup": prob_acum.copy(),
+    }
+
+
+def construir_tabla_t13_clima():
+    climas          = ["Despejado",  "Nublado", "Lluvia leve", "Lluvia fuerte"]
+    factores_daño   = [1.0,          1.2,       1.5,           2.0           ]
+    factores_lleg   = [1.0,          0.9,       0.7,           0.5           ]
+    probs           = [0.40,         0.30,      0.20,          0.10          ]
+    acum = 0.0
+    prob_acum = []
+    for p in probs:
+        acum = round(acum + p, 4)
+        prob_acum.append(acum)
+    prob_acum[-1] = 1.0
+    rango_inf = [0.0] + [round(pa + 0.0001, 4) for pa in prob_acum[:-1]]
+    return {
+        "clima":           climas,
+        "factor_daño":     factores_daño,
+        "factor_llegadas": factores_lleg,
+        "prob":            probs,
+        "prob_acum":       prob_acum,
+        "rango_inf":       rango_inf,
+        "rango_sup":       prob_acum.copy(),
     }
 
 
 def generar_todas_las_tablas():
     return {
-        "TABLA_1_RECEPCION":     pd.DataFrame(construir_tabla_aleatoria([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])),
-        "TABLA_2_MANIOBRA":      pd.DataFrame(construir_tabla_aleatoria([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])),
-        "TABLA_3_PERMANENCIA":   pd.DataFrame(construir_tabla_aleatoria([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])),
-        "TABLA_4_SOLICITUD":     pd.DataFrame(construir_tabla_aleatoria([2, 3, 4, 5])),
-        "TABLA_5_DEVOLUCION":    pd.DataFrame(construir_tabla_aleatoria([2, 3, 4, 5, 6])),
-        "TABLA_6_LLEGADAS":      pd.DataFrame(construir_tabla_llegadas_aleatoria()),
-        "TABLA_7_MANTENIMIENTO": pd.DataFrame(construir_tabla_aleatoria([10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21])),
+        "T1":  pd.DataFrame(construir_tabla_t1()),
+        "T2":  pd.DataFrame(construir_tabla_t2()),
+        "T3":  pd.DataFrame(construir_tabla_t3()),
+        "T4":  pd.DataFrame(construir_tabla_t4()),
+        "T5":  pd.DataFrame(construir_tabla_t5()),
+        "T6":  pd.DataFrame(construir_tabla_t6()),
+        "T7":  pd.DataFrame(construir_tabla_t7()),
+        "T8":  pd.DataFrame(construir_tabla_t8_daños()),
+        "T9":  pd.DataFrame(construir_tabla_t9_excede()),
+        "T9H": pd.DataFrame(construir_tabla_t9h_horas()),
+        "T10": pd.DataFrame(construir_tabla_t10_falla()),
+        "T11": pd.DataFrame(construir_tabla_t11_cancela()),
+        "T12": pd.DataFrame(construir_tabla_t12_sale_temprano()),
+        "T13": pd.DataFrame(construir_tabla_t13_clima()),
     }
 
 
-# =============================================================================
-#   SECCIÓN 2 — PARÁMETROS ECONÓMICOS
-# =============================================================================
-
-TARIFA_VALET         = 80
+TARIFA_VALET = 80
 COSTO_CHOFER_POR_MIN = 20
 PENALIZACION_NEGADO  = 50
 
 
-# =============================================================================
-#   SECCIÓN 3 — FUNCIONES AUXILIARES
-# =============================================================================
-
 def consultar_tabla(na, tabla_df):
-    """Busca el NA en RANGO_INF/RANGO_SUP y devuelve el valor de la columna 0
-    siempre como int o float nativo de Python (nunca str ni numpy)."""
     col0 = tabla_df.columns[0]
 
     def _normalizar(val):
         try:
             i = int(val)
             f = float(val)
-            return i if i == f else f
+            if i == f:
+                return i
+            else:
+                return f
         except (ValueError, TypeError):
             return val
 
     for i in range(len(tabla_df)):
-        if tabla_df.loc[i, "RANGO_INF"] <= na <= tabla_df.loc[i, "RANGO_SUP"]:
+        if tabla_df.loc[i, "rango_inf"] <= na <= tabla_df.loc[i, "rango_sup"]:
             return _normalizar(tabla_df.loc[i, col0])
     return _normalizar(tabla_df.loc[len(tabla_df) - 1, col0])
 
 
 def recalcular_rangos(df: pd.DataFrame) -> pd.DataFrame:
-    """Recalcula PROB_ACUM, RANGO_INF y RANGO_SUP a partir de PROB.
-    Convierte la columna primaria a int nativo si sus valores son numéricos enteros."""
     df = df.copy()
     col0 = df.columns[0]
-    # Convertir columna primaria a int nativo siempre que sea posible
+
     def _a_int(v):
         try:
             return int(v)
         except (ValueError, TypeError):
             return v
+
     try:
         convertidos = [_a_int(v) for v in df[col0]]
-        # Solo aplicar si todos quedaron como int
         if all(isinstance(v, int) for v in convertidos):
             df[col0] = convertidos
     except Exception:
         pass
+
     acum = 0.0
     pa = []
-    for p in df["PROB"]:
+    for p in df["prob"]:
         acum = round(acum + p, 4)
         pa.append(acum)
     pa[-1] = 1.0
-    df["PROB_ACUM"] = pa
-    df["RANGO_INF"] = [0.0] + [round(x + 0.0001, 4) for x in pa[:-1]]
-    df["RANGO_SUP"] = pa
+    df["prob_acum"] = pa
+    df["rango_inf"] = [0.0] + [round(x + 0.0001, 4) for x in pa[:-1]]
+    df["rango_sup"] = pa
     return df
 
 
 def consultar_turno_t6(na, t6_df):
-    """Devuelve (TURNO, HORARIO) según el NA."""
     for i in range(len(t6_df)):
-        if t6_df.loc[i, "RANGO_INF"] <= na <= t6_df.loc[i, "RANGO_SUP"]:
-            return t6_df.loc[i, "TURNO"], t6_df.loc[i, "HORARIO"]
-    return t6_df.loc[len(t6_df) - 1, "TURNO"], t6_df.loc[len(t6_df) - 1, "HORARIO"]
+        if t6_df.loc[i, "rango_inf"] <= na <= t6_df.loc[i, "rango_sup"]:
+            return t6_df.loc[i, "turno"], t6_df.loc[i, "horario"]
+    return t6_df.loc[len(t6_df) - 1, "turno"], t6_df.loc[len(t6_df) - 1, "horario"]
+
+
+def consultar_t8_daño(na, t8_df, factor_daño=1.0):
+    na_ajustada = min(na * factor_daño, 1.0)
+    for i in range(len(t8_df)):
+        if t8_df.loc[i, "rango_inf"] <= na_ajustada <= t8_df.loc[i, "rango_sup"]:
+            return t8_df.loc[i, "tipo de daño"], int(t8_df.loc[i, "costo de rep"])
+    return t8_df.loc[len(t8_df) - 1, "tipo de daño"], int(t8_df.loc[len(t8_df) - 1, "costo de rep"])
+
+
+def consultar_clima_t13(na, t13_df):
+    for i in range(len(t13_df)):
+        if t13_df.loc[i, "rango_inf"] <= na <= t13_df.loc[i, "rango_sup"]:
+            return (
+                t13_df.loc[i, "clima"],
+                float(t13_df.loc[i, "factor_daño"]),
+                float(t13_df.loc[i, "factor_llegadas"]),
+            )
+    last = len(t13_df) - 1
+    return (
+        t13_df.loc[last, "clima"],
+        float(t13_df.loc[last, "factor_daño"]),
+        float(t13_df.loc[last, "factor_llegadas"]),
+    )
 
 
 # =============================================================================
-#   SECCIÓN 4 — MODELO DE SIMULACIÓN
+#   CLASE PRINCIPAL DE SIMULACIÓN
 # =============================================================================
 
 class Estacionamiento_Valet_Parking:
@@ -214,62 +560,186 @@ class Estacionamiento_Valet_Parking:
         self.registros       = []
         self.tablas          = None
 
+    def simular_dias(self, num_dias: int, num_vehiculos: int) -> list:
+        historial = []
+        for d in range(1, num_dias + 1):
+            self.metodo_estacionamiento(num_vehiculos)
+            historial.append(self._snapshot_dia(d))
+        return historial
+
+    def _snapshot_dia(self, numero_dia: int) -> dict:
+        registros = self.registros
+        atendidos = sum(
+            1 for r in registros
+            if r.get("atendido") and r.get("cajon_dispon") not in ("No", "Cancel")
+        )
+        negados = sum(
+            1 for r in registros
+            if not r.get("atendido") and r.get("cajon_dispon") == "No"
+        )
+        return {
+            "dia":                  numero_dia,
+            "clima":                self.clima_turno,
+            "factor_daño":          self.factor_daño,
+            "factor_llegadas":      self.factor_llegadas,
+            "cajones_disponibles":  self.cajones_disponibles,
+            "choferes_activos":     len(self.choferes_activos),
+            "vehiculos_efectivos":  self.num_vehiculos_efectivos,
+            "atendidos":            atendidos,
+            "negados":              negados,
+            "cancelaciones":        self.cancelaciones,
+            "salidas_tempranas":    self.salidas_tempranas,
+            "ingresos":             self.ingresos_totales,
+            "costos":               self.costos_totales,
+            "ganancias":            self.ganancias_netas,
+            "penalizaciones":       self.penalizaciones,
+            "costos_daños":         self.costos_daños_total,
+            "costos_extra":         self.costos_extra_total,
+            "espera_total":         self.total_espera_cola,
+            "registros":            list(self.registros),
+        }
+
     def metodo_estacionamiento(self, num_vehiculos=20):
         self.registros = []
         if self.tablas is None:
             self.tablas = generar_todas_las_tablas()
 
-        T1 = self.tablas["TABLA_1_RECEPCION"]
-        T2 = self.tablas["TABLA_2_MANIOBRA"]
-        T3 = self.tablas["TABLA_3_PERMANENCIA"]
-        T4 = self.tablas["TABLA_4_SOLICITUD"]
-        T5 = self.tablas["TABLA_5_DEVOLUCION"]
-        T6 = self.tablas["TABLA_6_LLEGADAS"].reset_index(drop=True)
-        T7 = self.tablas["TABLA_7_MANTENIMIENTO"]
+        T1  = self.tablas["T1"]
+        T2  = self.tablas["T2"]
+        T3  = self.tablas["T3"]
+        T4  = self.tablas["T4"]
+        T5  = self.tablas["T5"]
+        T6  = self.tablas["T6"].reset_index(drop=True)
+        T7  = self.tablas["T7"]
+        T8  = self.tablas["T8"]
+        T9  = self.tablas["T9"]
+        T9H = self.tablas["T9H"]
+        T10 = self.tablas["T10"]
+        T11 = self.tablas["T11"]
+        T12 = self.tablas["T12"]
+        T13 = self.tablas["T13"]
 
-        alea_mant           = generar_na()
-        cajones_mant        = int(float(consultar_tabla(alea_mant, T7)))
+        na_clima = generar_na()
+        clima_turno, factor_daño, factor_llegadas = consultar_clima_t13(na_clima, T13)
+
+        alea_mant = generar_na()
+        cajones_mant  = int(float(consultar_tabla(alea_mant, T7)))
         cajones_disponibles = self.capacidad_total - cajones_mant
-        cajones_ocupados    = 0
-        relojes_choferes    = [0] * self.num_choferes
+        cajones_ocupados = 0
+
+        choferes_activos = []
+        na_fallas_choferes = []
+        estados_choferes   = []
+        for c in range(self.num_choferes):
+            na_f   = generar_na()
+            estado = consultar_tabla(na_f, T10)
+            na_fallas_choferes.append(round(na_f, 10))
+            estados_choferes.append(estado)
+            if estado == "Activo":
+                choferes_activos.append(c)
+
+        if not choferes_activos:
+            estados_choferes[0] = "Activo"
+            choferes_activos    = [0]
+
+        relojes_choferes = {idx: 0 for idx in choferes_activos}
+
+        num_vehiculos_efectivos = max(1, round(num_vehiculos * factor_llegadas))
 
         tiempo_turno_actual = 0
-        ingresos_totales    = 0.0
-        costos_totales      = 0.0
-        penalizaciones      = 0.0
-        total_espera_cola   = 0.0
+        ingresos_totales  = 0.0
+        costos_totales    = 0.0
+        penalizaciones  = 0.0
+        total_espera_cola = 0.0
+        costos_daños_total = 0.0
+        costos_extra_total = 0.0
+        cancelaciones = 0
+        salidas_tempranas = 0
+        conteo_daños = {}
 
-        for num_vh in range(1, num_vehiculos + 1):
+        for num_vh in range(1, num_vehiculos_efectivos + 1):
+
             na_t6 = generar_na()
             turno, horario = consultar_turno_t6(na_t6, T6)
 
             registro = {
-                "vehiculo": num_vh,
-                "na_t6":    round(na_t6, 10),
-                "turno":    turno,
-                "horario":  horario,
+                "vehiculo":  num_vh,
+                "na_t6":     round(na_t6, 10),
+                "turno":     turno,
+                "horario":   horario,
+                "clima":        clima_turno,
+                "na_clima":     round(na_clima, 10),
+                "fact_daño":    factor_daño,
+                "fact_lleg":    factor_llegadas,
             }
 
             if cajones_ocupados >= cajones_disponibles:
                 registro.update({
-                    "atendido": False, "cajon_dispon": "No",
-                    "chofer_asig": "---", "t_espera": 0,
-                    "ganancia": -PENALIZACION_NEGADO,
+                    "atendido":     False,
+                    "cajon_dispon": "No",
+                    "chofer_asig":  "---",
+                    "t_espera":     0,
+                    "ganancia":     -PENALIZACION_NEGADO,
+                    "na_t10_chofer": "---", "estado_chofer": "---",
+                    "na_t11": "---",        "cancela":        "---",
+                    "na_t9":  "---",        "excede":         "---",
+                    "na_t9h": "---",        "horas_extra":    0,    "costo_extra": 0,
+                    "na_t12": "---",        "sale_temprano":  "---",
                 })
                 penalizaciones += PENALIZACION_NEGADO
                 costos_totales += PENALIZACION_NEGADO
                 self.registros.append(registro)
                 continue
 
-            idx_libre         = relojes_choferes.index(min(relojes_choferes))
-            t_libre           = relojes_choferes[idx_libre]
-            t_espera_cola     = max(0, t_libre - tiempo_turno_actual)
+            idx_libre = min(relojes_choferes, key=relojes_choferes.get)
+            t_libre   = relojes_choferes[idx_libre]
+
+            estado_chofer_asig = estados_choferes[idx_libre]
+            na_t10_chofer_asig = na_fallas_choferes[idx_libre]
+
+            t_espera_cola = max(0, t_libre - tiempo_turno_actual)
             total_espera_cola += t_espera_cola
 
             registro.update({
-                "atendido": True, "cajon_dispon": "Sí",
-                "chofer_asig": idx_libre + 1, "t_espera": t_espera_cola,
+                "atendido":      True,
+                "cajon_dispon":  "Sí",
+                "chofer_asig":   idx_libre + 1,
+                "t_espera":      t_espera_cola,
+                "na_t10_chofer":  round(na_t10_chofer_asig, 10),
+                "estado_chofer":  estado_chofer_asig,
             })
+
+            if t_espera_cola > 0:
+                na_t11   = generar_na()
+                cancela  = consultar_tabla(na_t11, T11)
+            else:
+                na_t11  = 0.0
+                cancela = "No"
+
+            registro.update({
+                "na_t11": round(na_t11, 10),
+                "cancela": cancela,
+            })
+
+            if cancela == "Sí":
+                cancelaciones += 1
+                registro.update({
+                    "atendido":      False,
+                    "cajon_dispon":  "Cancel",
+                    "ganancia":      0,
+                    "na_recepcion": 0, "t_recepcion": 0,
+                    "na_maniobra":  0, "t_maniobra":  0,
+                    "na_permanencia": 0, "t_permanencia": 0,
+                    "na_solicitud": 0, "t_solicitud": 0,
+                    "na_devolucion": 0, "t_devolucion": 0,
+                    "t_chofer": 0, "ingreso": 0, "costo": 0,
+                    "na_daño": 0, "tipo_daño": "---", "costo_daño": 0,
+                    "na_t9":  0, "excede": "---",
+                    "na_t9h": 0, "horas_extra": 0, "costo_extra": 0,
+                    "na_t12":  0, "sale_temprano": "---",
+                })
+                self.registros.append(registro)
+                continue
 
             na_rec = generar_na(); t_rec = int(float(consultar_tabla(na_rec, T1)))
             na_man = generar_na(); t_man = int(float(consultar_tabla(na_man, T2)))
@@ -278,25 +748,76 @@ class Estacionamiento_Valet_Parking:
             na_dev = generar_na(); t_dev = int(float(consultar_tabla(na_dev, T5)))
 
             registro.update({
-                "na_recepcion":   round(na_rec, 10), "t_recepcion":   t_rec,
-                "na_maniobra":    round(na_man, 10), "t_maniobra":    t_man,
-                "na_permanencia": round(na_per, 10), "t_permanencia": t_per,
-                "na_solicitud":   round(na_sol, 10), "t_solicitud":   t_sol,
-                "na_devolucion":  round(na_dev, 10), "t_devolucion":  t_dev,
+                "na_recepcion":    round(na_rec, 10), "t_recepcion":    t_rec,
+                "na_maniobra":     round(na_man, 10), "t_maniobra":     t_man,
+                "na_permanencia":  round(na_per, 10), "t_permanencia":  t_per,
+                "na_solicitud":    round(na_sol, 10), "t_solicitud":    t_sol,
+                "na_devolucion":   round(na_dev, 10), "t_devolucion":   t_dev,
             })
 
             cajones_ocupados += 1
-            t_chofer  = t_rec + t_man + t_sol + t_dev
-            ingreso   = TARIFA_VALET
-            costo     = round(t_chofer * COSTO_CHOFER_POR_MIN, 2)
-            ganancia  = round(ingreso - costo, 2)
+            t_chofer = t_rec + t_man + t_sol + t_dev
+            ingreso  = TARIFA_VALET
+            costo    = round(t_chofer * COSTO_CHOFER_POR_MIN, 2)
 
+            na_daño = generar_na()
+            tipo_daño, c_daño = consultar_t8_daño(na_daño, T8, factor_daño)
+            costo = round(costo + c_daño, 2)
+            costos_daños_total += c_daño
+            conteo_daños[tipo_daño] = conteo_daños.get(tipo_daño, 0) + 1
+            registro.update({
+                "na_daño":   round(na_daño, 10),
+                "tipo_daño": tipo_daño,
+                "costo_daño": c_daño,
+            })
+
+            na_t9  = generar_na()
+            excede = consultar_tabla(na_t9, T9)
+
+            if excede == "Sí":
+                na_t9h   = generar_na()
+                horas_extra = int(float(consultar_tabla(na_t9h, T9H)))
+                costo_extra  = 0
+                for i in range(len(T9H)):
+                    if int(T9H.loc[i, "horas_extra"]) == horas_extra:
+                        costo_extra = int(T9H.loc[i, "costo_extra"])
+                        break
+                ingreso = round(ingreso + costo_extra, 2)
+                costos_extra_total += costo_extra
+            else:
+                na_t9h = 0.0
+                horas_extra = 0
+                costo_extra = 0
+
+            registro.update({
+                "na_t9":     round(na_t9, 10),
+                "excede":    excede,
+                "na_t9h":    round(na_t9h, 10),
+                "horas_extra": horas_extra,
+                "costo_extra": costo_extra,
+            })
+
+            na_t12  = generar_na()
+            sale_temprano  = consultar_tabla(na_t12, T12)
+
+            if sale_temprano == "Sí":
+                salidas_tempranas  += 1
+                cajones_ocupados = max(0, cajones_ocupados - 1)
+
+            registro.update({
+                "na_t12":        round(na_t12, 10),
+                "sale_temprano": sale_temprano,
+            })
+
+            ganancia = round(ingreso - costo, 2)
             ingresos_totales += ingreso
             costos_totales   += costo
 
             registro.update({
-                "t_chofer": t_chofer, "ingreso": ingreso,
-                "costo": costo,       "ganancia": ganancia,
+                "t_chofer": t_chofer,
+                "ingreso":  ingreso,
+                "costo":    costo,
+                "ganancia": ganancia,
             })
 
             t_inicio = max(tiempo_turno_actual, t_libre)
@@ -304,19 +825,34 @@ class Estacionamiento_Valet_Parking:
             tiempo_turno_actual = t_inicio
             self.registros.append(registro)
 
-        self.ingresos_totales    = round(ingresos_totales, 2)
-        self.costos_totales      = round(costos_totales, 2)
-        self.penalizaciones      = round(penalizaciones, 2)
-        self.ganancias_netas     = round(ingresos_totales - costos_totales, 2)
-        self.total_espera_cola   = round(total_espera_cola, 2)
-        self.relojes_choferes    = relojes_choferes
+        self.clima_turno  = clima_turno
+        self.factor_daño   = factor_daño
+        self.factor_llegadas = factor_llegadas
+        self.na_clima       = round(na_clima, 10)
+        self.na_fallas_choferes  = na_fallas_choferes
+        self.estados_choferes    = estados_choferes
+        self.choferes_activos = choferes_activos
+        self.ingresos_totales = round(ingresos_totales, 2)
+        self.costos_totales  = round(costos_totales, 2)
+        self.penalizaciones  = round(penalizaciones, 2)
+        self.ganancias_netas = round(ingresos_totales - costos_totales, 2)
+        self.total_espera_cola  = round(total_espera_cola, 2)
+        self.relojes_choferes_map = relojes_choferes
         self.cajones_disponibles = cajones_disponibles
+        self.costos_daños_total = round(costos_daños_total, 2)
+        self.costos_extra_total = round(costos_extra_total, 2)
+        self.cancelaciones   = cancelaciones
+        self.salidas_tempranas  = salidas_tempranas
+        self.num_vehiculos_efectivos = num_vehiculos_efectivos
+        self.conteo_daños = conteo_daños
+
+        self.relojes_choferes = [relojes_choferes.get(i, 0) for i in range(self.num_choferes)]
 
         return self.costos_totales, self.ganancias_netas
 
 
 # =============================================================================
-#   SECCIÓN 5 — PALETA DE COLORES
+#   PALETA DE COLORES
 # =============================================================================
 
 COLOR_BG_DARK      = "#5D4037"
@@ -333,39 +869,273 @@ COLOR_OK_GREEN     = "#A5D6A7"
 COLOR_WARN_RED     = "#FFAB91"
 
 TABS_TABLAS = [
-    ("T1", "TABLA_1_RECEPCION",     "T1 – Recepción (min)"),
-    ("T2", "TABLA_2_MANIOBRA",      "T2 – Maniobra (min)"),
-    ("T3", "TABLA_3_PERMANENCIA",   "T3 – Permanencia (h)"),
-    ("T4", "TABLA_4_SOLICITUD",     "T4 – Solicitud (min)"),
-    ("T5", "TABLA_5_DEVOLUCION",    "T5 – Devolución (min)"),
-    ("T6", "TABLA_6_LLEGADAS",      "T6 – Llegadas"),
-    ("T7", "TABLA_7_MANTENIMIENTO", "T7 – Mantenimiento"),
+    ("T1",  "T1",  "T1 – Recepción (min)"),
+    ("T2",  "T2",  "T2 – Maniobra (min)"),
+    ("T3",  "T3",  "T3 – Permanencia (h)"),
+    ("T4",  "T4",  "T4 – Solicitud (min)"),
+    ("T5",  "T5",  "T5 – Devolución (min)"),
+    ("T6",  "T6",  "T6 – Llegadas"),
+    ("T7",  "T7",  "T7 – Mantenimiento"),
+    ("T8",  "T8",  "T8 – Tipo de daño"),
+    ("T9",  "T9",  "T9 – Tiempo extra"),
+    ("T9H", "T9H", "T9H – Horas extra"),
+    ("T10", "T10", "T10 – Falla chofer"),
+    ("T11", "T11", "T11 – Cancelación"),
+    ("T12", "T12", "T12 – Salida temprana"),
+    ("T13", "T13", "T13 – Clima"),
 ]
 
 COL_PRIMARIA = {
-    "TABLA_1_RECEPCION":     "TIEMPO",
-    "TABLA_2_MANIOBRA":      "TIEMPO",
-    "TABLA_3_PERMANENCIA":   "TIEMPO",
-    "TABLA_4_SOLICITUD":     "TIEMPO",
-    "TABLA_5_DEVOLUCION":    "TIEMPO",
-    "TABLA_6_LLEGADAS":      "TURNO",
-    "TABLA_7_MANTENIMIENTO": "TIEMPO",
+    "T1":  "tiempo",
+    "T2":  "tiempo",
+    "T3":  "tiempo",
+    "T4":  "tiempo",
+    "T5":  "tiempo",
+    "T6":  "turno",
+    "T7":  "tiempo",
+    "T8":  "tipo de daño",
+    "T9":  "excede",
+    "T9H": "horas_extra",
+    "T10": "estado_chofer",
+    "T11": "cancela",
+    "T12": "sale_temprano",
+    "T13": "clima",
+}
+
+TABLA_ESPECIAL = {
+    "T8":  ["tipo de daño", "costo de rep"],
+    "T9H": ["horas_extra", "costo_extra"],
+    "T13": ["clima", "factor_daño", "factor_llegadas"],
+    "T6":  ["turno", "horario", "veh_hora"],
 }
 
 
+def _df_a_tabla(df: pd.DataFrame) -> str:
+    cols = list(df.columns)
+    anchos = []
+    for col in cols:
+        max_val = max(
+            len(str(col).lower()),          #  minúsculas
+            *[len(str(v)) for v in df[col]]
+        )
+        anchos.append(max_val + 2)
+
+    sep = "+" + "+".join("-" * a for a in anchos) + "+"
+
+    def fila(vals, es_encabezado=False):
+        partes = []
+        for v, a in zip(vals, anchos):
+            s = str(v).lower() if es_encabezado else str(v)  
+            partes.append(" " + s.ljust(a - 1))
+        return "|" + "|".join(partes) + "|"
+
+    lineas = [sep, fila(cols, es_encabezado=True), sep]  
+    for _, row in df.iterrows():
+        lineas.append(fila([row[c] for c in cols]))
+    lineas.append(sep)
+    return "\n".join(lineas)
+
+def _registros_a_tabla(registros: list) -> str:
+    columnas = [
+        "veh", "na-t6", "turno",
+        "na-t13", "clima", "fdaño", "flleg",
+        "na-t10", "estch", "cajón", "chofer",
+        "espera", "na-t11", "cancela",
+        "na-rec", "trec",
+        "na-man", "tman",
+        "na-per", "tper",
+        "na-sol", "tsol",
+        "na-dev", "tdev",
+        "t.ch",
+        "na-t9", "excede", "na-t9h", "hext", "$extra",
+        "na-t12", "stemp",
+        "na-daño", "tipo daño", "$daño",
+        "ingreso", "costo", "ganancia",
+    ]
+
+    def extraer_fila(r):
+        cajon_val = r.get("cajon_dispon", "No")
+        cancela_s = r.get("cancela", "---")
+
+        na10_s = f"{r.get('na_t10_chofer', 0):.6f}" if r.get("na_t10_chofer", "---") != "---" else "---"
+        na11_s = f"{r.get('na_t11', 0):.6f}"        if r.get("na_t11", "---") != "---"         else "---"
+
+        base = [
+            str(r["vehiculo"]),
+            f"{r.get('na_t6', 0):.6f}",          # na-t6 ANTES que turno
+            r.get("turno", "")[:12],
+            f"{r.get('na_clima', 0):.6f}",        # na-t13 ANTES que clima
+            r.get("clima", "---")[:13],
+            f"{r.get('fact_daño', 1):.1f}",
+            f"{r.get('fact_lleg', 1):.1f}",
+            na10_s,                               # na-t10 ANTES que estch
+            r.get("estado_chofer", "---")[:6],
+            cajon_val,                            # cajón DESPUÉS de estch
+            str(r.get("chofer_asig", "---")),
+            f"{r.get('t_espera', 0):.0f}",
+            na11_s,                               # na-t11 ANTES que cancela
+            cancela_s,
+        ]
+
+        if cajon_val == "No":
+            resto = ["---"] * 23 + [f"${-PENALIZACION_NEGADO:.2f}"]
+        elif cancela_s == "Sí":
+            resto = ["---"] * 23 + ["$0.00"]
+        else:
+            tr  = int(r.get("t_recepcion",   0))
+            tm  = int(r.get("t_maniobra",    0))
+            tp  = int(r.get("t_permanencia", 0))
+            ts  = int(r.get("t_solicitud",   0))
+            td  = int(r.get("t_devolucion",  0))
+            tch = int(r.get("t_chofer",      0))
+            resto = [
+                f"{r.get('na_recepcion',   0):.6f}", str(tr),   # na ANTES que tiempo
+                f"{r.get('na_maniobra',    0):.6f}", str(tm),
+                f"{r.get('na_permanencia', 0):.6f}", str(tp),
+                f"{r.get('na_solicitud',   0):.6f}", str(ts),
+                f"{r.get('na_devolucion',  0):.6f}", str(td),
+                str(tch),
+                f"{r.get('na_t9',  0):.6f}", r.get("excede", "---"),   # na-t9 → excede
+                f"{r.get('na_t9h', 0):.6f}",                            # na-t9h → hext
+                str(r.get("horas_extra", 0)),
+                f"${r.get('costo_extra', 0)}",
+                f"{r.get('na_t12', 0):.6f}", r.get("sale_temprano", "---"),  # na-t12 → stemp
+                f"{r.get('na_daño', 0):.6f}", r.get("tipo_daño", "---"), f"${r.get('costo_daño', 0)}",
+                f"${r.get('ingreso', 0)}", f"${r.get('costo', 0):.2f}", f"${r.get('ganancia', 0):.2f}",
+            ]
+
+        return base + resto
+
+    filas_data = [extraer_fila(r) for r in registros]
+
+    anchos = []
+    for i, col in enumerate(columnas):
+        max_ancho = len(col)
+        for fila in filas_data:
+            if i < len(fila):
+                max_ancho = max(max_ancho, len(fila[i]))
+        anchos.append(max_ancho + 2)
+
+    sep = "+" + "+".join("-" * a for a in anchos) + "+"
+
+    def render_fila(vals):
+        partes = []
+        for v, a in zip(vals, anchos):
+            partes.append(" " + str(v).ljust(a - 1))
+        return "|" + "|".join(partes) + "|"
+
+    lineas = [sep, render_fila(columnas), sep]
+    for fila in filas_data:
+        lineas.append(render_fila(fila))
+    lineas.append(sep)
+
+    return "\n".join(lineas)
+    
+
+    def extraer_fila(r):
+        cajon_val = r.get("cajon_dispon", "No")
+        cancela_s = r.get("cancela", "---")
+
+        na10_s  = f"{r.get('na_t10_chofer', 0):.6f}" if r.get("na_t10_chofer", "---") != "---" else "---"
+        na11_s  = f"{r.get('na_t11', 0):.6f}"        if r.get("na_t11", "---") != "---"         else "---"
+
+        base = [
+            str(r["vehiculo"]),
+            r.get("turno", "")[:12],
+            f"{r.get('na_t6', 0):.6f}",
+            r.get("clima", "---")[:13],
+            f"{r.get('na_clima', 0):.6f}",
+            f"{r.get('fact_daño', 1):.1f}",
+            f"{r.get('fact_lleg', 1):.1f}",
+            cajon_val,
+            str(r.get("chofer_asig", "---")),
+            na10_s,
+            r.get("estado_chofer", "---")[:6],
+            f"{r.get('t_espera', 0):.0f}",
+            na11_s,
+            cancela_s,
+        ]
+
+        if cajon_val == "No":
+            resto = ["---", "---", "---", "---", "---", "---", "---", "---",
+                     "---", "---", "---", "---", "---", "---", "---", "---",
+                     "---", "---", "---", "---", "---", "---", "---",
+                     f"${-PENALIZACION_NEGADO:.2f}"]
+        elif cancela_s == "Sí":
+            resto = ["---", "---", "---", "---", "---", "---", "---", "---",
+                     "---", "---", "---", "---", "---", "---", "---", "---",
+                     "---", "---", "---", "---", "---", "---", "---",
+                     "$0.00"]
+        else:
+            tr  = int(r.get("t_recepcion",   0))
+            tm  = int(r.get("t_maniobra",    0))
+            tp  = int(r.get("t_permanencia", 0))
+            ts  = int(r.get("t_solicitud",   0))
+            td  = int(r.get("t_devolucion",  0))
+            tch = int(r.get("t_chofer",      0))
+            resto = [
+                f"{r.get('na_recepcion',  0):.6f}", str(tr),
+                f"{r.get('na_maniobra',   0):.6f}", str(tm),
+                f"{r.get('na_permanencia',0):.6f}", str(tp),
+                f"{r.get('na_solicitud',  0):.6f}", str(ts),
+                f"{r.get('na_devolucion', 0):.6f}", str(td),
+                str(tch),
+                f"{r.get('na_t9',  0):.6f}",
+                r.get("excede", "---"),
+                f"{r.get('na_t9h', 0):.6f}",
+                str(r.get("horas_extra", 0)),
+                f"${r.get('costo_extra', 0)}",
+                f"{r.get('na_t12', 0):.6f}",
+                r.get("sale_temprano", "---"),
+                f"{r.get('na_daño', 0):.6f}",
+                r.get("tipo_daño", "---"),
+                f"${r.get('costo_daño', 0)}",
+                f"${r.get('ingreso', 0)}",
+                f"${r.get('costo', 0):.2f}",
+                f"${r.get('ganancia', 0):.2f}",
+            ]
+
+        return base + resto
+
+    filas_data = [extraer_fila(r) for r in registros]
+
+    anchos = []
+    for i, col in enumerate(columnas):
+        max_ancho = len(col)
+        for fila in filas_data:
+            if i < len(fila):
+                max_ancho = max(max_ancho, len(fila[i]))
+        anchos.append(max_ancho + 2)
+
+    sep = "+" + "+".join("-" * a for a in anchos) + "+"
+
+    def render_fila(vals):
+        partes = []
+        for v, a in zip(vals, anchos):
+            partes.append(" " + str(v).ljust(a - 1))
+        return "|" + "|".join(partes) + "|"
+
+    lineas = [sep, render_fila(columnas), sep]
+    for fila in filas_data:
+        lineas.append(render_fila(fila))
+    lineas.append(sep)
+
+    return "\n".join(lineas)
+
+
 # =============================================================================
-#   SECCIÓN 6 — WIDGET TablaVisor
+#   WIDGET TablaVisor
 # =============================================================================
 
 class TablaVisor(ctk.CTkFrame):
 
     def __init__(self, parent, **kwargs):
         super().__init__(parent, fg_color="transparent", **kwargs)
-        self._tablas_data  = None
-        self._tab_activa   = "T1"
-        self._botones_tab  = {}
-        self._edit_mode    = False
-        self._filas_edit   = []
+        self._tablas_data = None
+        self._tab_activa  = "T1"
+        self._botones_tab = {}
+        self._edit_mode   = False
+        self._filas_edit  = []
         self._construir()
 
     def _construir(self):
@@ -374,8 +1144,8 @@ class TablaVisor(ctk.CTkFrame):
 
         for i, (label, _key, _titulo) in enumerate(TABS_TABLAS):
             btn = ctk.CTkButton(
-                frame_tabs, text=label, width=36, height=26,
-                font=ctk.CTkFont(size=10, weight="bold"),
+                frame_tabs, text=label, width=34, height=26,
+                font=ctk.CTkFont(size=9, weight="bold"),
                 corner_radius=6, fg_color=COLOR_BG_INPUT,
                 hover_color=COLOR_BORDER, text_color=COLOR_TEXT_MUTED,
                 border_width=0,
@@ -412,7 +1182,7 @@ class TablaVisor(ctk.CTkFrame):
         self._frame_btns.pack(side="right")
 
         self.btn_editar = ctk.CTkButton(
-            self._frame_btns, text="✏  Editar", width=80, height=24,
+            self._frame_btns, text="Editar tabla", width=80, height=24,
             font=ctk.CTkFont(size=10, weight="bold"),
             fg_color=COLOR_BG_DARK, hover_color=COLOR_BORDER,
             text_color=COLOR_TEXT_PRIMARY, corner_radius=6,
@@ -421,7 +1191,7 @@ class TablaVisor(ctk.CTkFrame):
         self.btn_editar.pack(side="left", padx=2)
 
         self.btn_add = ctk.CTkButton(
-            self._frame_btns, text="+ Fila", width=68, height=24,
+            self._frame_btns, text="Agregar fila", width=68, height=24,
             font=ctk.CTkFont(size=10, weight="bold"),
             fg_color="#1B5E20", hover_color="#2E7D32",
             text_color=COLOR_OK_GREEN, corner_radius=6,
@@ -429,7 +1199,7 @@ class TablaVisor(ctk.CTkFrame):
         )
 
         self.btn_guardar = ctk.CTkButton(
-            self._frame_btns, text="✔  Guardar", width=86, height=24,
+            self._frame_btns, text="Guardar tabla", width=86, height=24,
             font=ctk.CTkFont(size=10, weight="bold"),
             fg_color="#0D47A1", hover_color="#1565C0",
             text_color="#90CAF9", corner_radius=6,
@@ -437,7 +1207,7 @@ class TablaVisor(ctk.CTkFrame):
         )
 
         self.btn_cancelar = ctk.CTkButton(
-            self._frame_btns, text="✕  Cancelar", width=88, height=24,
+            self._frame_btns, text="Cancelar", width=88, height=24,
             font=ctk.CTkFont(size=10, weight="bold"),
             fg_color=COLOR_BG_INPUT, hover_color=COLOR_BORDER,
             text_color=COLOR_TEXT_MUTED, corner_radius=6,
@@ -500,10 +1270,10 @@ class TablaVisor(ctk.CTkFrame):
             self.lbl_suma.configure(text="sin datos", text_color=COLOR_TEXT_MUTED)
         else:
             df   = self._tablas_data[key]
-            suma = round(df["PROB"].sum(), 4)
-            self._text_vista.insert("end", df.to_string(index=False))
+            suma = round(df["prob"].sum(), 4)
+            self._text_vista.insert("end", _df_a_tabla(df))
             color = COLOR_OK_GREEN if abs(suma - 1.0) < 0.0002 else COLOR_WARN_RED
-            self.lbl_suma.configure(text=f"Σ prob = {suma}  ✓", text_color=color)
+            self.lbl_suma.configure(text=f"Sumas de la probabilidad = {suma}  ", text_color=color)
 
         self._text_vista.configure(state="disabled")
 
@@ -531,14 +1301,26 @@ class TablaVisor(ctk.CTkFrame):
         df = self._tablas_data[key].copy().reset_index(drop=True)
 
         col_prim    = COL_PRIMARIA[key]
-        es_llegadas = (key == "TABLA_6_LLEGADAS")
+        es_llegadas = (key == "T6")
+        es_daños    = (key == "T8")
+        es_t9h      = (key == "T9H")
+        es_t13      = (key == "T13")
 
-        if es_llegadas:
-            headers = ["TURNO", "HORARIO", "VEH_HORA", "PROB", "PROB_ACUM", "RANGO_INF", "RANGO_SUP", ""]
+        if es_daños:
+            headers    = ["tipo de daño", "costo de rep", "prob", "prob_acum", "rango_inf", "rango_sup", ""]
+            col_widths = [100, 80, 70, 80, 80, 80, 30]
+        elif es_t9h:
+            headers    = ["horas_extra", "costo_extra", "prob", "prob_acum", "rango_inf", "rango_sup", ""]
+            col_widths = [90, 90, 70, 80, 80, 80, 30]
+        elif es_t13:
+            headers    = ["clima", "factor_daño", "factor_llegadas", "prob", "prob_acum", "rango_inf", "rango_sup", ""]
+            col_widths = [100, 90, 90, 70, 80, 80, 80, 30]
+        elif es_llegadas:
+            headers    = ["turno", "horario", "veh_hora", "prob", "prob_acum", "rango_inf", "rango_sup", ""]
+            col_widths = [90, 70, 60, 70, 80, 80, 80, 30]
         else:
-            headers = [col_prim, "PROB", "PROB_ACUM", "RANGO_INF", "RANGO_SUP", ""]
-
-        col_widths = self._col_widths(es_llegadas)
+            headers    = [col_prim, "prob", "prob_acum", "rango_inf", "rango_sup", ""]
+            col_widths = [80, 70, 80, 80, 80, 30]
 
         sf = self._scroll_edit
         for c, (h, w) in enumerate(zip(headers, col_widths)):
@@ -553,18 +1335,22 @@ class TablaVisor(ctk.CTkFrame):
             row=1, column=0, columnspan=len(headers), sticky="ew", padx=4)
 
         for i, row in df.iterrows():
-            self._insertar_fila_grid(sf, i + 2, row, es_llegadas, col_prim, col_widths)
+            self._insertar_fila_grid(
+                sf, i + 2, row,
+                es_llegadas, es_daños, es_t9h, es_t13,
+                col_prim, col_widths,
+            )
 
         self._df_edit_key  = key
         self._es_llegadas  = es_llegadas
+        self._es_daños     = es_daños
+        self._es_t9h       = es_t9h
+        self._es_t13       = es_t13
         self._col_prim     = col_prim
 
-    def _col_widths(self, es_llegadas):
-        if es_llegadas:
-            return [90, 70, 60, 70, 80, 80, 80, 30]
-        return [60, 70, 80, 80, 80, 30]
-
-    def _insertar_fila_grid(self, sf, row_idx, row_data, es_llegadas, col_prim, col_widths):
+    def _insertar_fila_grid(self, sf, row_idx, row_data,
+                             es_llegadas, es_daños, es_t9h, es_t13,
+                             col_prim, col_widths):
         fila = {"row": row_idx}
 
         def make_entry(col, value, width, read_only=False, callback=None):
@@ -584,23 +1370,55 @@ class TablaVisor(ctk.CTkFrame):
                 e.bind("<KeyRelease>", callback)
             return e
 
-        if es_llegadas:
-            fila["e_turno"]   = make_entry(0, row_data.get("TURNO", ""),    col_widths[0])
-            fila["e_horario"] = make_entry(1, row_data.get("HORARIO", ""),  col_widths[1])
-            fila["e_veh"]     = make_entry(2, row_data.get("VEH_HORA", ""), col_widths[2])
-            fila["e_prob"]    = make_entry(3, f"{row_data['PROB']:.4f}",    col_widths[3],
-                                           callback=lambda e: self._on_prob_change())
-            fila["e_acum"]    = make_entry(4, f"{row_data['PROB_ACUM']:.4f}", col_widths[4], read_only=True)
-            fila["e_ri"]      = make_entry(5, f"{row_data['RANGO_INF']:.4f}", col_widths[5], read_only=True)
-            fila["e_rs"]      = make_entry(6, f"{row_data['RANGO_SUP']:.4f}", col_widths[6], read_only=True)
+        if es_daños:
+            fila["e_prim"]  = make_entry(0, row_data.get("tipo de daño", ""),  col_widths[0])
+            fila["e_costo"] = make_entry(1, row_data.get("costo de rep", 0),   col_widths[1])
+            fila["e_prob"]  = make_entry(2, f"{row_data['prob']:.4f}",         col_widths[2],
+                                         callback=lambda e: self._on_prob_change())
+            fila["e_acum"]  = make_entry(3, f"{row_data['prob_acum']:.4f}",    col_widths[3], read_only=True)
+            fila["e_ri"]    = make_entry(4, f"{row_data['rango_inf']:.4f}",    col_widths[4], read_only=True)
+            fila["e_rs"]    = make_entry(5, f"{row_data['rango_sup']:.4f}",    col_widths[5], read_only=True)
+            del_col = 6
+
+        elif es_t9h:
+            fila["e_prim"]  = make_entry(0, row_data.get("horas_extra", 1),   col_widths[0])
+            fila["e_costo"] = make_entry(1, row_data.get("costo_extra", 0),   col_widths[1])
+            fila["e_prob"]  = make_entry(2, f"{row_data['prob']:.4f}",        col_widths[2],
+                                         callback=lambda e: self._on_prob_change())
+            fila["e_acum"]  = make_entry(3, f"{row_data['prob_acum']:.4f}",   col_widths[3], read_only=True)
+            fila["e_ri"]    = make_entry(4, f"{row_data['rango_inf']:.4f}",   col_widths[4], read_only=True)
+            fila["e_rs"]    = make_entry(5, f"{row_data['rango_sup']:.4f}",   col_widths[5], read_only=True)
+            del_col = 6
+
+        elif es_t13:
+            fila["e_prim"]   = make_entry(0, row_data.get("clima", ""),              col_widths[0])
+            fila["e_fdaño"]  = make_entry(1, row_data.get("factor_daño", 1.0),       col_widths[1])
+            fila["e_flleg"]  = make_entry(2, row_data.get("factor_llegadas", 1.0),   col_widths[2])
+            fila["e_prob"]   = make_entry(3, f"{row_data['prob']:.4f}",              col_widths[3],
+                                          callback=lambda e: self._on_prob_change())
+            fila["e_acum"]   = make_entry(4, f"{row_data['prob_acum']:.4f}",         col_widths[4], read_only=True)
+            fila["e_ri"]     = make_entry(5, f"{row_data['rango_inf']:.4f}",         col_widths[5], read_only=True)
+            fila["e_rs"]     = make_entry(6, f"{row_data['rango_sup']:.4f}",         col_widths[6], read_only=True)
             del_col = 7
+
+        elif es_llegadas:
+            fila["e_turno"]   = make_entry(0, row_data.get("turno", ""),    col_widths[0])
+            fila["e_horario"] = make_entry(1, row_data.get("horario", ""),  col_widths[1])
+            fila["e_veh"]     = make_entry(2, row_data.get("veh_hora", ""), col_widths[2])
+            fila["e_prob"]    = make_entry(3, f"{row_data['prob']:.4f}",    col_widths[3],
+                                           callback=lambda e: self._on_prob_change())
+            fila["e_acum"]    = make_entry(4, f"{row_data['prob_acum']:.4f}", col_widths[4], read_only=True)
+            fila["e_ri"]      = make_entry(5, f"{row_data['rango_inf']:.4f}", col_widths[5], read_only=True)
+            fila["e_rs"]      = make_entry(6, f"{row_data['rango_sup']:.4f}", col_widths[6], read_only=True)
+            del_col = 7
+
         else:
-            fila["e_prim"] = make_entry(0, row_data[col_prim],             col_widths[0])
-            fila["e_prob"] = make_entry(1, f"{row_data['PROB']:.4f}",      col_widths[1],
+            fila["e_prim"] = make_entry(0, row_data[col_prim],              col_widths[0])
+            fila["e_prob"] = make_entry(1, f"{row_data['prob']:.4f}",       col_widths[1],
                                         callback=lambda e: self._on_prob_change())
-            fila["e_acum"] = make_entry(2, f"{row_data['PROB_ACUM']:.4f}", col_widths[2], read_only=True)
-            fila["e_ri"]   = make_entry(3, f"{row_data['RANGO_INF']:.4f}", col_widths[3], read_only=True)
-            fila["e_rs"]   = make_entry(4, f"{row_data['RANGO_SUP']:.4f}", col_widths[4], read_only=True)
+            fila["e_acum"] = make_entry(2, f"{row_data['prob_acum']:.4f}",  col_widths[2], read_only=True)
+            fila["e_ri"]   = make_entry(3, f"{row_data['rango_inf']:.4f}",  col_widths[3], read_only=True)
+            fila["e_rs"]   = make_entry(4, f"{row_data['rango_sup']:.4f}",  col_widths[4], read_only=True)
             del_col = 5
 
         btn_del = ctk.CTkButton(
@@ -618,24 +1436,45 @@ class TablaVisor(ctk.CTkFrame):
         if not self._edit_mode:
             return
         sf      = self._scroll_edit
-        col_w   = self._col_widths(self._es_llegadas)
         row_idx = max((f["row"] for f in self._filas_edit), default=1) + 1
 
-        if not self._es_llegadas:
+        es_daños    = getattr(self, "_es_daños",    False)
+        es_t9h      = getattr(self, "_es_t9h",      False)
+        es_t13      = getattr(self, "_es_t13",      False)
+        es_llegadas = getattr(self, "_es_llegadas",  False)
+
+        if es_daños:
+            col_w = [100, 80, 70, 80, 80, 80, 30]
+            dummy = {"tipo de daño": "Nuevo", "costo de rep": 0,
+                     "prob": 0.0, "prob_acum": 0.0, "rango_inf": 0.0, "rango_sup": 0.0}
+        elif es_t9h:
+            col_w = [90, 90, 70, 80, 80, 80, 30]
+            dummy = {"horas_extra": 1, "costo_extra": 0,
+                     "prob": 0.0, "prob_acum": 0.0, "rango_inf": 0.0, "rango_sup": 0.0}
+        elif es_t13:
+            col_w = [100, 90, 90, 70, 80, 80, 80, 30]
+            dummy = {"clima": "Nuevo", "factor_daño": 1.0, "factor_llegadas": 1.0,
+                     "prob": 0.0, "prob_acum": 0.0, "rango_inf": 0.0, "rango_sup": 0.0}
+        elif es_llegadas:
+            col_w = [90, 70, 60, 70, 80, 80, 80, 30]
+            dummy = {"turno": "Nuevo", "horario": "HH-HHh", "veh_hora": "0-0",
+                     "prob": 0.0, "prob_acum": 0.0, "rango_inf": 0.0, "rango_sup": 0.0}
+        else:
+            col_w = [80, 70, 80, 80, 80, 30]
             try:
                 ultimo_val = int(self._filas_edit[-1]["e_prim"].get())
                 nuevo_val  = ultimo_val + 1
             except (ValueError, IndexError):
                 nuevo_val = 1
-        else:
-            nuevo_val = "Nuevo"
+            dummy = {self._col_prim: nuevo_val,
+                     "prob": 0.0, "prob_acum": 0.0, "rango_inf": 0.0, "rango_sup": 0.0}
 
-        dummy = {
-            self._col_prim: nuevo_val,
-            "PROB": 0.0, "PROB_ACUM": 0.0, "RANGO_INF": 0.0, "RANGO_SUP": 0.0,
-            "HORARIO": "HH-HHh", "VEH_HORA": "0-0",
-        }
-        self._insertar_fila_grid(sf, row_idx, dummy, self._es_llegadas, self._col_prim, col_w)
+        row_s = pd.Series(dummy)
+        self._insertar_fila_grid(
+            sf, row_idx, row_s,
+            es_llegadas, es_daños, es_t9h, es_t13,
+            self._col_prim, col_w,
+        )
         self._on_prob_change()
 
     def _eliminar_fila(self, fila):
@@ -663,7 +1502,7 @@ class TablaVisor(ctk.CTkFrame):
         suma  = round(sum(probabilidades), 4)
         color = COLOR_OK_GREEN if abs(suma - 1.0) < 0.0002 else COLOR_WARN_RED
         self.lbl_suma.configure(
-            text=f"Σ prob = {suma:.4f}{'  ✓' if abs(suma-1.0)<0.0002 else '  ✗'}",
+            text=f"suma de probs = {suma:.4f}{'  ' if abs(suma-1.0)<0.0002 else '  '}",
             text_color=color,
         )
 
@@ -694,29 +1533,56 @@ class TablaVisor(ctk.CTkFrame):
         if abs(suma - 1.0) > 0.0002:
             self._mostrar_alerta(
                 f"La suma de probabilidades es {suma:.4f}.\n"
-                "Debe ser exactamente 1.0000 para poder guardar."
+                "Debe ser exactamente 1.0000 para que funcione."
             )
             return
 
         key         = self._df_edit_key
         col_prim    = self._col_prim
         es_llegadas = self._es_llegadas
+        es_daños    = self._es_daños
+        es_t9h      = self._es_t9h
+        es_t13      = self._es_t13
 
         filas_data = []
         for f, p in zip(self._filas_edit, probabilidades):
-            if es_llegadas:
+            if es_daños:
+                try:
+                    costo = int(f["e_costo"].get())
+                except ValueError:
+                    costo = 0
+                row = {"tipo de daño": f["e_prim"].get(), "costo de rep": costo, "prob": p}
+
+            elif es_t9h:
+                try:
+                    horas = int(f["e_prim"].get())
+                    costo = int(f["e_costo"].get())
+                except ValueError:
+                    horas, costo = 1, 0
+                row = {"horas_extra": horas, "costo_extra": costo, "prob": p}
+
+            elif es_t13:
+                try:
+                    fd = float(f["e_fdaño"].get())
+                    fl = float(f["e_flleg"].get())
+                except ValueError:
+                    fd, fl = 1.0, 1.0
+                row = {"clima": f["e_prim"].get(), "factor_daño": fd, "factor_llegadas": fl, "prob": p}
+
+            elif es_llegadas:
                 row = {
-                    "TURNO":    f["e_turno"].get(),
-                    "HORARIO":  f["e_horario"].get(),
-                    "VEH_HORA": f["e_veh"].get(),
-                    "PROB":     p,
+                    "turno":    f["e_turno"].get(),
+                    "horario":  f["e_horario"].get(),
+                    "veh_hora": f["e_veh"].get(),
+                    "prob":     p,
                 }
             else:
                 try:
                     val = int(f["e_prim"].get())
                 except ValueError:
                     val = f["e_prim"].get()
-                row = {col_prim: val, "PROB": p}
+                row = {col_prim: val, "prob": p}
+
             filas_data.append(row)
 
         df_nuevo = pd.DataFrame(filas_data)
@@ -748,7 +1614,7 @@ class TablaVisor(ctk.CTkFrame):
         v.geometry("360x160")
         v.configure(fg_color=COLOR_BG_DARK)
         v.grab_set()
-        ctk.CTkLabel(v, text="⚠  Validación",
+        ctk.CTkLabel(v, text="errorr",
                      font=ctk.CTkFont(size=13, weight="bold"),
                      text_color=COLOR_ACCENT_RED).pack(pady=(18, 6))
         ctk.CTkLabel(v, text=mensaje,
@@ -761,7 +1627,7 @@ class TablaVisor(ctk.CTkFrame):
 
 
 # =============================================================================
-#   SECCIÓN 7 — INTERFAZ PRINCIPAL
+#   INTERFAZ PRINCIPAL
 # =============================================================================
 
 class Interfaz_EVP(ctk.CTk):
@@ -774,7 +1640,9 @@ class Interfaz_EVP(ctk.CTk):
         self.geometry("1280x820")
         self.minsize(1050, 680)
         self.configure(fg_color=COLOR_BG_DARK)
-        self.hotel = None
+        self.hotel      = None
+        self._historial = []
+        self._dia_activo = 0
         self._construir_ui()
         self.after(300, self._iniciar_simulacion)
 
@@ -823,13 +1691,17 @@ class Interfaz_EVP(ctk.CTk):
         frame_entradas.pack(fill="x")
         frame_entradas.columnconfigure(0, weight=1)
         frame_entradas.columnconfigure(1, weight=1)
+        frame_entradas.columnconfigure(2, weight=1)
 
         ctk.CTkLabel(frame_entradas, text="Choferes",
                      font=ctk.CTkFont(size=11), text_color=COLOR_TEXT_MUTED,
-                     ).grid(row=0, column=0, sticky="w", padx=(0, 6), pady=(0, 2))
+                     ).grid(row=0, column=0, sticky="w", padx=(0, 4), pady=(0, 2))
         ctk.CTkLabel(frame_entradas, text="Vehículos",
                      font=ctk.CTkFont(size=11), text_color=COLOR_TEXT_MUTED,
-                     ).grid(row=0, column=1, sticky="w", padx=(6, 0), pady=(0, 2))
+                     ).grid(row=0, column=1, sticky="w", padx=(4, 4), pady=(0, 2))
+        ctk.CTkLabel(frame_entradas, text="Días",
+                     font=ctk.CTkFont(size=11), text_color=COLOR_TEXT_MUTED,
+                     ).grid(row=0, column=2, sticky="w", padx=(4, 0), pady=(0, 2))
 
         self.entry_choferes = ctk.CTkEntry(
             frame_entradas,
@@ -839,7 +1711,7 @@ class Interfaz_EVP(ctk.CTk):
             height=34, corner_radius=8,
         )
         self.entry_choferes.insert(0, "3")
-        self.entry_choferes.grid(row=1, column=0, sticky="ew", padx=(0, 6))
+        self.entry_choferes.grid(row=1, column=0, sticky="ew", padx=(0, 4))
 
         self.entry_vehiculos = ctk.CTkEntry(
             frame_entradas,
@@ -849,15 +1721,17 @@ class Interfaz_EVP(ctk.CTk):
             height=34, corner_radius=8,
         )
         self.entry_vehiculos.insert(0, "20")
-        self.entry_vehiculos.grid(row=1, column=1, sticky="ew", padx=(6, 0))
+        self.entry_vehiculos.grid(row=1, column=1, sticky="ew", padx=(4, 4))
 
-        ctk.CTkLabel(
-            frame_top,
-            text="ℹ  El turno de cada vehículo\nse sortea con T6 – Llegadas.",
-            font=ctk.CTkFont(size=10),
-            text_color=COLOR_TEXT_MUTED,
-            justify="left",
-        ).pack(anchor="w", pady=(6, 0))
+        self.entry_dias = ctk.CTkEntry(
+            frame_entradas,
+            fg_color=COLOR_BG_INPUT, border_color=COLOR_BORDER,
+            text_color=COLOR_TEXT_PRIMARY,
+            font=ctk.CTkFont(size=14, weight="bold"),
+            height=34, corner_radius=8,
+        )
+        self.entry_dias.insert(0, "7")
+        self.entry_dias.grid(row=1, column=2, sticky="ew", padx=(4, 0))
 
         frame_tarifas = ctk.CTkFrame(parent, fg_color="transparent")
         frame_tarifas.pack(fill="x", padx=16, pady=(16, 0))
@@ -878,7 +1752,7 @@ class Interfaz_EVP(ctk.CTk):
 
         self.btn_simular = ctk.CTkButton(
             frame_btns,
-            text="▶  EMPEZAR SIMULACIÓN",
+            text="SIMULAR",
             font=ctk.CTkFont(size=13, weight="bold"),
             fg_color=COLOR_BG_INPUT, hover_color=COLOR_BG_DARK,
             text_color=COLOR_TEXT_PRIMARY, height=40, corner_radius=8,
@@ -913,23 +1787,52 @@ class Interfaz_EVP(ctk.CTk):
         self.tabla_visor = TablaVisor(parent)
         self.tabla_visor.pack(fill="both", expand=True, padx=12, pady=12)
 
+    # ── Tabla de simulación: ahora incluye selector de días integrado ─────────
     def _construir_tab_tabla(self, parent):
         parent.configure(fg_color="transparent")
 
-        frame_toolbar = ctk.CTkFrame(parent, fg_color="transparent")
-        frame_toolbar.pack(fill="x", padx=12, pady=(8, 4))
-        ctk.CTkLabel(
-            frame_toolbar, text="Registros por vehículo",
-            font=ctk.CTkFont(size=13, weight="bold"), text_color=COLOR_TEXT_MUTED,
-        ).pack(side="left")
-        self.lbl_conteo_filas = ctk.CTkLabel(
-            frame_toolbar, text="",
-            font=ctk.CTkFont(size=12), text_color=COLOR_ACCENT_TEAL,
+        # ── Barra de días (scrollable horizontal) ────────────────────────────
+        self._frame_selector_dias = ctk.CTkScrollableFrame(
+            parent,
+            fg_color=COLOR_BG_INPUT, corner_radius=8,
+            height=48, orientation="horizontal",
+            scrollbar_button_color=COLOR_BORDER,
         )
-        self.lbl_conteo_filas.pack(side="right")
+        self._frame_selector_dias.pack(fill="x", padx=12, pady=(8, 0))
 
+        self._btn_dias = []
+
+        # ── Franja de resumen del día seleccionado ───────────────────────────
+        self._frame_dia_info = ctk.CTkFrame(
+            parent, fg_color=COLOR_BG_INPUT, corner_radius=8,
+        )
+        self._frame_dia_info.pack(fill="x", padx=12, pady=(4, 0))
+
+        self.lbl_dia_titulo = ctk.CTkLabel(
+            self._frame_dia_info, text="",
+            font=ctk.CTkFont(size=12, weight="bold"),
+            text_color=COLOR_ACCENT_BLUE,
+        )
+        self.lbl_dia_titulo.pack(side="left", padx=12, pady=5)
+
+        self.lbl_conteo_filas = ctk.CTkLabel(
+            self._frame_dia_info, text="",
+            font=ctk.CTkFont(size=11),
+            text_color=COLOR_ACCENT_TEAL,
+        )
+        self.lbl_conteo_filas.pack(side="left", padx=(0, 8), pady=5)
+
+        self.lbl_dia_resumen = ctk.CTkLabel(
+            self._frame_dia_info, text="",
+            font=ctk.CTkFont(size=11),
+            text_color=COLOR_ACCENT_AMBER,
+        )
+        self.lbl_dia_resumen.pack(side="left", padx=(0, 12), pady=5)
+
+        # ── Tabla de vehículos ───────────────────────────────────────────────
         frame_outer = ctk.CTkFrame(parent, fg_color=COLOR_BG_INPUT, corner_radius=10)
-        frame_outer.pack(fill="both", expand=True, padx=12, pady=(0, 12))
+        frame_outer.pack(fill="both", expand=True, padx=12, pady=(4, 12))
+
         self.text_tabla = ctk.CTkTextbox(
             frame_outer, fg_color="transparent", text_color=COLOR_TEXT_PRIMARY,
             font=ctk.CTkFont(family="Courier", size=14),
@@ -939,12 +1842,73 @@ class Interfaz_EVP(ctk.CTk):
         self.text_tabla.insert("end", "Ejecuta la simulación para ver la tabla.")
         self.text_tabla.configure(state="disabled")
 
+    def _reconstruir_botones_dias(self, num_dias: int):
+        """Crea/recrea los botones de selección de día dentro de 'Tabla de simulación'."""
+        for w in self._frame_selector_dias.winfo_children():
+            w.destroy()
+        self._btn_dias = []
+
+        for d in range(num_dias):
+            btn = ctk.CTkButton(
+                self._frame_selector_dias,
+                text=f"Día {d + 1}",
+                width=60, height=30,
+                font=ctk.CTkFont(size=10, weight="bold"),
+                corner_radius=6,
+                fg_color=COLOR_BG_DARK,
+                hover_color=COLOR_BORDER,
+                text_color=COLOR_TEXT_MUTED,
+                command=lambda idx=d: self._seleccionar_dia(idx),
+            )
+            btn.pack(side="left", padx=3, pady=6)
+            self._btn_dias.append(btn)
+
+    def _seleccionar_dia(self, idx: int):
+        """Resalta el botón activo y actualiza la tabla + franja de resumen."""
+        self._dia_activo = idx
+
+        for i, btn in enumerate(self._btn_dias):
+            if i == idx:
+                btn.configure(fg_color=COLOR_BG_INPUT, text_color=COLOR_TEXT_PRIMARY)
+            else:
+                btn.configure(fg_color=COLOR_BG_DARK, text_color=COLOR_TEXT_MUTED)
+
+        if not self._historial:
+            return
+
+        snap = self._historial[idx]
+
+        # Franja de resumen rápido
+        self.lbl_dia_titulo.configure(
+            text=f"Día {snap['dia']}  —  {snap['clima']}"
+        )
+        self.lbl_conteo_filas.configure(
+            text=f"  {snap['vehiculos_efectivos']} vehículos"
+        )
+        self.lbl_dia_resumen.configure(
+            text=(
+                f"  Atend: {snap['atendidos']}  "
+                f"Negad: {snap['negados']}  "
+                f"Cancel: {snap['cancelaciones']}  │  "
+                f"Ingresos: ${snap['ingresos']:.2f}  "
+                f"Costos: ${snap['costos']:.2f}  "
+                f"Ganancia: ${snap['ganancias']:.2f}"
+            )
+        )
+
+        # Tabla de vehículos del día seleccionado
+        contenido = _registros_a_tabla(snap["registros"])
+        self.text_tabla.configure(state="normal")
+        self.text_tabla.delete("1.0", "end")
+        self.text_tabla.insert("end", contenido)
+        self.text_tabla.configure(state="disabled")
+
     def _construir_tab_resumen(self, parent):
         parent.configure(fg_color="transparent")
         frame = ctk.CTkFrame(parent, fg_color=COLOR_BG_INPUT, corner_radius=10)
         frame.pack(fill="both", expand=True, padx=12, pady=12)
         ctk.CTkLabel(
-            frame, text="Resultados del turno",
+            frame, text="Resultados",
             font=ctk.CTkFont(size=13, weight="bold"),
             text_color=COLOR_TEXT_MUTED,
         ).pack(anchor="w", padx=14, pady=(12, 4))
@@ -969,19 +1933,20 @@ class Interfaz_EVP(ctk.CTk):
         try:
             nc = int(self.entry_choferes.get())
             nv = int(self.entry_vehiculos.get())
+            nd = int(self.entry_dias.get())
         except ValueError:
             self._mostrar_error("Ingresa números enteros válidos.")
             return
-        if nc < 1 or nv < 1:
+        if nc < 1 or nv < 1 or nd < 1:
             self._mostrar_error("Los valores deben ser mayores a 0.")
             return
 
         self.btn_simular.configure(state="disabled", text="⏳  Simulando...")
         threading.Thread(
-            target=self._ejecutar_simulacion, args=(nc, nv), daemon=True
+            target=self._ejecutar_simulacion, args=(nc, nv, nd), daemon=True
         ).start()
 
-    def _ejecutar_simulacion(self, nc, nv):
+    def _ejecutar_simulacion(self, nc, nv, nd):
         try:
             reiniciar_aleatorios()
             hotel = Estacionamiento_Valet_Parking(num_choferes=nc)
@@ -989,119 +1954,91 @@ class Interfaz_EVP(ctk.CTk):
                 hotel.tablas = {k: v.copy() for k, v in self.tabla_visor._tablas_data.items()}
             else:
                 hotel.tablas = generar_todas_las_tablas()
-            costo, ganancia = hotel.metodo_estacionamiento(num_vehiculos=nv)
+
+            historial = hotel.simular_dias(nd, nv)
             self.hotel = hotel
         except Exception as e:
             import traceback
             tb = traceback.format_exc()
             self.after(0, lambda msg=tb: self._mostrar_error(msg))
             self.after(0, lambda: self.btn_simular.configure(
-                state="normal", text="▶  EMPEZAR SIMULACIÓN"))
+                state="normal", text="SIMULAR"))
             return
-        self.after(0, lambda: self._actualizar_ui(hotel, costo, ganancia))
+        self.after(0, lambda: self._actualizar_ui(hotel, historial))
 
-    def _actualizar_ui(self, hotel, costo, ganancia):
+    def _actualizar_ui(self, hotel, historial):
+        self._historial = historial
         self.tabla_visor.actualizar_tablas(hotel.tablas)
 
-        registros = hotel.registros
-        atendidos = sum(1 for r in registros if r["atendido"])
-        negados   = sum(1 for r in registros if not r["atendido"])
+        # Reconstruir selector de días y mostrar día 1 automáticamente
+        self._reconstruir_botones_dias(len(historial))
+        self._seleccionar_dia(0)
 
-        s = {"rec": 0, "man": 0, "per": 0, "cho": 0, "esp": 0}
-        for r in registros:
-            if r["atendido"]:
-                s["rec"] += r["t_recepcion"];   s["man"] += r["t_maniobra"]
-                s["per"] += r["t_permanencia"]; s["cho"] += r["t_chofer"]
-                s["esp"] += r["t_espera"]
+        # Resumen global
+        self._renderizar_resumen(hotel, historial)
 
-        n = atendidos if atendidos > 0 else 1
-        p = {k: round(v / n, 2) for k, v in s.items()}
+        self.btn_simular.configure(state="normal", text="SIMULAR")
+        self.tabview.set("Tabla de simulación")
 
-        W = 46
+    def _renderizar_resumen(self, hotel, historial):
+        nd = len(historial)
+
+        total_ingresos    = sum(s["ingresos"]    for s in historial)
+        total_costos      = sum(s["costos"]      for s in historial)
+        total_ganancias   = sum(s["ganancias"]   for s in historial)
+        total_atendidos   = sum(s["atendidos"]   for s in historial)
+        total_negados     = sum(s["negados"]     for s in historial)
+        total_cancel      = sum(s["cancelaciones"] for s in historial)
+        total_daños       = sum(s["costos_daños"] for s in historial)
+        total_penal       = sum(s["penalizaciones"] for s in historial)
+        total_espera      = sum(s["espera_total"] for s in historial)
+        total_efect       = sum(s["vehiculos_efectivos"] for s in historial)
+
+        mejor_dia  = max(historial, key=lambda s: s["ganancias"])
+        peor_dia   = min(historial, key=lambda s: s["ganancias"])
+        prom_gan   = round(total_ganancias / nd, 2)
+
+        W = 52
         lineas = [
-            f"{'─' * W}", "  RESUMEN DEL TURNO", f"{'─' * W}",
-            f"  {'Cajones disponibles':<30} {hotel.cajones_disponibles}",
-            f"  {'Choferes en turno':<30} {hotel.num_choferes}",
-            f"  {'Vehículos atendidos':<30} {atendidos}",
-            f"  {'Vehículos negados':<30} {negados}",
-            f"{'─' * W}",
-            f"  {'Espera total cola (min)':<30} {hotel.total_espera_cola:.2f}",
-            f"  {'Espera promedio (min)':<30} {p['esp']:.2f}",
-            f"{'─' * W}",
-            f"  {'Ingresos totales ($MXN)':<30} ${hotel.ingresos_totales:.2f}",
-            f"  {'Costo total ($MXN)':<30} ${costo:.2f}",
-            f"  {'Penalizaciones ($MXN)':<30} ${hotel.penalizaciones:.2f}",
-            f"  {'Ganancias ($MXN)':<30} ${ganancia:.2f}",
-            f"{'─' * W}",
-            f"  {'Tiempo promedio Recepción (min)':<30} {p['rec']}",
-            f"  {'Tiempo promedio Maniobra (min)':<30} {p['man']}",
-            f"  {'Tiempo promedio Permanencia (h)':<30} {p['per']}",
-            f"  {'Tiempo promedio Chofer activo':<30} {p['cho']}",
-            f"{'─' * W}",
-            "  Estado de choferes:",
+            f"{'─'*W}",
+            f"  RESUMEN GLOBAL — {nd} DÍA(S)",
+            f"{'─'*W}",
+            f"  {'Vehículos efectivos (total)':<36} {total_efect}",
+            f"  {'Vehículos atendidos (total)':<36} {total_atendidos}",
+            f"  {'Vehículos negados (total)':<36} {total_negados}",
+            f"  {'Cancelaciones (total)':<36} {total_cancel}",
+            f"{'─'*W}",
+            f"  {'Ingresos acumulados':<36} ${total_ingresos:.2f}",
+            f"  {'Costos acumulados':<36} ${total_costos:.2f}",
+            f"  {'Costo daños acumulado':<36} ${total_daños:.2f}",
+            f"  {'Penalizaciones acumuladas':<36} ${total_penal:.2f}",
+            f"  {'Ganancias netas acumuladas':<36} ${total_ganancias:.2f}",
+            f"  {'Promedio diario de ganancias':<36} ${prom_gan:.2f}",
+            f"{'─'*W}",
+            f"  {'Mejor día (ganancias)':<36} Día {mejor_dia['dia']} (${mejor_dia['ganancias']:.2f})",
+            f"  {'Peor día (ganancias)':<36} Día {peor_dia['dia']}  (${peor_dia['ganancias']:.2f})",
+            f"  {'Espera total acumulada (min)':<36} {total_espera:.2f}",
+            f"{'─'*W}",
+            f"  DETALLE POR DÍA",
+            f"{'─'*W}",
+            f"  {'Día':<5} {'Clima':<14} {'Efect':>5} {'Atend':>5} {'Negad':>5} {'Canc':>5} {'Ingresos':>10} {'Costos':>10} {'Ganancia':>10}",
+            f"  {'─'*4} {'─'*13} {'─'*5} {'─'*5} {'─'*5} {'─'*5} {'─'*10} {'─'*10} {'─'*10}",
         ]
-        for i, t in enumerate(hotel.relojes_choferes):
-            lineas.append(f"    Chofer {i+1}  : libre al min {t}")
-        lineas.append(f"{'─' * W}")
+
+        for s in historial:
+            lineas.append(
+                f"  {s['dia']:<5} {s['clima'][:13]:<14} "
+                f"{s['vehiculos_efectivos']:>5} {s['atendidos']:>5} "
+                f"{s['negados']:>5} {s['cancelaciones']:>5} "
+                f"{s['ingresos']:>10.2f} {s['costos']:>10.2f} {s['ganancias']:>10.2f}"
+            )
+
+        lineas.append(f"{'─'*W}")
 
         self.text_resumen.configure(state="normal")
         self.text_resumen.delete("1.0", "end")
         self.text_resumen.insert("end", "\n".join(lineas))
         self.text_resumen.configure(state="disabled")
-
-        self._renderizar_tabla_vehiculos(registros, atendidos + negados)
-        self.btn_simular.configure(state="normal", text="▶  EMPEZAR SIMULACIÓN")
-        self.tabview.set("Tabla de simulación")
-
-    def _renderizar_tabla_vehiculos(self, registros, total):
-        self.lbl_conteo_filas.configure(text=f"{total} vehículos")
-
-        COL_FIJAS = f"{'Veh':>4}  {'Turno':<12}  {'NA-T6':>8}  {'Cajón':>5}  {'Chofer':>6}  {'Espera':>6}"
-        enc_var = (
-            f"  {'NA-Recep':>8}  {'TRec':>4}"
-            f"  {'NA-Maniob':>9}  {'TMan':>4}"
-            f"  {'NA-Perm':>8}  {'TPer':>4}"
-            f"  {'NA-Solic':>8}  {'TSol':>4}"
-            f"  {'NA-Devol':>8}  {'TDev':>4}"
-            f"  {'T.Chofer':>8}  {'Ingreso':>7}  {'Costo':>6}  {'Ganancia':>8}"
-        )
-        enc    = COL_FIJAS + enc_var
-        lineas = [enc, "─" * len(enc)]
-
-        for r in registros:
-            turno_corto = r.get("turno", "")[:12]
-            na_t6_str   = f"{r.get('na_t6', 0):.6f}"
-            fijas = f"{r['vehiculo']:>4}  {turno_corto:<12}  {na_t6_str:>8}  {'Sí' if r['atendido'] else 'No':>5}  "
-            if r["atendido"]:
-                fijas += f"{r['chofer_asig']:>6}  {r['t_espera']:>6.0f}"
-                tr  = int(r['t_recepcion'])
-                tm  = int(r['t_maniobra'])
-                tp  = int(r['t_permanencia'])
-                ts  = int(r['t_solicitud'])
-                td  = int(r['t_devolucion'])
-                tch = int(r['t_chofer'])
-                var = (
-                    f"  {r['na_recepcion']:>8.6f}  {tr:>4}"
-                    f"  {r['na_maniobra']:>9.6f}  {tm:>4}"
-                    f"  {r['na_permanencia']:>8.6f}  {tp:>4}"
-                    f"  {r['na_solicitud']:>8.6f}  {ts:>4}"
-                    f"  {r['na_devolucion']:>8.6f}  {td:>4}"
-                    f"  {tch:>8}  ${r['ingreso']:>6}"
-                    f"  ${r['costo']:>5.2f}  ${r['ganancia']:>8.2f}"
-                )
-                lineas.append(fijas + var)
-            else:
-                fijas += f"{'---':>6}  {'---':>6}"
-                negado_txt = "  SERVICIO NEGADO — sin cajón disponible"
-                lineas.append(
-                    fijas + negado_txt.ljust(len(enc_var) - 2)
-                    + f"  ${-PENALIZACION_NEGADO:>8.2f}"
-                )
-
-        self.text_tabla.configure(state="normal")
-        self.text_tabla.delete("1.0", "end")
-        self.text_tabla.insert("end", "\n".join(lineas))
-        self.text_tabla.configure(state="disabled")
 
     def _mostrar_error(self, mensaje):
         v = ctk.CTkToplevel(self)

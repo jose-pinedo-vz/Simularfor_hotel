@@ -32,10 +32,11 @@ class Habitaciones:
         self.ventana.geometry(f"{ancho}x{alto}+0+0")
 
         #DATOS
-        self.datos_llegadas=[[0, 0.29],
+        self.datos_llegadas=[[0, 0.05],
                              [1, 0.30],
-                             [2, 0.20],
-                             [3, 0.21]]
+                             [3, 0.20],
+                             [4, 0.21],
+                             [4, 0.24]]
 
         self.datos_tipo=[["Individual", 0.40],
                          ["Doble", 0.40],
@@ -68,16 +69,15 @@ class Habitaciones:
                                    [90, 0.50],
                                    [120, 0.30]]
         
-        self.datos_personas=[[1, 0.35],
-                             [2, 0.40],
-                             [3, 0.15],
-                             [4, 0.07],
-                             [5, 0.03]]
+        self.datos_personas=[[1, 0.25],
+                             [3, 0.20],
+                             [5, 0.25],
+                             [7, 0.15],
+                             [9, 0.15]]
         
         self.datos_decision=[["Aceptar superior", 0.30],
-                               ["Dividir grupo", 0.25],
-                               ["Esperar", 0.10],
-                               ["Cancelar", 0.35]]
+                             ["Dividir grupo", 0.25],
+                             ["Cancelar", 0.45]]
                                 
         self.reiniciar_llegadas=False
         self.reiniciar_tipo=False
@@ -919,20 +919,20 @@ class Habitaciones:
         #INDIVIDUALES
         for habitacion in self.habitaciones_individuales:
             datos=self.habitaciones_individuales[habitacion]
-            if datos["ocupada_hasta"]<=dia_actual:
-                disponibles_individual=disponibles_individual + 1
+            if (datos["ocupada_hasta"] <= dia_actual and datos["limpieza_hasta"] <= dia_actual and datos["mantenimiento_hasta"] <= dia_actual):
+                disponibles_individual += 1
 
         #DOBLES
         for habitacion in self.habitaciones_dobles:
             datos=self.habitaciones_dobles[habitacion]
-            if datos["ocupada_hasta"]<=dia_actual:
-                disponibles_dobles=disponibles_dobles + 1
+            if (datos["ocupada_hasta"] <= dia_actual and datos["limpieza_hasta"] <= dia_actual and datos["mantenimiento_hasta"] <= dia_actual):
+                disponibles_dobles += 1
 
         #SUITES
         for habitacion in self.habitaciones_suite:
             datos=self.habitaciones_suite[habitacion]
-            if datos["ocupada_hasta"]<=dia_actual:
-                disponibles_suite=disponibles_suite + 1
+            if (datos["ocupada_hasta"] <= dia_actual and datos["limpieza_hasta"] <= dia_actual and datos["mantenimiento_hasta"] <= dia_actual):
+                disponibles_suite += 1
 
         return disponibles_individual, disponibles_dobles, disponibles_suite
     
@@ -1139,8 +1139,8 @@ class Habitaciones:
             #TABLAS
             tabla_llegadas=[["Día", "Temporada", "Aleatorio", "Llegadas"]]
 
-            tabla_clientes=[["Día", "Cliente", "Aleatorio personas", "Personas", "Aleatorio tipo", "Tipo", "Habitación", "Estado", "Aleatorio estancia", "Noches", "Salida"]]
-            
+            tabla_clientes=[["Día", "Cliente", "Aleatorio personas", "Personas", "Aleatorio tipo", "Tipo solicitado", "Aleatorio decisión", "Decisión", "Habitación", "Estado", "Aleatorio estancia", "Noches", "Salida"]]
+
             tabla_ocupacion=[["Día", "Ocupadas I", "Ocupadas D", "Ocupadas S", "Disponibles I", "Disponibles D", "Disponibles S", "% Ocupación"]]
 
             tabla_costos=[["Día", "Salidas", "Costo limpieza", "Costo daños", "Aleatorio mantenimiento", "Mantenimiento extra", "Costo total"]]
@@ -1182,6 +1182,23 @@ class Habitaciones:
 
             #DÍAS
             for dia in range(1, dias + 1):
+                #ALEATORIO LLEGADAS
+                alea_llegadas=aleatorio(indice)
+                indice=indice + 1
+
+                #LLEGADAS
+                llegadas=self.buscar_resultado(alea_llegadas, self.datos_llegadas)
+                temporada, datos_temporada=self.obtener_temporada(dia)
+                factor_llegadas=datos_temporada["factor_llegadas"]
+                llegadas=round(llegadas * factor_llegadas)
+                if llegadas<0:
+                    llegadas=0
+
+                tabla_llegadas.append([dia, temporada, alea_llegadas, llegadas])
+
+                ingresos_dia=0
+                costo_insumos_dia=0
+
                 #SALIDAS
                 salidas=self.contar_salidas(dia)
 
@@ -1218,14 +1235,20 @@ class Habitaciones:
                             dias_limpieza=0
 
                         #BLOQUEAR HABITACIÓN POR LIMPIEZA
-                        if habitacion.startswith("I"):
-                            self.habitaciones_individuales[habitacion]["limpieza_hasta"]=dia + dias_limpieza
+                        if "," in habitacion:
+                            habitaciones = [h.strip() for h in habitacion.split(",")]
+                            for hab in habitaciones:
+                                self.habitaciones_suite[hab]["limpieza_hasta"] = dia + dias_limpieza
 
-                        elif habitacion.startswith("D"):
-                            self.habitaciones_dobles[habitacion]["limpieza_hasta"]=dia + dias_limpieza
+                        else:
+                            if habitacion.startswith("I"):
+                                self.habitaciones_individuales[habitacion]["limpieza_hasta"] = dia + dias_limpieza
 
-                        elif habitacion.startswith("S"):
-                            self.habitaciones_suite[habitacion]["limpieza_hasta"]=dia + dias_limpieza
+                            elif habitacion.startswith("D"):
+                                self.habitaciones_dobles[habitacion]["limpieza_hasta"] = dia + dias_limpieza
+
+                            elif habitacion.startswith("S"):
+                                self.habitaciones_suite[habitacion]["limpieza_hasta"] = dia + dias_limpieza
 
                         #DAÑOS EN CADA SALIDA
                         alea_daño=aleatorio(indice)
@@ -1242,126 +1265,23 @@ class Habitaciones:
                                 costo_daños+=fila[2]
 
                         habitacion=cliente["Habitacion"]
-                        if habitacion.startswith("I"):
-                            costo_limpieza+=limpieza_individual
-                        elif habitacion.startswith("D"):
-                            costo_limpieza+=limpieza_doble
-                        elif habitacion.startswith("S"):
-                            costo_limpieza+=limpieza_suite
+                        if "," in habitacion:
+                            habitaciones = [h.strip() for h in habitacion.split(",")]
+                            for hab in habitaciones:
+                                self.habitaciones_suite[hab]["limpieza_hasta"] = dia + dias_limpieza
+
+                        else:
+                            if habitacion.startswith("I"):
+                                self.habitaciones_individuales[habitacion]["limpieza_hasta"] = dia + dias_limpieza
+
+                            elif habitacion.startswith("D"):
+                                self.habitaciones_dobles[habitacion]["limpieza_hasta"] = dia + dias_limpieza
+
+                            elif habitacion.startswith("S"):
+                                self.habitaciones_suite[habitacion]["limpieza_hasta"] = dia + dias_limpieza
 
                 #LIBERAR HABITACIONES
                 self.liberar_habitaciones(dia)
-
-                #ALEATORIO LLEGADAS
-                alea_llegadas=aleatorio(indice)
-
-                indice=indice + 1
-
-                #LLEGADAS
-                llegadas=self.buscar_resultado(alea_llegadas, self.datos_llegadas)
-                temporada, datos_temporada=self.obtener_temporada(dia)
-                factor_llegadas=datos_temporada["factor_llegadas"]
-                llegadas=round(llegadas * factor_llegadas)
-                if llegadas<0:
-                    llegadas=0
-
-                tabla_llegadas.append([dia, temporada, alea_llegadas, llegadas])
-
-                ingresos_dia=0
-                costo_insumos_dia=0
-                #CLIENTES
-                for cliente in range(1, llegadas + 1):
-                    clientes_totales=clientes_totales + 1
-
-                    #ALEATORIO TIPO
-                    alea_tipo=aleatorio(indice)
-                    indice=indice + 1
-                    tipo=self.buscar_resultado(alea_tipo, self.datos_tipo)
-                    demanda_tipos[tipo] += 1
-
-                    alea_personas=aleatorio(indice)
-                    indice=indice + 1
-                    personas=self.buscar_resultado(alea_personas, self.datos_personas)
-
-                    #VALIDAR CAPACIDAD
-                    if personas>self.capacidad[tipo]:
-                        if tipo=="Individual":
-                            tipo="Doble"
-                            if personas > self.capacidad[tipo]:
-                                tipo="Suite"
-                        elif tipo=="Doble":
-                            tipo="Suite"
-
-                    #ALEATORIO ESTANCIA
-                    alea_estancia=aleatorio(indice)
-                    indice=indice + 1
-                    noches=self.buscar_resultado(alea_estancia, self.datos_estancia)
-
-                    #ASIGNAR HABITACIÓN
-                    habitacion=self.asignar_habitacion(tipo, dia, noches)
-                    if habitacion==None:
-                        alea_decision=aleatorio(indice)
-                        indice+=1
-                        decision=self.buscar_resultado(alea_decision, self.datos_decision)
-
-                        if decision=="Aceptar superior":
-                            if tipo=="Individual":
-                                tipo_superior="Doble"
-
-                            elif tipo=="Doble":
-                                tipo_superior="Suite"
-
-                            else:
-                                tipo_superior=None
-
-                            if tipo_superior!=None:
-                                habitacion=self.asignar_habitacion(tipo_superior, dia, noches)
-
-                                if habitacion!=None:
-                                    tipo=tipo_superior
-
-                        if habitacion==None:
-                            habitacion="-"
-
-                    #SI HAY HABITACIÓN
-                    if habitacion!="-":
-                        if habitacion not in self.uso_habitaciones:
-                            self.uso_habitaciones[habitacion]=0
-
-                        self.uso_habitaciones[habitacion] += 1
-
-                        costo_insumos_cliente=costo_jabon + costo_shampoo + costo_papel + costo_toallas + costo_agua
-                        costo_insumos_cliente *= personas * noches
-                        costo_insumos_dia += costo_insumos_cliente
-
-                        estado="Aceptado"
-                        salida=dia + noches
-                        factor_precio=datos_temporada["factor_precio"]
-                        precio_temporada=precios[tipo] * factor_precio
-                        ingreso=precio_temporada * noches
-                        ingresos_dia=ingresos_dia + ingreso
-                        self.clientes.append({"Cliente":cliente_global,
-                                              "Habitacion":habitacion,
-                                              "Entrada":dia,
-                                              "Salida":salida,
-                                              "Personas":personas,
-                                              "Tipo":tipo,
-                                              "Noches":noches})
-
-                    else:
-                        estado="Rechazado"
-                        salida="-"
-                        ingreso=0
-                        clientes_rechazados=clientes_rechazados + 1
-
-                    #TABLA CLIENTES
-                    if salida=="-":
-                        texto_salida="-"
-                    else:
-                        texto_salida="Día " + str(salida)
-
-                    tabla_clientes.append([dia, cliente_global, alea_personas ,personas, alea_tipo, tipo, habitacion, estado, alea_estancia, noches, texto_salida])
-                    cliente_global=cliente_global + 1
 
                 #MANTENIMIENTO
                 alea_mantenimiento=aleatorio(indice)
@@ -1397,6 +1317,146 @@ class Habitaciones:
                     if len(habitaciones_disponibles)>0:
                         tipo, numero, datos=random.choice(habitaciones_disponibles)
                         datos["mantenimiento_hasta"]=dia + dias_fuera
+
+                #CLIENTES
+                for cliente in range(1, llegadas + 1):
+                    clientes_totales=clientes_totales + 1
+
+                    #Aleatorio personas que llegan
+                    alea_personas=aleatorio(indice)
+                    indice=indice + 1
+                    personas=self.buscar_resultado(alea_personas, self.datos_personas)
+
+                    #ALEATORIO TIPO
+                    alea_tipo=aleatorio(indice)
+                    indice=indice + 1
+                    tipo=self.buscar_resultado(alea_tipo, self.datos_tipo)
+                    demanda_tipos[tipo] += 1
+                    tipo_solicitado=tipo
+                    alea_decision="-"
+                    decision="-"
+
+                    #ALEATORIO ESTANCIA
+                    alea_estancia=aleatorio(indice)
+                    indice=indice + 1
+                    noches=self.buscar_resultado(alea_estancia, self.datos_estancia)
+                    
+                    #VALIDAR CAPACIDAD
+                    if personas>self.capacidad["Suite"]:
+                        alea_decision=aleatorio(indice)
+                        indice+=1
+                        decision=self.buscar_resultado(alea_decision, self.datos_decision)
+                        if decision=="Dividir grupo":
+                            habitaciones_necesarias=math.ceil(personas/self.capacidad["Suite"])
+                            suites_libres=[]
+                            for numero, datos in self.habitaciones_suite.items():
+                                if (dia>=datos["ocupada_hasta"] and dia>=datos["limpieza_hasta"] and dia>=datos["mantenimiento_hasta"]):
+                                    suites_libres.append(numero)
+
+                            if len(suites_libres)>=habitaciones_necesarias:
+                                habitaciones_asignadas=suites_libres[:habitaciones_necesarias]
+                                for numero in habitaciones_asignadas:
+                                    self.habitaciones_suite[numero]["ocupada_hasta"]=dia + noches
+                                habitacion=", ".join(habitaciones_asignadas)
+                                estado="Aceptado dividido"
+                                salida = f"Día {dia + noches}"
+                                self.clientes.append({"Cliente": cliente_global,
+                                                      "Habitacion": habitacion,
+                                                      "Entrada": dia,
+                                                      "Salida": dia + noches,
+                                                      "Personas": personas,
+                                                      "Tipo": "Suite",
+                                                      "Noches": noches})
+
+                            else:
+                                habitacion="-"
+                                estado="No fue posible dividir"
+                                clientes_rechazados+=1
+
+                        else:
+                            habitacion="-"
+                            estado="Cancelado"
+                            salida="-"
+                            alea_estancia=0
+                            noches=0
+                            clientes_rechazados+=1
+
+                        tabla_clientes.append([dia, cliente_global, alea_personas, personas, alea_tipo, tipo_solicitado, alea_decision, decision, habitacion, estado, alea_estancia, noches, salida])                        
+                        cliente_global+=1
+                        continue
+
+                    #ASIGNAR HABITACIÓN
+                    habitacion=self.asignar_habitacion(tipo, dia, noches)
+                    if habitacion==None:
+                        alea_decision=aleatorio(indice)
+                        indice+=1
+                        decision=self.buscar_resultado(alea_decision, self.datos_decision)
+
+                        if decision=="Aceptar superior":
+                            if tipo=="Individual":
+                                tipo_superior="Doble"
+
+                            elif tipo=="Doble":
+                                tipo_superior="Suite"
+
+                            else:
+                                tipo_superior=None
+
+                            if tipo_superior!=None:
+                                habitacion=self.asignar_habitacion(tipo_superior, dia, noches)
+
+                                if habitacion!=None:
+                                    tipo=tipo_superior
+
+                        if habitacion==None:
+                            habitacion="-"
+
+                    #SI HAY HABITACIÓN
+                    if habitacion!="-":
+                        if "," in habitacion:
+                            habitaciones = [h.strip() for h in habitacion.split(",")]
+                            for hab in habitaciones:
+                                if hab not in self.uso_habitaciones:
+                                    self.uso_habitaciones[hab]=0
+                                self.uso_habitaciones[hab]+=1
+
+                        else:
+                            if habitacion not in self.uso_habitaciones:
+                                self.uso_habitaciones[habitacion]=0
+                            self.uso_habitaciones[habitacion]+=1
+
+                        costo_insumos_cliente=costo_jabon + costo_shampoo + costo_papel + costo_toallas + costo_agua
+                        costo_insumos_cliente*=personas * noches
+                        costo_insumos_dia+=costo_insumos_cliente
+
+                        estado="Aceptado"
+                        salida=dia + noches
+                        factor_precio=datos_temporada["factor_precio"]
+                        precio_temporada=precios[tipo] * factor_precio
+                        ingreso=precio_temporada * noches
+                        ingresos_dia=ingresos_dia + ingreso
+                        self.clientes.append({"Cliente":cliente_global,
+                                              "Habitacion":habitacion,
+                                              "Entrada":dia,
+                                              "Salida":salida,
+                                              "Personas":personas,
+                                              "Tipo":tipo,
+                                              "Noches":noches})
+
+                    else:
+                        estado="Rechazado"
+                        salida="-"
+                        ingreso=0
+                        clientes_rechazados=clientes_rechazados + 1
+
+                    #TABLA CLIENTES
+                    if salida=="-":
+                        texto_salida="-"
+                    else:
+                        texto_salida="Día " + str(salida)
+
+                    tabla_clientes.append([dia, cliente_global, alea_personas, personas, alea_tipo, tipo, alea_decision, decision, habitacion,  estado, alea_estancia, noches,texto_salida])
+                    cliente_global=cliente_global + 1
         
                 #COSTOS
                 costo_total=(costo_limpieza + costo_operativo + costo_mantenimiento + costo_daños + costo_insumos_dia)
@@ -1574,10 +1634,10 @@ class Habitaciones:
                 tabla_analisis.append(["Dobles", "Las habitaciones dobles presentan baja utilización."])
 
             #DISPONIBILIDAD SUITE
-            if porcentaje_s > 90:
+            if porcentaje_s>90:
                 tabla_analisis.append(["Suites", "Las suites presentan alta ocupación."])
 
-            elif porcentaje_s >= 60:
+            elif porcentaje_s>=60:
                 tabla_analisis.append(["Suites", "Las suites mantienen una ocupación estable."])
 
             else:
